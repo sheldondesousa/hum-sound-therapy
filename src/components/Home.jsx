@@ -39,8 +39,8 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="px-6 pt-8 pb-8">
-        <h1 className="text-3xl font-semibold text-black mb-8">
-          What do you need?
+        <h1 className="text-5xl font-semibold text-black mb-8">
+          Choose your path
         </h1>
 
         {/* Divider */}
@@ -57,8 +57,8 @@ export default function Home() {
               </svg>
             </div>
             <div className="flex-1 text-left">
-              <h2 className="text-xl font-semibold text-black mb-0.5">Focus</h2>
-              <p className="text-sm text-black">Enhance concentration</p>
+              <h2 className="text-4xl font-semibold text-black mb-0.5" style={{ fontFamily: 'Roboto Serif, serif' }}>Focus</h2>
+              <p className="text-xl text-black">Enhance concentration</p>
             </div>
             <svg className="w-5 h-5 text-black group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
@@ -75,8 +75,8 @@ export default function Home() {
               </svg>
             </div>
             <div className="flex-1 text-left">
-              <h2 className="text-xl font-semibold text-black mb-0.5">Calm</h2>
-              <p className="text-sm text-black">Relax and rejuvenate</p>
+              <h2 className="text-4xl font-semibold text-black mb-0.5" style={{ fontFamily: 'Roboto Serif, serif' }}>Calm</h2>
+              <p className="text-xl text-black">Relax and rejuvenate</p>
             </div>
             <svg className="w-5 h-5 text-black group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
@@ -104,8 +104,8 @@ export default function Home() {
               </svg>
             </div>
             <div className="flex-1 text-left">
-              <h2 className="text-xl font-semibold text-black mb-0.5">Breathe</h2>
-              <p className="text-sm text-black">Enter a rhythm</p>
+              <h2 className="text-4xl font-semibold text-black mb-0.5" style={{ fontFamily: 'Roboto Serif, serif' }}>Breathe</h2>
+              <p className="text-xl text-black">Enter a rhythm</p>
             </div>
             <svg className="w-5 h-5 text-black group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
@@ -121,8 +121,8 @@ export default function Home() {
               </svg>
             </div>
             <div className="flex-1 text-left">
-              <h2 className="text-xl font-semibold text-black mb-0.5">Meditate</h2>
-              <p className="text-sm text-black">Find inner peace</p>
+              <h2 className="text-4xl font-semibold text-black mb-0.5" style={{ fontFamily: 'Roboto Serif, serif' }}>Meditate</h2>
+              <p className="text-xl text-black">Find inner peace</p>
             </div>
             <svg className="w-5 h-5 text-black group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
