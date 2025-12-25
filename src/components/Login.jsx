@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import Loader from './Loader';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -22,19 +23,20 @@ export default function Login() {
       setError('');
       setLoading(true);
       await signInWithGoogle();
-      navigate('/dashboard');
+      navigate('/home');
     } catch (error) {
       setError('Failed to sign in with Google. Please try again.');
       console.error(error);
-    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      {/* Mobile Container with Border */}
-      <div className="w-full max-w-md bg-white border border-gray-300 rounded-2xl shadow-sm p-8">
+    <>
+      {loading && <Loader />}
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        {/* Mobile Container with Border */}
+        <div className="w-full max-w-md bg-white border border-gray-300 rounded-2xl shadow-sm p-8">
 
         {/* Logo Placeholder */}
         <div className="flex justify-center mb-12 mt-8">
@@ -144,7 +146,8 @@ export default function Login() {
           <span className="text-black font-semibold">Terms of Service</span> and{' '}
           <span className="text-black font-semibold">Privacy Policy</span>
         </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
