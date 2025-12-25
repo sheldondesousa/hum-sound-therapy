@@ -14,42 +14,49 @@ export default function Login() {
       {/* Mobile Container with Border */}
       <div className="w-full max-w-md bg-white border border-gray-300 rounded-2xl shadow-sm p-8">
 
-        {/* HUM Logo - Updated Striped/Concentric Style */}
+        {/* HUM Logo - Exact design from image */}
         <div className="flex justify-center mb-12 mt-8">
-          <svg width="240" height="100" viewBox="0 0 240 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ shapeRendering: 'geometricPrecision' }}>
-            {/* H - Vertical lines */}
-            <rect x="10" y="20" width="4" height="60" fill="black"/>
-            <rect x="18" y="20" width="4" height="60" fill="black"/>
-            <rect x="26" y="20" width="4" height="60" fill="black"/>
-            <rect x="34" y="48" width="4" height="4" fill="black"/>
-            <rect x="42" y="20" width="4" height="60" fill="black"/>
-            <rect x="50" y="20" width="4" height="60" fill="black"/>
-            <rect x="58" y="20" width="4" height="60" fill="black"/>
+          <svg width="280" height="80" viewBox="0 0 280 80" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ shapeRendering: 'geometricPrecision' }}>
+            {/* H - Vertical stripes with crossbar */}
+            <rect x="0" y="10" width="3" height="60" fill="black"/>
+            <rect x="6" y="10" width="3" height="60" fill="black"/>
+            <rect x="12" y="10" width="3" height="60" fill="black"/>
+            <rect x="18" y="10" width="3" height="60" fill="black"/>
+            {/* H crossbar */}
+            <rect x="18" y="37" width="20" height="3" fill="black"/>
+            <rect x="38" y="10" width="3" height="60" fill="black"/>
+            <rect x="44" y="10" width="3" height="60" fill="black"/>
+            <rect x="50" y="10" width="3" height="60" fill="black"/>
+            <rect x="56" y="10" width="3" height="60" fill="black"/>
 
-            {/* U - Concentric semicircles */}
-            <rect x="80" y="20" width="4" height="60" fill="black"/>
-            <rect x="88" y="20" width="4" height="60" fill="black"/>
-            <rect x="96" y="20" width="4" height="60" fill="black"/>
-            <path d="M 100 80 Q 100 90, 110 90 Q 120 90, 120 80" stroke="black" strokeWidth="4" fill="none"/>
-            <path d="M 108 80 Q 108 86, 112 86 Q 116 86, 116 80" stroke="black" strokeWidth="4" fill="none"/>
-            <rect x="124" y="20" width="4" height="60" fill="black"/>
-            <rect x="132" y="20" width="4" height="60" fill="black"/>
-            <rect x="140" y="20" width="4" height="60" fill="black"/>
+            {/* U - Vertical stripes with concentric semicircles */}
+            <rect x="75" y="10" width="3" height="50" fill="black"/>
+            <rect x="81" y="10" width="3" height="50" fill="black"/>
+            <rect x="87" y="10" width="3" height="50" fill="black"/>
+            <rect x="93" y="10" width="3" height="50" fill="black"/>
+            {/* U bottom curves - concentric arcs */}
+            <path d="M 75 60 Q 75 70, 85 70 Q 95 70, 95 60" stroke="black" strokeWidth="3" fill="none"/>
+            <path d="M 81 60 Q 81 66, 88 66 Q 95 66, 95 60" stroke="black" strokeWidth="3" fill="none"/>
+            <path d="M 87 60 Q 87 63, 88 63 Q 89 63, 89 60" stroke="black" strokeWidth="3" fill="none"/>
+            <rect x="95" y="10" width="3" height="50" fill="black"/>
+            <rect x="101" y="10" width="3" height="50" fill="black"/>
+            <rect x="107" y="10" width="3" height="50" fill="black"/>
+            <rect x="113" y="10" width="3" height="50" fill="black"/>
 
-            {/* M - Vertical lines with concentric curves */}
-            <rect x="162" y="20" width="4" height="60" fill="black"/>
-            <rect x="170" y="20" width="4" height="60" fill="black"/>
-            <rect x="178" y="20" width="4" height="35" fill="black"/>
-            <path d="M 178 30 Q 188 30, 188 40" stroke="black" strokeWidth="4" fill="none"/>
-            <path d="M 182 30 Q 188 30, 188 35" stroke="black" strokeWidth="3" fill="none"/>
-            <rect x="188" y="40" width="4" height="15" fill="black"/>
-            <rect x="196" y="20" width="4" height="35" fill="black"/>
-            <path d="M 196 30 Q 206 30, 206 40" stroke="black" strokeWidth="4" fill="none"/>
-            <path d="M 200 30 Q 206 30, 206 35" stroke="black" strokeWidth="3" fill="none"/>
-            <rect x="206" y="40" width="4" height="15" fill="black"/>
-            <rect x="214" y="20" width="4" height="60" fill="black"/>
-            <rect x="222" y="20" width="4" height="60" fill="black"/>
-            <rect x="230" y="20" width="4" height="60" fill="black"/>
+            {/* M - Vertical stripes with concentric rounded shapes */}
+            <rect x="132" y="10" width="3" height="60" fill="black"/>
+            <rect x="138" y="10" width="3" height="60" fill="black"/>
+            <rect x="144" y="10" width="3" height="60" fill="black"/>
+            <rect x="150" y="10" width="3" height="60" fill="black"/>
+            {/* M middle curves - concentric */}
+            <path d="M 150 20 Q 160 20, 165 30 Q 165 40, 165 60" stroke="black" strokeWidth="3" fill="none"/>
+            <path d="M 156 20 Q 160 22, 162 28 Q 162 35, 162 60" stroke="black" strokeWidth="3" fill="none"/>
+            <path d="M 180 20 Q 170 20, 165 30 Q 165 40, 165 60" stroke="black" strokeWidth="3" fill="none"/>
+            <path d="M 174 20 Q 170 22, 168 28 Q 168 35, 168 60" stroke="black" strokeWidth="3" fill="none"/>
+            <rect x="180" y="10" width="3" height="60" fill="black"/>
+            <rect x="186" y="10" width="3" height="60" fill="black"/>
+            <rect x="192" y="10" width="3" height="60" fill="black"/>
+            <rect x="198" y="10" width="3" height="60" fill="black"/>
           </svg>
         </div>
 
