@@ -43,10 +43,10 @@ export default function Login() {
       {loading && <Loader />}
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         {/* Mobile Container with Border - iPhone 16 Pro Max dimensions */}
-        <div className="w-full max-w-md bg-white border border-gray-300 rounded-2xl shadow-sm p-8" style={{ maxWidth: '430px', minHeight: '932px' }}>
+        <div className="w-full max-w-md bg-white border border-gray-300 rounded-2xl shadow-sm px-8 py-8" style={{ maxWidth: '430px', minHeight: '932px' }}>
 
         {/* Logo Placeholder */}
-        <div className="flex justify-center mb-12 mt-8">
+        <div className="flex justify-center mb-12">
           <div className="w-64 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
             <span className="text-gray-400 text-sm font-medium">LOGO</span>
           </div>

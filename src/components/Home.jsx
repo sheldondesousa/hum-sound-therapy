@@ -17,9 +17,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       {/* Mobile Container with Border - iPhone 16 Pro Max dimensions */}
-      <div className="relative w-full max-w-md bg-white border border-gray-300 rounded-2xl shadow-sm overflow-hidden flex flex-col" style={{ maxWidth: '430px', minHeight: '932px' }}>
+      <div className="relative w-full max-w-md bg-white border border-gray-300 rounded-2xl shadow-sm overflow-hidden flex flex-col py-8" style={{ maxWidth: '430px', minHeight: '932px' }}>
       {/* Status Bar - For visual reference only, won't be functional */}
-      <div className="px-6 pt-3 pb-2 flex justify-between items-center text-sm">
+      <div className="px-6 pb-2 flex justify-between items-center text-sm">
         <span className="font-semibold">9:41</span>
         <div className="flex items-center gap-1">
           {/* Signal icon */}
@@ -156,7 +156,7 @@ export default function Home() {
       </div>
 
       {/* Bottom Menu */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center">
+      <div className="absolute bottom-0 left-0 right-0 flex justify-center pb-0">
         <button className="flex flex-col items-center gap-1 text-black hover:opacity-70 transition-opacity">
           <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7"/>
