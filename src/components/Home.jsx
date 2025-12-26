@@ -203,8 +203,8 @@ export default function Home() {
               {/* Focus Option */}
               <button className="w-full py-6 lg:py-8 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-transform group">
                 <div className="flex-1 text-left pl-4">
-                  <h2 className="text-3xl lg:text-4xl font-semibold text-black mb-1">Focus</h2>
-                  <p className="text-lg lg:text-xl text-gray-700">Enhance concentration</p>
+                  <h2 className="text-2xl lg:text-3xl font-semibold text-black mb-1">Focus</h2>
+                  <p className="text-base lg:text-lg text-gray-700">Enhance concentration</p>
                 </div>
                 <svg className="w-5 h-5 lg:w-6 lg:h-6 text-black transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
@@ -214,8 +214,8 @@ export default function Home() {
               {/* Calm Option */}
               <button className="w-full py-6 lg:py-8 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-transform group">
                 <div className="flex-1 text-left pl-4">
-                  <h2 className="text-3xl lg:text-4xl font-semibold text-black mb-1">Calm</h2>
-                  <p className="text-lg lg:text-xl text-gray-700">Relax and rejuvenate</p>
+                  <h2 className="text-2xl lg:text-3xl font-semibold text-black mb-1">Calm</h2>
+                  <p className="text-base lg:text-lg text-gray-700">Relax and rejuvenate</p>
                 </div>
                 <svg className="w-5 h-5 lg:w-6 lg:h-6 text-black transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
@@ -225,8 +225,8 @@ export default function Home() {
               {/* Breathe Option */}
               <button className="w-full py-6 lg:py-8 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-transform group">
                 <div className="flex-1 text-left pl-4">
-                  <h2 className="text-3xl lg:text-4xl font-semibold text-black mb-1">Breathe</h2>
-                  <p className="text-lg lg:text-xl text-gray-700">Reset your rhythm</p>
+                  <h2 className="text-2xl lg:text-3xl font-semibold text-black mb-1">Breathe</h2>
+                  <p className="text-base lg:text-lg text-gray-700">Reset your rhythm</p>
                 </div>
                 <svg className="w-5 h-5 lg:w-6 lg:h-6 text-black transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
