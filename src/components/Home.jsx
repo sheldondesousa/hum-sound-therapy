@@ -19,6 +19,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      <style>{`
+        @media (min-width: 1024px) {
+          .music-player-desktop {
+            width: 430px !important;
+            height: 932px !important;
+          }
+        }
+      `}</style>
       <div className="flex min-h-screen flex-col lg:flex-row">
         {/* Sidebar - Desktop */}
         <aside className="hidden lg:flex w-64 border-r border-gray-300 p-8 flex-col">
@@ -98,8 +106,8 @@ export default function Home() {
         <main className="flex-1 flex items-center justify-center p-8 lg:p-16">
           {/* Centered Container - Music Player + Cards */}
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-center justify-center max-w-7xl">
-            {/* Music Player */}
-            <div className="bg-white border-2 border-gray-300 rounded-2xl p-6 flex flex-col w-full lg:w-auto" style={{ maxWidth: '430px' }}>
+            {/* Music Player - iPhone 17 Pro Max dimensions on desktop */}
+            <div className="music-player-desktop bg-white border-2 border-gray-300 rounded-2xl p-6 flex flex-col w-full lg:flex-shrink-0">
               {/* Album Art & Info */}
               <div className="mb-6">
                 <div className="w-full aspect-square bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
