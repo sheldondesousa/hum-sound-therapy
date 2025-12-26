@@ -37,67 +37,97 @@ export default function Home() {
         <div className="border-t border-gray-300 mb-0"></div>
 
         {/* Options List */}
-        <div className="space-y-0">
+        <div className="space-y-4 mt-4">
           {/* Focus */}
-          <button className="w-full py-5 flex items-center gap-3 border-b border-gray-300 hover:bg-gray-50 transition-colors group">
-            <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
-              <svg className="w-12 h-12" viewBox="0 0 80 80" fill="black">
-                <circle cx="40" cy="40" r="12" fill="black"/>
-                <path d="M40 8 C40 8, 25 25, 25 40 C25 55, 40 72, 40 72 C40 72, 55 55, 55 40 C55 25, 40 8, 40 8" fill="none" stroke="black" strokeWidth="3"/>
+          <button className="relative w-full py-8 px-6 flex items-center gap-4 rounded-2xl overflow-hidden transition-transform hover:scale-[1.02] group" style={{ background: 'linear-gradient(135deg, #FF6B9D 0%, #FFA06B 50%, #FFD700 100%)' }}>
+            {/* Geometric Shapes Background */}
+            <div className="absolute inset-0 opacity-20">
+              <svg className="absolute w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
+                <rect x="0" y="0" width="120" height="120" fill="white" opacity="0.3"/>
+                <rect x="280" y="0" width="120" height="60" fill="white" opacity="0.2"/>
+                <circle cx="350" cy="150" r="80" fill="white" opacity="0.25"/>
+                <rect x="150" y="80" width="100" height="100" fill="white" opacity="0.15" transform="rotate(45 200 130)"/>
               </svg>
             </div>
-            <div className="flex-1 text-left">
-              <h2 className="text-4xl font-semibold text-black mb-0.5" style={{ fontFamily: 'Roboto Serif, serif' }}>Focus</h2>
-              <p className="text-xl text-black">Enhance concentration</p>
+
+            <div className="relative z-10 w-14 h-14 flex-shrink-0 flex items-center justify-center">
+              <svg className="w-12 h-12" viewBox="0 0 80 80" fill="white">
+                <circle cx="40" cy="40" r="12" fill="white"/>
+                <path d="M40 8 C40 8, 25 25, 25 40 C25 55, 40 72, 40 72 C40 72, 55 55, 55 40 C55 25, 40 8, 40 8" fill="none" stroke="white" strokeWidth="3"/>
+              </svg>
             </div>
-            <svg className="w-5 h-5 text-black group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <div className="relative z-10 flex-1 text-left">
+              <h2 className="text-4xl font-semibold text-white mb-0.5" style={{ fontFamily: 'Roboto Serif, serif' }}>Focus</h2>
+              <p className="text-xl text-white opacity-90">Enhance concentration</p>
+            </div>
+            <svg className="relative z-10 w-5 h-5 text-white group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
             </svg>
           </button>
 
           {/* Calm */}
-          <button className="w-full py-5 flex items-center gap-3 border-b border-gray-300 hover:bg-gray-50 transition-colors group">
-            <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
-              <svg className="w-12 h-12" viewBox="0 0 80 80" fill="black">
-                <path d="M20 50 Q20 30, 30 25 Q35 22, 40 30 Q45 22, 50 25 Q60 30, 60 50" fill="black"/>
-                <path d="M25 60 Q25 45, 32 42 Q36 40, 40 46 Q44 40, 48 42 Q55 45, 55 60" fill="black"/>
-                <path d="M30 70 Q30 58, 36 56 Q39 55, 40 59 Q41 55, 44 56 Q50 58, 50 70" fill="black"/>
+          <button className="relative w-full py-8 px-6 flex items-center gap-4 rounded-2xl overflow-hidden transition-transform hover:scale-[1.02] group" style={{ background: 'linear-gradient(135deg, #4FACFE 0%, #00F2FE 50%, #43E97B 100%)' }}>
+            {/* Geometric Shapes Background */}
+            <div className="absolute inset-0 opacity-20">
+              <svg className="absolute w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
+                <rect x="20" y="20" width="100" height="100" fill="white" opacity="0.25"/>
+                <rect x="250" y="30" width="80" height="80" fill="white" opacity="0.3"/>
+                <circle cx="80" cy="160" r="70" fill="white" opacity="0.2"/>
+                <rect x="200" y="100" width="90" height="90" fill="white" opacity="0.15" transform="rotate(30 245 145)"/>
               </svg>
             </div>
-            <div className="flex-1 text-left">
-              <h2 className="text-4xl font-semibold text-black mb-0.5" style={{ fontFamily: 'Roboto Serif, serif' }}>Calm</h2>
-              <p className="text-xl text-black">Relax and rejuvenate</p>
+
+            <div className="relative z-10 w-14 h-14 flex-shrink-0 flex items-center justify-center">
+              <svg className="w-12 h-12" viewBox="0 0 80 80" fill="white">
+                <path d="M20 50 Q20 30, 30 25 Q35 22, 40 30 Q45 22, 50 25 Q60 30, 60 50" fill="white"/>
+                <path d="M25 60 Q25 45, 32 42 Q36 40, 40 46 Q44 40, 48 42 Q55 45, 55 60" fill="white"/>
+                <path d="M30 70 Q30 58, 36 56 Q39 55, 40 59 Q41 55, 44 56 Q50 58, 50 70" fill="white"/>
+              </svg>
             </div>
-            <svg className="w-5 h-5 text-black group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <div className="relative z-10 flex-1 text-left">
+              <h2 className="text-4xl font-semibold text-white mb-0.5" style={{ fontFamily: 'Roboto Serif, serif' }}>Calm</h2>
+              <p className="text-xl text-white opacity-90">Relax and rejuvenate</p>
+            </div>
+            <svg className="relative z-10 w-5 h-5 text-white group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
             </svg>
           </button>
 
           {/* Breathe */}
-          <button className="w-full py-5 flex items-center gap-3 border-b border-gray-300 hover:bg-gray-50 transition-colors group">
-            <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
-              <svg className="w-12 h-12" viewBox="0 0 80 80" fill="black">
-                <circle cx="40" cy="40" r="3" fill="black"/>
-                {/* Radiating lines */}
-                <line x1="40" y1="10" x2="40" y2="25" stroke="black" strokeWidth="2.5"/>
-                <line x1="40" y1="70" x2="40" y2="55" stroke="black" strokeWidth="2.5"/>
-                <line x1="10" y1="40" x2="25" y2="40" stroke="black" strokeWidth="2.5"/>
-                <line x1="70" y1="40" x2="55" y2="40" stroke="black" strokeWidth="2.5"/>
-                <line x1="18" y1="18" x2="28" y2="28" stroke="black" strokeWidth="2.5"/>
-                <line x1="62" y1="62" x2="52" y2="52" stroke="black" strokeWidth="2.5"/>
-                <line x1="62" y1="18" x2="52" y2="28" stroke="black" strokeWidth="2.5"/>
-                <line x1="18" y1="62" x2="28" y2="52" stroke="black" strokeWidth="2.5"/>
-                <line x1="40" y1="15" x2="40" y2="20" stroke="black" strokeWidth="2"/>
-                <line x1="40" y1="65" x2="40" y2="60" stroke="black" strokeWidth="2"/>
-                <line x1="15" y1="40" x2="20" y2="40" stroke="black" strokeWidth="2"/>
-                <line x1="65" y1="40" x2="60" y2="40" stroke="black" strokeWidth="2"/>
+          <button className="relative w-full py-8 px-6 flex items-center gap-4 rounded-2xl overflow-hidden transition-transform hover:scale-[1.02] group" style={{ background: 'linear-gradient(135deg, #A855F7 0%, #7C3AED 50%, #4C1D95 100%)' }}>
+            {/* Geometric Shapes Background */}
+            <div className="absolute inset-0 opacity-20">
+              <svg className="absolute w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice">
+                <rect x="30" y="10" width="110" height="110" fill="white" opacity="0.25"/>
+                <rect x="270" y="50" width="70" height="70" fill="white" opacity="0.3"/>
+                <circle cx="320" cy="30" r="60" fill="white" opacity="0.2"/>
+                <rect x="180" y="90" width="85" height="85" fill="white" opacity="0.15" transform="rotate(20 222 132)"/>
               </svg>
             </div>
-            <div className="flex-1 text-left">
-              <h2 className="text-4xl font-semibold text-black mb-0.5" style={{ fontFamily: 'Roboto Serif, serif' }}>Breathe</h2>
-              <p className="text-xl text-black">Enter a rhythm</p>
+
+            <div className="relative z-10 w-14 h-14 flex-shrink-0 flex items-center justify-center">
+              <svg className="w-12 h-12" viewBox="0 0 80 80" fill="white">
+                <circle cx="40" cy="40" r="3" fill="white"/>
+                {/* Radiating lines */}
+                <line x1="40" y1="10" x2="40" y2="25" stroke="white" strokeWidth="2.5"/>
+                <line x1="40" y1="70" x2="40" y2="55" stroke="white" strokeWidth="2.5"/>
+                <line x1="10" y1="40" x2="25" y2="40" stroke="white" strokeWidth="2.5"/>
+                <line x1="70" y1="40" x2="55" y2="40" stroke="white" strokeWidth="2.5"/>
+                <line x1="18" y1="18" x2="28" y2="28" stroke="white" strokeWidth="2.5"/>
+                <line x1="62" y1="62" x2="52" y2="52" stroke="white" strokeWidth="2.5"/>
+                <line x1="62" y1="18" x2="52" y2="28" stroke="white" strokeWidth="2.5"/>
+                <line x1="18" y1="62" x2="28" y2="52" stroke="white" strokeWidth="2.5"/>
+                <line x1="40" y1="15" x2="40" y2="20" stroke="white" strokeWidth="2"/>
+                <line x1="40" y1="65" x2="40" y2="60" stroke="white" strokeWidth="2"/>
+                <line x1="15" y1="40" x2="20" y2="40" stroke="white" strokeWidth="2"/>
+                <line x1="65" y1="40" x2="60" y2="40" stroke="white" strokeWidth="2"/>
+              </svg>
             </div>
-            <svg className="w-5 h-5 text-black group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <div className="relative z-10 flex-1 text-left">
+              <h2 className="text-4xl font-semibold text-white mb-0.5" style={{ fontFamily: 'Roboto Serif, serif' }}>Breathe</h2>
+              <p className="text-xl text-white opacity-90">Enter a rhythm</p>
+            </div>
+            <svg className="relative z-10 w-5 h-5 text-white group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
             </svg>
           </button>
