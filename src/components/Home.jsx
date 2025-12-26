@@ -105,9 +105,55 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Right Half - Cards Container (50% of horizontal space) */}
-          <div className="w-1/2 flex items-end justify-center px-4 lg:px-12 pb-8 lg:pb-12 border-t border-b border-gray-300">
-            <div className="grid grid-cols-1 gap-4 lg:gap-6 max-w-sm w-full">
+          {/* Right Half - Music Player + Cards Container (50% of horizontal space) */}
+          <div className="w-1/2 flex flex-col justify-end px-4 lg:px-12 py-8 lg:py-12 border-t border-b border-gray-300 gap-6">
+            {/* Music Player Placeholder */}
+            <div className="bg-white border-2 border-gray-300 rounded-2xl p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
+                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg text-black">Track Title</h3>
+                  <p className="text-sm text-gray-600">Artist Name</p>
+                </div>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="mb-4">
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="bg-black h-2 rounded-full" style={{ width: '40%' }}></div>
+                </div>
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>1:23</span>
+                  <span>3:45</span>
+                </div>
+              </div>
+
+              {/* Player Controls */}
+              <div className="flex items-center justify-center gap-4">
+                <button className="p-2 hover:opacity-70 transition-opacity">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                  </svg>
+                </button>
+                <button className="p-3 bg-black text-white rounded-full hover:opacity-90 transition-opacity">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </button>
+                <button className="p-2 hover:opacity-70 transition-opacity">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M16 18h2V6h-2zm-11 0l8.5-6L5 6z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Cards Container */}
+            <div className="grid grid-cols-1 gap-4 max-w-sm w-full">
               {/* Focus Card */}
               <button className="relative aspect-[3/4] max-h-64 rounded-2xl overflow-hidden transition-transform hover:scale-[1.02] group" style={{ background: 'linear-gradient(135deg, #FF6B9D 0%, #FFA06B 50%, #FFD700 100%)' }}>
                 {/* Geometric Shapes Background */}
