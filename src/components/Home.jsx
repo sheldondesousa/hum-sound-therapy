@@ -106,9 +106,9 @@ export default function Home() {
           </div>
 
           {/* Right Half - Music Player + Cards Container (50% of horizontal space) */}
-          <div className="w-1/2 flex flex-row gap-6 px-4 lg:px-8 py-8 lg:py-12 border-t border-b border-gray-300">
-            {/* Music Player - Left Side */}
-            <div className="flex-1 bg-white border-2 border-gray-300 rounded-2xl p-6 flex flex-col">
+          <div className="w-1/2 flex flex-row gap-6 px-4 lg:px-8 py-8 lg:py-12 border-t border-b border-gray-300 items-center justify-center">
+            {/* Music Player - iPhone 17 Pro Max Size */}
+            <div className="bg-white border-2 border-gray-300 rounded-2xl p-6 flex flex-col" style={{ width: '430px', height: '932px' }}>
               {/* Album Art & Info */}
               <div className="mb-6">
                 <div className="w-full aspect-square bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
@@ -193,7 +193,7 @@ export default function Home() {
             </div>
 
             {/* Cards Container - Right Side */}
-            <div className="w-64 flex flex-col justify-end gap-3">
+            <div className="flex flex-col justify-between py-8" style={{ width: '256px', height: '932px' }}>
               {/* Focus Card */}
               <button className="relative aspect-[3/4] max-h-64 rounded-2xl overflow-hidden transition-transform hover:scale-[1.02] group" style={{ background: 'linear-gradient(135deg, #FF6B9D 0%, #FFA06B 50%, #FFD700 100%)' }}>
                 {/* Geometric Shapes Background */}
