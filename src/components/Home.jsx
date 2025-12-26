@@ -24,7 +24,7 @@ export default function Home() {
           <div className="space-y-0">
             {/* Menu Header */}
             <div className="py-4 border-b border-gray-300">
-              <h2 className="text-lg font-semibold text-black">Menu</h2>
+              <h2 className="text-lg font-semibold text-black" style={{ fontFamily: 'Roboto Serif, serif' }}>Menu</h2>
             </div>
 
             {/* Menu Items */}
