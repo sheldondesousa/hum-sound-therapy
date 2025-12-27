@@ -235,9 +235,9 @@ export default function Home() {
                   </div>
                 ) : selectedOption === 'breathe' && selectedExercise ? (
                   /* Breathing Exercise Detail View */
-                  <div className="flex flex-col h-full">
+                  <div className="flex flex-col h-full w-full">
                     {/* Header - 10% */}
-                    <div className="flex-[0.1] flex items-center justify-between mb-4">
+                    <div className="flex-[0.1] flex items-center justify-between px-2">
                       <button
                         onClick={() => setSelectedExercise(null)}
                         className="flex items-center gap-2 text-sm text-gray-700 hover:text-black transition-colors"
@@ -248,33 +248,33 @@ export default function Home() {
                         <span>Back</span>
                       </button>
 
-                      <h3 className="text-lg font-semibold text-black">{selectedExercise.name}</h3>
+                      <h3 className="text-base font-semibold text-black text-center flex-1 px-4">{selectedExercise.name}</h3>
 
                       {/* Spacer to balance layout */}
-                      <div className="w-16"></div>
+                      <div className="w-14"></div>
                     </div>
 
                     {/* Exercise Image/Animation Area - 70% */}
-                    <div className="flex-[0.7] bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
-                      <svg className="w-32 h-32 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="flex-[0.7] bg-gray-200 rounded-lg flex items-center justify-center my-3">
+                      <svg className="w-24 h-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                       </svg>
                     </div>
 
                     {/* Navigation Controls - 20% */}
-                    <div className="flex-[0.2] flex items-center justify-center gap-16">
+                    <div className="flex-[0.2] flex items-center justify-center gap-12 px-4">
                       <button
                         onClick={() => {
                           const currentIndex = currentTracks.findIndex(t => t.id === selectedExercise.id);
                           const prevIndex = currentIndex > 0 ? currentIndex - 1 : currentTracks.length - 1;
                           setSelectedExercise(currentTracks[prevIndex]);
                         }}
-                        className="flex flex-col items-center gap-2 hover:opacity-70 transition-opacity"
+                        className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity"
                       >
-                        <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
                         </svg>
-                        <span className="text-sm text-gray-700 font-medium">Previous</span>
+                        <span className="text-xs text-gray-700 font-medium">Previous</span>
                       </button>
 
                       <button
@@ -283,12 +283,12 @@ export default function Home() {
                           const nextIndex = currentIndex < currentTracks.length - 1 ? currentIndex + 1 : 0;
                           setSelectedExercise(currentTracks[nextIndex]);
                         }}
-                        className="flex flex-col items-center gap-2 hover:opacity-70 transition-opacity"
+                        className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity"
                       >
-                        <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
                         </svg>
-                        <span className="text-sm text-gray-700 font-medium">Next</span>
+                        <span className="text-xs text-gray-700 font-medium">Next</span>
                       </button>
                     </div>
                   </div>
