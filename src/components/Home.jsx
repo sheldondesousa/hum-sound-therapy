@@ -126,7 +126,7 @@ export default function Home() {
         {/* Main Content */}
         <main className="flex-1 flex items-center justify-center p-8 lg:p-16">
           {/* Centered Container - Tiles + Music Player */}
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-center justify-center max-w-7xl">
+          <div className="flex flex-col lg:flex-row gap-9 lg:gap-12 items-center justify-center max-w-7xl">
             {/* Cards Container */}
             <div className="flex flex-col justify-center w-full lg:w-auto" style={{ minWidth: '340px', maxWidth: '493px' }}>
               {/* Header */}
