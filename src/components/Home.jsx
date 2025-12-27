@@ -188,6 +188,17 @@ export default function Home() {
             height: 932px !important;
           }
         }
+        @keyframes subtlePulse {
+          0%, 100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.08);
+          }
+        }
+        .pulse-hold {
+          animation: subtlePulse 2s ease-in-out infinite;
+        }
       `}</style>
       <div className="flex min-h-screen flex-col lg:flex-row">
         {/* Sidebar - Desktop */}
@@ -409,6 +420,39 @@ export default function Home() {
                         <>
                           {/* Breathing Circle Illustration - Box Breathing Only */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Timeline Progress Ring - Shows during HOLD phases */}
+                            {(breathingPhase === 'hold1' || breathingPhase === 'hold2') && (
+                              <svg
+                                className="absolute"
+                                width="363"
+                                height="363"
+                                style={{ transform: 'rotate(-90deg)' }}
+                              >
+                                {/* Background circle */}
+                                <circle
+                                  cx="181.5"
+                                  cy="181.5"
+                                  r="175"
+                                  fill="none"
+                                  stroke="#E5E7EB"
+                                  strokeWidth="4"
+                                />
+                                {/* Progress circle */}
+                                <circle
+                                  cx="181.5"
+                                  cy="181.5"
+                                  r="175"
+                                  fill="none"
+                                  stroke="#067AC3"
+                                  strokeWidth="4"
+                                  strokeDasharray="1100"
+                                  strokeDashoffset={1100 - (1100 * (5 - timer) / 4)}
+                                  className="transition-all duration-1000"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            )}
+
                             {getCirclesData().map((circle) => (
                               <div
                                 key={circle.key}
@@ -426,12 +470,9 @@ export default function Home() {
                             {/* Timer Display - Inside First Circle */}
                             <div className="absolute text-center">
                               <div
-                                className="text-lg font-semibold text-gray-700 uppercase tracking-wider mb-2 transition-all duration-500"
-                                style={{
-                                  transform: (breathingPhase === 'hold1' || breathingPhase === 'hold2')
-                                    ? `scale(${1 + (5 - timer) * 0.15})`
-                                    : 'scale(1)'
-                                }}
+                                className={`text-lg font-semibold text-gray-700 uppercase tracking-wider mb-2 ${
+                                  (breathingPhase === 'hold1' || breathingPhase === 'hold2') ? 'pulse-hold' : ''
+                                }`}
                               >
                                 {breathingPhase === 'inhale' && 'INHALE'}
                                 {breathingPhase === 'hold1' && 'HOLD'}
