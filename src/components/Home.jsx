@@ -8,6 +8,27 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
+  // Track data for each option
+  const tracksByOption = {
+    focus: [
+      { id: 1, name: 'Deep Concentration', duration: '8:24' },
+      { id: 2, name: 'Mental Clarity', duration: '6:15' },
+      { id: 3, name: 'Flow State', duration: '7:48' }
+    ],
+    calm: [
+      { id: 4, name: 'Peaceful Mind', duration: '9:12' },
+      { id: 5, name: 'Inner Stillness', duration: '7:30' },
+      { id: 6, name: 'Gentle Waves', duration: '8:05' }
+    ],
+    breathe: [
+      { id: 7, name: 'Rhythmic Breathing', duration: '5:40' },
+      { id: 8, name: 'Deep Relaxation', duration: '6:55' },
+      { id: 9, name: 'Centered Balance', duration: '7:20' }
+    ]
+  };
+
+  const currentTracks = selectedOption ? tracksByOption[selectedOption] : [];
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -115,46 +136,36 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-xl text-black mb-1">Album Title</h3>
-                <p className="text-sm text-gray-600">Artist Name</p>
+                <h3 className="font-semibold text-xl text-black mb-1 capitalize">
+                  {selectedOption ? `${selectedOption} Collection` : 'Select Your Path'}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {selectedOption ? '3 Tracks' : 'Choose Focus, Calm, or Breathe'}
+                </p>
               </div>
 
               {/* Track List */}
               <div className="flex-1 space-y-0 mb-6">
-                {/* Track 1 */}
-                <button className="w-full flex items-center justify-between py-4 border-b border-gray-200 hover:bg-gray-50 transition-colors group">
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm text-gray-500 w-6">1</span>
-                    <div className="text-left">
-                      <p className="text-sm font-medium text-black">Track Name One</p>
-                    </div>
+                {!selectedOption ? (
+                  <div className="flex items-center justify-center py-12 text-center">
+                    <p className="text-gray-400 text-sm">Select Focus, Calm, or Breathe to see tracks</p>
                   </div>
-                  <span className="text-sm text-gray-500">3:24</span>
-                </button>
-
-                {/* Track 2 - Currently Playing */}
-                <button className="w-full flex items-center justify-between py-4 border-b border-gray-200 bg-gray-50 transition-colors group">
-                  <div className="flex items-center gap-3">
-                    <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z"/>
-                    </svg>
-                    <div className="text-left">
-                      <p className="text-sm font-medium text-black">Track Name Two</p>
-                    </div>
-                  </div>
-                  <span className="text-sm text-black font-medium">2:51</span>
-                </button>
-
-                {/* Track 3 */}
-                <button className="w-full flex items-center justify-between py-4 border-b border-gray-200 hover:bg-gray-50 transition-colors group">
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm text-gray-500 w-6">3</span>
-                    <div className="text-left">
-                      <p className="text-sm font-medium text-black">Track Name Three</p>
-                    </div>
-                  </div>
-                  <span className="text-sm text-gray-500">4:12</span>
-                </button>
+                ) : (
+                  currentTracks.map((track, index) => (
+                    <button
+                      key={track.id}
+                      className="w-full flex items-center justify-between py-4 border-b border-gray-200 hover:bg-gray-50 hover:opacity-70 transition-all group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm text-gray-500 w-6">{index + 1}</span>
+                        <div className="text-left">
+                          <p className="text-sm font-medium text-black">{track.name}</p>
+                        </div>
+                      </div>
+                      <span className="text-sm text-gray-500">{track.duration}</span>
+                    </button>
+                  ))
+                )}
               </div>
 
               {/* Player Controls */}
