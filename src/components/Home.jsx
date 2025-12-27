@@ -106,16 +106,16 @@ export default function Home() {
 
   // Get circle size based on breathing phase and timer
   const getCircleSize = () => {
-    // Maximum size: 390px (430px player width - 40px spacing)
-    // Timer 1: 257px (base)
-    // Timer 2: 295px (base * 1.15)
-    // Timer 3: 339px (base * 1.15^2)
-    // Timer 4: 390px (base * 1.15^3)
+    // Maximum size: 398px (430px player width - 32px padding from p-4)
+    // Timer 1: 262px (base)
+    // Timer 2: 301px (base * 1.15)
+    // Timer 3: 346px (base * 1.15^2)
+    // Timer 4: 398px (base * 1.15^3)
     const sizes = {
-      1: 257,
-      2: 295,
-      3: 339,
-      4: 390
+      1: 262,
+      2: 301,
+      3: 346,
+      4: 398
     };
 
     if (breathingPhase === 'inhale' || breathingPhase === 'exhale') {
@@ -125,6 +125,34 @@ export default function Home() {
       // Decrement: shrinks smaller (reverse the sizes)
       return sizes[5 - timer];
     }
+  };
+
+  // Get number of circles to display based on phase and timer
+  const getVisibleCircleCount = () => {
+    if (breathingPhase === 'inhale' || breathingPhase === 'exhale') {
+      return timer; // Show 1, 2, 3, or 4 circles
+    } else {
+      return 5 - timer; // Show 4, 3, 2, or 1 circles
+    }
+  };
+
+  // Get data for all circles to render
+  const getCirclesData = () => {
+    const circleCount = getVisibleCircleCount();
+    const sizes = [262, 301, 346, 398];
+    const colors = ['#555555', '#484848', '#3C3C3C', '#2F2F2F'];
+
+    const circles = [];
+    for (let i = 0; i < circleCount; i++) {
+      circles.push({
+        size: sizes[i],
+        color: colors[i],
+        key: i
+      });
+    }
+
+    // Render from largest to smallest so smallest is on top
+    return circles.reverse();
   };
 
   const handleLogout = async () => {
@@ -362,16 +390,19 @@ export default function Home() {
                     {/* Exercise Image/Animation Area - 80% */}
                     <div className="flex-[0.8] bg-white rounded-lg flex flex-col items-center justify-center my-3 p-4">
                       {/* Breathing Circle Illustration */}
-                      <div className="flex-1 flex items-center justify-center w-full">
-                        <div
-                          className="rounded-full transition-all duration-1000 ease-in-out"
-                          style={{
-                            width: `${getCircleSize()}px`,
-                            height: `${getCircleSize()}px`,
-                            backgroundColor: getCircleColor(),
-                            boxShadow: `0 0 40px ${getCircleColor()}40`
-                          }}
-                        />
+                      <div className="flex-1 flex items-center justify-center w-full relative">
+                        {getCirclesData().map((circle) => (
+                          <div
+                            key={circle.key}
+                            className="rounded-full transition-all duration-1000 ease-in-out absolute"
+                            style={{
+                              width: `${circle.size}px`,
+                              height: `${circle.size}px`,
+                              backgroundColor: circle.color,
+                              boxShadow: `0 0 40px ${circle.color}40`
+                            }}
+                          />
+                        ))}
                       </div>
 
                       {/* Timer Display */}
