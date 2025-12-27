@@ -21,9 +21,10 @@ export default function Home() {
       { id: 6, name: 'Gentle Waves', duration: '8:05' }
     ],
     breathe: [
-      { id: 7, name: 'Rhythmic Breathing', duration: '5:40' },
-      { id: 8, name: 'Deep Relaxation', duration: '6:55' },
-      { id: 9, name: 'Centered Balance', duration: '7:20' }
+      { id: 7, name: 'Box Breathing (4-4-4-4)', duration: '5:00' },
+      { id: 8, name: 'Breathing (4-7-8)', duration: '4:30' },
+      { id: 9, name: 'Coherent breathing (5-5)', duration: '6:00' },
+      { id: 10, name: 'Physiological Sigh', duration: '3:45' }
     ]
   };
 
@@ -215,7 +216,7 @@ export default function Home() {
                   {selectedOption ? `${selectedOption} Collection` : 'Select Your Path'}
                 </h3>
                 <p className="text-sm text-gray-600">
-                  {selectedOption ? '3 Tracks' : 'Choose Focus, Calm, or Breathe'}
+                  {selectedOption ? `${currentTracks.length} Track${currentTracks.length !== 1 ? 's' : ''}` : 'Choose Focus, Calm, or Breathe'}
                 </p>
               </div>
 
