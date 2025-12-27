@@ -254,15 +254,15 @@ export default function Home() {
                       <div className="w-14"></div>
                     </div>
 
-                    {/* Exercise Image/Animation Area - 70% */}
-                    <div className="flex-[0.7] bg-gray-200 rounded-lg flex items-center justify-center my-3">
+                    {/* Exercise Image/Animation Area - 80% */}
+                    <div className="flex-[0.8] bg-gray-200 rounded-lg flex items-center justify-center my-3">
                       <svg className="w-24 h-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
                       </svg>
                     </div>
 
-                    {/* Navigation Controls - 20% */}
-                    <div className="flex-[0.2] flex items-center justify-center gap-12 px-4">
+                    {/* Navigation Controls - 10% */}
+                    <div className="flex-[0.1] flex items-center justify-between px-4">
                       <button
                         onClick={() => {
                           const currentIndex = currentTracks.findIndex(t => t.id === selectedExercise.id);
@@ -271,10 +271,15 @@ export default function Home() {
                         }}
                         className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity"
                       >
-                        <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
                         </svg>
                         <span className="text-xs text-gray-700 font-medium">Previous</span>
+                      </button>
+
+                      {/* Start Button */}
+                      <button className="px-8 py-2 bg-black text-white rounded-full hover:opacity-90 transition-opacity font-medium text-sm">
+                        Start
                       </button>
 
                       <button
@@ -285,7 +290,7 @@ export default function Home() {
                         }}
                         className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity"
                       >
-                        <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
                         </svg>
                         <span className="text-xs text-gray-700 font-medium">Next</span>
