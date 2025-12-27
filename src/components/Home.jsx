@@ -399,35 +399,49 @@ export default function Home() {
 
                     {/* Exercise Image/Animation Area - 80% */}
                     <div className="flex-[0.8] bg-white rounded-lg flex flex-col items-center justify-center my-3 p-4">
-                      {/* Breathing Circle Illustration */}
-                      <div className="flex-1 flex items-center justify-center w-full relative">
-                        {getCirclesData().map((circle) => (
-                          <div
-                            key={circle.key}
-                            className="rounded-full transition-all duration-1000 ease-in-out absolute"
-                            style={{
-                              width: `${circle.size}px`,
-                              height: `${circle.size}px`,
-                              border: `20px solid ${circle.color}`,
-                              backgroundColor: 'transparent',
-                              boxShadow: `0 0 ${circle.blur}px ${circle.color}`
-                            }}
-                          />
-                        ))}
-                      </div>
+                      {/* Conditional Animation based on exercise */}
+                      {selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
+                        <>
+                          {/* Breathing Circle Illustration - Box Breathing Only */}
+                          <div className="flex-1 flex items-center justify-center w-full relative">
+                            {getCirclesData().map((circle) => (
+                              <div
+                                key={circle.key}
+                                className="rounded-full transition-all duration-1000 ease-in-out absolute"
+                                style={{
+                                  width: `${circle.size}px`,
+                                  height: `${circle.size}px`,
+                                  border: `20px solid ${circle.color}`,
+                                  backgroundColor: 'transparent',
+                                  boxShadow: `0 0 ${circle.blur}px ${circle.color}`
+                                }}
+                              />
+                            ))}
+                          </div>
 
-                      {/* Timer Display */}
-                      <div className="mt-4 text-center">
-                        <div className="text-lg font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                          {breathingPhase === 'inhale' && 'INHALE'}
-                          {breathingPhase === 'hold1' && 'HOLD'}
-                          {breathingPhase === 'exhale' && 'EXHALE'}
-                          {breathingPhase === 'hold2' && 'HOLD'}
+                          {/* Timer Display */}
+                          <div className="mt-4 text-center">
+                            <div className="text-lg font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                              {breathingPhase === 'inhale' && 'INHALE'}
+                              {breathingPhase === 'hold1' && 'HOLD'}
+                              {breathingPhase === 'exhale' && 'EXHALE'}
+                              {breathingPhase === 'hold2' && 'HOLD'}
+                            </div>
+                            <div className="text-5xl font-bold text-gray-900">
+                              {timer}
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        /* Placeholder for other breathing exercises */
+                        <div className="flex-1 flex items-center justify-center w-full">
+                          <div className="text-center">
+                            <p className="text-gray-400 text-lg">Animation for</p>
+                            <p className="text-gray-600 text-xl font-semibold mt-2">{selectedExercise?.name}</p>
+                            <p className="text-gray-400 text-sm mt-4">Coming soon</p>
+                          </div>
                         </div>
-                        <div className="text-5xl font-bold text-gray-900">
-                          {timer}
-                        </div>
-                      </div>
+                      )}
                     </div>
 
                     {/* Navigation Controls - 10% */}
