@@ -84,14 +84,15 @@ export default function Home() {
   // Get circle color based on breathing phase and timer
   const getCircleColor = () => {
     // Base color: #067AC3 with transparency changes
-    // Timer 1: 40% opacity (most transparent)
-    // Timer 2: 60% opacity (20% reduction in transparency)
-    // Timer 3: 80% opacity (40% reduction in transparency)
-    // Timer 4: 100% opacity (60% reduction in transparency - fully solid)
+    // 15% increments to match size changes
+    // Timer 1: 55% opacity (base)
+    // Timer 2: 70% opacity (15% increase)
+    // Timer 3: 85% opacity (15% increase)
+    // Timer 4: 100% opacity (15% increase - fully solid)
     const colors = {
-      1: 'rgba(6, 122, 195, 0.4)',
-      2: 'rgba(6, 122, 195, 0.6)',
-      3: 'rgba(6, 122, 195, 0.8)',
+      1: 'rgba(6, 122, 195, 0.55)',
+      2: 'rgba(6, 122, 195, 0.70)',
+      3: 'rgba(6, 122, 195, 0.85)',
       4: 'rgba(6, 122, 195, 1.0)'
     };
 
@@ -139,12 +140,12 @@ export default function Home() {
   // Get data for all circles to render
   const getCirclesData = () => {
     const circleCount = getVisibleCircleCount();
-    const sizes = [262, 301, 346, 398];
+    const sizes = [262, 301, 346, 398];  // 15% size increments
     const colors = [
-      'rgba(6, 122, 195, 0.4)',  // 40% opacity
-      'rgba(6, 122, 195, 0.6)',  // 60% opacity
-      'rgba(6, 122, 195, 0.8)',  // 80% opacity
-      'rgba(6, 122, 195, 1.0)'   // 100% opacity
+      'rgba(6, 122, 195, 0.55)',  // 55% opacity (base)
+      'rgba(6, 122, 195, 0.70)',  // 70% opacity (+15%)
+      'rgba(6, 122, 195, 0.85)',  // 85% opacity (+15%)
+      'rgba(6, 122, 195, 1.0)'    // 100% opacity (+15%)
     ];
 
     const circles = [];
