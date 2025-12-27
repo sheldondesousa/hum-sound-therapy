@@ -428,7 +428,7 @@ export default function Home() {
                     </div>
 
                     {/* Exercise Image/Animation Area - 70% */}
-                    <div className="flex-[0.7] bg-white rounded-lg flex flex-col items-center justify-center my-3 p-4">
+                    <div className="flex-[0.7] bg-white rounded-lg flex flex-col items-center justify-center mt-3 p-4">
                       {/* Conditional Animation based on exercise */}
                       {selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
                         <>
