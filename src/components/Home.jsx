@@ -515,7 +515,7 @@ export default function Home() {
                     </div>
 
                     {/* Navigation Controls - 10% */}
-                    <div className="flex-[0.1] flex flex-col gap-3 px-4">
+                    <div className="flex-[0.1] flex flex-col justify-center gap-4 px-4">
                       {/* Progress Display - Show during exercise */}
                       {isExercising && (
                         <div className="text-center">
