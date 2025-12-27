@@ -132,11 +132,16 @@ export default function Home() {
 
   // Get number of circles to display based on phase and timer
   const getVisibleCircleCount = () => {
-    if (breathingPhase === 'inhale' || breathingPhase === 'exhale') {
-      return timer; // INHALE/EXHALE: Show 1, 2, 3, 4 circles (small to big)
-    } else {
-      return timer; // HOLD: Show 4, 3, 2, 1 circles (big to small - timer decrements)
+    if (breathingPhase === 'inhale') {
+      return timer; // INHALE: Show 1, 2, 3, 4 circles (small to big)
+    } else if (breathingPhase === 'hold1') {
+      return 4; // HOLD after INHALE: Keep all 4 circles expanded
+    } else if (breathingPhase === 'exhale') {
+      return 5 - timer; // EXHALE: Show 4, 3, 2, 1 circles (big to small)
+    } else if (breathingPhase === 'hold2') {
+      return 1; // HOLD after EXHALE: Keep 1 circle (smallest)
     }
+    return timer;
   };
 
   // Get data for all circles to render
@@ -420,7 +425,14 @@ export default function Home() {
 
                             {/* Timer Display - Inside First Circle */}
                             <div className="absolute text-center">
-                              <div className="text-lg font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                              <div
+                                className="text-lg font-semibold text-gray-700 uppercase tracking-wider mb-2 transition-all duration-500"
+                                style={{
+                                  transform: (breathingPhase === 'hold1' || breathingPhase === 'hold2')
+                                    ? `scale(${1 + (5 - timer) * 0.15})`
+                                    : 'scale(1)'
+                                }}
+                              >
                                 {breathingPhase === 'inhale' && 'INHALE'}
                                 {breathingPhase === 'hold1' && 'HOLD'}
                                 {breathingPhase === 'exhale' && 'EXHALE'}
