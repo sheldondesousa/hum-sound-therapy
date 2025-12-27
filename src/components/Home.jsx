@@ -104,6 +104,29 @@ export default function Home() {
     }
   };
 
+  // Get circle size based on breathing phase and timer
+  const getCircleSize = () => {
+    // Maximum size: 390px (430px player width - 40px spacing)
+    // Timer 1: 257px (base)
+    // Timer 2: 295px (base * 1.15)
+    // Timer 3: 339px (base * 1.15^2)
+    // Timer 4: 390px (base * 1.15^3)
+    const sizes = {
+      1: 257,
+      2: 295,
+      3: 339,
+      4: 390
+    };
+
+    if (breathingPhase === 'inhale' || breathingPhase === 'exhale') {
+      // Increment: grows larger
+      return sizes[timer];
+    } else {
+      // Decrement: shrinks smaller (reverse the sizes)
+      return sizes[5 - timer];
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -343,8 +366,8 @@ export default function Home() {
                         <div
                           className="rounded-full transition-all duration-1000 ease-in-out"
                           style={{
-                            width: '200px',
-                            height: '200px',
+                            width: `${getCircleSize()}px`,
+                            height: `${getCircleSize()}px`,
                             backgroundColor: getCircleColor(),
                             boxShadow: `0 0 40px ${getCircleColor()}40`
                           }}
