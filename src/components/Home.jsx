@@ -19,6 +19,7 @@ export default function Home() {
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
         // Handle phase transitions and timer logic
+        // INHALE: 1-2-3-4 (increment)
         if (breathingPhase === 'inhale') {
           if (prevTimer < 4) {
             return prevTimer + 1;
@@ -26,20 +27,23 @@ export default function Home() {
             setBreathingPhase('hold1');
             return 4;
           }
+        // HOLD: 4-3-2-1 (decrement)
         } else if (breathingPhase === 'hold1') {
           if (prevTimer > 1) {
             return prevTimer - 1;
           } else {
             setBreathingPhase('exhale');
-            return 4;
+            return 1;
           }
+        // EXHALE: 1-2-3-4 (increment)
         } else if (breathingPhase === 'exhale') {
-          if (prevTimer > 1) {
-            return prevTimer - 1;
+          if (prevTimer < 4) {
+            return prevTimer + 1;
           } else {
             setBreathingPhase('hold2');
             return 4;
           }
+        // HOLD: 4-3-2-1 (decrement)
         } else if (breathingPhase === 'hold2') {
           if (prevTimer > 1) {
             return prevTimer - 1;
@@ -76,6 +80,29 @@ export default function Home() {
   };
 
   const currentTracks = selectedOption ? tracksByOption[selectedOption] : [];
+
+  // Get circle color based on breathing phase and timer
+  const getCircleColor = () => {
+    // Base color: #555555
+    // Timer 1: #555555 (100%)
+    // Timer 2: #484848 (85%)
+    // Timer 3: #3C3C3C (70%)
+    // Timer 4: #2F2F2F (55%)
+    const colors = {
+      1: '#555555',
+      2: '#484848',
+      3: '#3C3C3C',
+      4: '#2F2F2F'
+    };
+
+    if (breathingPhase === 'inhale' || breathingPhase === 'exhale') {
+      // Increment: gets darker
+      return colors[timer];
+    } else {
+      // Decrement: gets lighter (reverse the colors)
+      return colors[5 - timer];
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -310,111 +337,18 @@ export default function Home() {
                     </div>
 
                     {/* Exercise Image/Animation Area - 80% */}
-                    <div className="flex-[0.8] bg-gradient-to-b from-blue-50 to-purple-50 rounded-lg flex flex-col items-center justify-center my-3 p-4">
-                      {/* Breathing Illustration */}
+                    <div className="flex-[0.8] bg-white rounded-lg flex flex-col items-center justify-center my-3 p-4">
+                      {/* Breathing Circle Illustration */}
                       <div className="flex-1 flex items-center justify-center w-full">
-                        <svg
-                          className="w-full h-full max-w-xs max-h-96"
-                          viewBox="0 0 200 300"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          {/* Person Silhouette */}
-                          <g className="transition-all duration-1000">
-                            {/* Head */}
-                            <circle
-                              cx="100"
-                              cy="50"
-                              r="25"
-                              fill="#334155"
-                              className="transition-all duration-1000"
-                            />
-
-                            {/* Body */}
-                            <ellipse
-                              cx="100"
-                              cy="120"
-                              rx={breathingPhase === 'inhale' ? 35 + (timer * 2) : breathingPhase === 'exhale' ? 43 - (timer * 2) : 43}
-                              ry={breathingPhase === 'inhale' ? 50 + (timer * 3) : breathingPhase === 'exhale' ? 62 - (timer * 3) : 62}
-                              fill="#475569"
-                              className="transition-all duration-1000"
-                            />
-
-                            {/* Lungs visualization */}
-                            <g opacity={isExercising ? 0.6 : 0.3}>
-                              {/* Left Lung */}
-                              <path
-                                d={`M 80 100 Q 70 120 75 ${breathingPhase === 'inhale' ? 140 + timer * 3 : breathingPhase === 'exhale' ? 152 - timer * 3 : 152}`}
-                                stroke="#60A5FA"
-                                strokeWidth={breathingPhase === 'inhale' ? 2 + timer * 0.5 : breathingPhase === 'exhale' ? 4 - timer * 0.5 : 4}
-                                fill="none"
-                                className="transition-all duration-1000"
-                              />
-                              {/* Right Lung */}
-                              <path
-                                d={`M 120 100 Q 130 120 125 ${breathingPhase === 'inhale' ? 140 + timer * 3 : breathingPhase === 'exhale' ? 152 - timer * 3 : 152}`}
-                                stroke="#60A5FA"
-                                strokeWidth={breathingPhase === 'inhale' ? 2 + timer * 0.5 : breathingPhase === 'exhale' ? 4 - timer * 0.5 : 4}
-                                fill="none"
-                                className="transition-all duration-1000"
-                              />
-                            </g>
-
-                            {/* Breathing flow lines */}
-                            {isExercising && (
-                              <g>
-                                {breathingPhase === 'inhale' && (
-                                  <>
-                                    <path
-                                      d="M 100 25 Q 95 15 90 5"
-                                      stroke="#3B82F6"
-                                      strokeWidth="2"
-                                      fill="none"
-                                      opacity={0.3 + timer * 0.15}
-                                      strokeDasharray="4 4"
-                                    />
-                                    <path
-                                      d="M 100 25 Q 105 15 110 5"
-                                      stroke="#3B82F6"
-                                      strokeWidth="2"
-                                      fill="none"
-                                      opacity={0.3 + timer * 0.15}
-                                      strokeDasharray="4 4"
-                                    />
-                                  </>
-                                )}
-                                {breathingPhase === 'exhale' && (
-                                  <>
-                                    <path
-                                      d="M 90 5 Q 95 15 100 25"
-                                      stroke="#8B5CF6"
-                                      strokeWidth="2"
-                                      fill="none"
-                                      opacity={0.6 - timer * 0.1}
-                                      strokeDasharray="4 4"
-                                    />
-                                    <path
-                                      d="M 110 5 Q 105 15 100 25"
-                                      stroke="#8B5CF6"
-                                      strokeWidth="2"
-                                      fill="none"
-                                      opacity={0.6 - timer * 0.1}
-                                      strokeDasharray="4 4"
-                                    />
-                                  </>
-                                )}
-                              </g>
-                            )}
-
-                            {/* Arms */}
-                            <rect x="60" y="100" width="8" height="70" rx="4" fill="#334155" />
-                            <rect x="132" y="100" width="8" height="70" rx="4" fill="#334155" />
-
-                            {/* Legs */}
-                            <rect x="85" y="170" width="10" height="80" rx="5" fill="#334155" />
-                            <rect x="105" y="170" width="10" height="80" rx="5" fill="#334155" />
-                          </g>
-                        </svg>
+                        <div
+                          className="rounded-full transition-all duration-1000 ease-in-out"
+                          style={{
+                            width: '200px',
+                            height: '200px',
+                            backgroundColor: getCircleColor(),
+                            boxShadow: `0 0 40px ${getCircleColor()}40`
+                          }}
+                        />
                       </div>
 
                       {/* Timer Display */}
