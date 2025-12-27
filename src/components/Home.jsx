@@ -125,8 +125,83 @@ export default function Home() {
 
         {/* Main Content */}
         <main className="flex-1 flex items-center justify-center p-8 lg:p-16">
-          {/* Centered Container - Music Player + Cards */}
+          {/* Centered Container - Tiles + Music Player */}
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-center justify-center max-w-7xl">
+            {/* Cards Container */}
+            <div className="flex flex-col justify-center w-full lg:w-auto" style={{ minWidth: '340px', maxWidth: '493px' }}>
+              {/* Header */}
+              <h1 className="text-3xl lg:text-4xl font-bold text-black mb-8 whitespace-nowrap">Choose your path</h1>
+
+              {/* Separator */}
+              <div className="border-t border-gray-300 mb-0"></div>
+
+              {/* Focus Option */}
+              <button
+                onClick={() => setSelectedOption('focus')}
+                className={`w-full py-6 lg:py-8 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-all group ${
+                  selectedOption === 'focus' ? 'bg-black' : ''
+                }`}
+              >
+                <div className="flex-1 text-left pl-4">
+                  <h2 className={`text-xl lg:text-2xl font-semibold mb-1 ${
+                    selectedOption === 'focus' ? 'text-white' : 'text-black'
+                  }`}>Focus</h2>
+                  <p className={`text-sm lg:text-base ${
+                    selectedOption === 'focus' ? 'text-gray-300' : 'text-gray-700'
+                  }`}>Enhance concentration</p>
+                </div>
+                <svg className={`w-8 h-8 lg:w-9 lg:h-9 transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4 ${
+                  selectedOption === 'focus' ? 'text-white' : 'text-black'
+                }`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
+                </svg>
+              </button>
+
+              {/* Calm Option */}
+              <button
+                onClick={() => setSelectedOption('calm')}
+                className={`w-full py-6 lg:py-8 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-all group ${
+                  selectedOption === 'calm' ? 'bg-black' : ''
+                }`}
+              >
+                <div className="flex-1 text-left pl-4">
+                  <h2 className={`text-xl lg:text-2xl font-semibold mb-1 ${
+                    selectedOption === 'calm' ? 'text-white' : 'text-black'
+                  }`}>Calm</h2>
+                  <p className={`text-sm lg:text-base ${
+                    selectedOption === 'calm' ? 'text-gray-300' : 'text-gray-700'
+                  }`}>Relax and rejuvenate</p>
+                </div>
+                <svg className={`w-8 h-8 lg:w-9 lg:h-9 transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4 ${
+                  selectedOption === 'calm' ? 'text-white' : 'text-black'
+                }`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
+                </svg>
+              </button>
+
+              {/* Breathe Option */}
+              <button
+                onClick={() => setSelectedOption('breathe')}
+                className={`w-full py-6 lg:py-8 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-all group ${
+                  selectedOption === 'breathe' ? 'bg-black' : ''
+                }`}
+              >
+                <div className="flex-1 text-left pl-4">
+                  <h2 className={`text-xl lg:text-2xl font-semibold mb-1 ${
+                    selectedOption === 'breathe' ? 'text-white' : 'text-black'
+                  }`}>Breathe</h2>
+                  <p className={`text-sm lg:text-base ${
+                    selectedOption === 'breathe' ? 'text-gray-300' : 'text-gray-700'
+                  }`}>Reset your rhythm</p>
+                </div>
+                <svg className={`w-8 h-8 lg:w-9 lg:h-9 transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4 ${
+                  selectedOption === 'breathe' ? 'text-white' : 'text-black'
+                }`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </div>
+
             {/* Music Player - iPhone 17 Pro Max dimensions on desktop */}
             <div className="music-player-desktop bg-white border-2 border-gray-300 rounded-2xl p-6 flex flex-col w-full lg:flex-shrink-0">
               {/* Album Art & Info */}
@@ -202,81 +277,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Cards Container */}
-            <div className="flex flex-col justify-center w-full lg:w-auto" style={{ minWidth: '400px', maxWidth: '580px' }}>
-              {/* Header */}
-              <h1 className="text-4xl lg:text-5xl font-bold text-black mb-8 whitespace-nowrap">Choose your path</h1>
-
-              {/* Separator */}
-              <div className="border-t border-gray-300 mb-0"></div>
-
-              {/* Focus Option */}
-              <button
-                onClick={() => setSelectedOption('focus')}
-                className={`w-full py-6 lg:py-8 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-all group ${
-                  selectedOption === 'focus' ? 'bg-black' : ''
-                }`}
-              >
-                <div className="flex-1 text-left pl-4">
-                  <h2 className={`text-2xl lg:text-3xl font-semibold mb-1 ${
-                    selectedOption === 'focus' ? 'text-white' : 'text-black'
-                  }`}>Focus</h2>
-                  <p className={`text-base lg:text-lg ${
-                    selectedOption === 'focus' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>Enhance concentration</p>
-                </div>
-                <svg className={`w-8 h-8 lg:w-9 lg:h-9 transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4 ${
-                  selectedOption === 'focus' ? 'text-white' : 'text-black'
-                }`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
-                </svg>
-              </button>
-
-              {/* Calm Option */}
-              <button
-                onClick={() => setSelectedOption('calm')}
-                className={`w-full py-6 lg:py-8 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-all group ${
-                  selectedOption === 'calm' ? 'bg-black' : ''
-                }`}
-              >
-                <div className="flex-1 text-left pl-4">
-                  <h2 className={`text-2xl lg:text-3xl font-semibold mb-1 ${
-                    selectedOption === 'calm' ? 'text-white' : 'text-black'
-                  }`}>Calm</h2>
-                  <p className={`text-base lg:text-lg ${
-                    selectedOption === 'calm' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>Relax and rejuvenate</p>
-                </div>
-                <svg className={`w-8 h-8 lg:w-9 lg:h-9 transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4 ${
-                  selectedOption === 'calm' ? 'text-white' : 'text-black'
-                }`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
-                </svg>
-              </button>
-
-              {/* Breathe Option */}
-              <button
-                onClick={() => setSelectedOption('breathe')}
-                className={`w-full py-6 lg:py-8 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-all group ${
-                  selectedOption === 'breathe' ? 'bg-black' : ''
-                }`}
-              >
-                <div className="flex-1 text-left pl-4">
-                  <h2 className={`text-2xl lg:text-3xl font-semibold mb-1 ${
-                    selectedOption === 'breathe' ? 'text-white' : 'text-black'
-                  }`}>Breathe</h2>
-                  <p className={`text-base lg:text-lg ${
-                    selectedOption === 'breathe' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>Reset your rhythm</p>
-                </div>
-                <svg className={`w-8 h-8 lg:w-9 lg:h-9 transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4 ${
-                  selectedOption === 'breathe' ? 'text-white' : 'text-black'
-                }`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
-                </svg>
-              </button>
-            </div>
-          </div>
         </main>
       </div>
     </div>
