@@ -149,12 +149,14 @@ export default function Home() {
       'rgba(6, 122, 195, 0.50)',  // 50% opacity (25% lighter)
       'rgba(6, 122, 195, 0.25)'   // 25% opacity (25% lighter - lightest - outermost)
     ];
+    const blurs = [20, 22, 24, 26];  // 10% blur increase per circle (20, 20*1.1, 20*1.2, 20*1.3)
 
     const circles = [];
     for (let i = 0; i < circleCount; i++) {
       circles.push({
         size: sizes[i],
         color: colors[i],
+        blur: blurs[i],
         key: i
       });
     }
@@ -408,7 +410,7 @@ export default function Home() {
                               height: `${circle.size}px`,
                               border: `20px solid ${circle.color}`,
                               backgroundColor: 'transparent',
-                              boxShadow: `0 0 20px ${circle.color}`
+                              boxShadow: `0 0 ${circle.blur}px ${circle.color}`
                             }}
                           />
                         ))}
