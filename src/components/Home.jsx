@@ -7,6 +7,7 @@ export default function Home() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedExercise, setSelectedExercise] = useState(null);
 
   // Track data for each option
   const tracksByOption = {
@@ -22,7 +23,7 @@ export default function Home() {
     ],
     breathe: [
       { id: 7, name: 'Box Breathing (4-4-4-4)', duration: '5:00' },
-      { id: 8, name: 'Breathing (4-7-8)', duration: '4:30' },
+      { id: 8, name: '4-7-8 Breathing', duration: '4:30' },
       { id: 9, name: 'Coherent breathing (5-5)', duration: '6:00' },
       { id: 10, name: 'Physiological Sigh', duration: '3:45' }
     ]
@@ -224,16 +225,78 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Track List */}
+              {/* Track List or Exercise Detail View */}
               <div className="flex-1 space-y-0 mb-6">
                 {!selectedOption ? (
                   <div className="flex items-center justify-center py-12 text-center">
                     <p className="text-gray-400 text-sm">Select Focus, Calm, or Breathe to see tracks</p>
                   </div>
+                ) : selectedOption === 'breathe' && selectedExercise ? (
+                  /* Breathing Exercise Detail View */
+                  <div className="flex flex-col h-full">
+                    {/* Back Button */}
+                    <button
+                      onClick={() => setSelectedExercise(null)}
+                      className="flex items-center gap-2 mb-4 text-sm text-gray-700 hover:text-black transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
+                      </svg>
+                      <span>Back to exercises</span>
+                    </button>
+
+                    {/* Exercise Image - 70% */}
+                    <div className="flex-[0.7] bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
+                      <svg className="w-24 h-24 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                      </svg>
+                    </div>
+
+                    {/* Navigation Controls - 30% */}
+                    <div className="flex-[0.3] flex items-center justify-between px-8">
+                      <button
+                        onClick={() => {
+                          const currentIndex = currentTracks.findIndex(t => t.id === selectedExercise.id);
+                          const prevIndex = currentIndex > 0 ? currentIndex - 1 : currentTracks.length - 1;
+                          setSelectedExercise(currentTracks[prevIndex]);
+                        }}
+                        className="flex flex-col items-center gap-2 hover:opacity-70 transition-opacity"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        <span className="text-sm text-gray-700">Previous</span>
+                      </button>
+
+                      <div className="text-center">
+                        <h3 className="text-lg font-semibold text-black">{selectedExercise.name}</h3>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          const currentIndex = currentTracks.findIndex(t => t.id === selectedExercise.id);
+                          const nextIndex = currentIndex < currentTracks.length - 1 ? currentIndex + 1 : 0;
+                          setSelectedExercise(currentTracks[nextIndex]);
+                        }}
+                        className="flex flex-col items-center gap-2 hover:opacity-70 transition-opacity"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
+                        </svg>
+                        <span className="text-sm text-gray-700">Next</span>
+                      </button>
+                    </div>
+                  </div>
                 ) : (
+                  /* Track List */
                   currentTracks.map((track, index) => (
                     <button
                       key={track.id}
+                      onClick={() => {
+                        if (selectedOption === 'breathe') {
+                          setSelectedExercise(track);
+                        }
+                      }}
                       className="w-full flex items-center justify-between py-4 border-b border-gray-200 hover:bg-gray-50 hover:opacity-70 transition-all group"
                     >
                       <div className="flex items-center gap-3">
