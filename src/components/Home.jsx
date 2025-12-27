@@ -401,30 +401,19 @@ export default function Home() {
                     <div className="flex-[0.8] bg-white rounded-lg flex flex-col items-center justify-center my-3 p-4">
                       {/* Breathing Circle Illustration */}
                       <div className="flex-1 flex items-center justify-center w-full relative">
-                        {getCirclesData().map((circle) => {
-                          // Create gradient-like border effect with multiple shadow layers
-                          const shadowLayers = [
-                            `0 0 ${circle.blur}px ${circle.color}`,
-                            `inset 0 0 10px ${circle.color}`,
-                            `inset 0 0 20px ${circle.color}`,
-                            `inset 0 0 30px ${circle.color.replace(/[\d.]+\)/, (match) => `${parseFloat(match) * 0.5})`)}`,
-                            `0 0 ${circle.blur * 1.5}px ${circle.color.replace(/[\d.]+\)/, (match) => `${parseFloat(match) * 0.3})`)}`
-                          ].join(', ');
-
-                          return (
-                            <div
-                              key={circle.key}
-                              className="rounded-full transition-all duration-1000 ease-in-out absolute"
-                              style={{
-                                width: `${circle.size}px`,
-                                height: `${circle.size}px`,
-                                border: `2px solid ${circle.color.replace(/[\d.]+\)/, (match) => `${parseFloat(match) * 0.3})`)}`,
-                                backgroundColor: 'transparent',
-                                boxShadow: shadowLayers
-                              }}
-                            />
-                          );
-                        })}
+                        {getCirclesData().map((circle) => (
+                          <div
+                            key={circle.key}
+                            className="rounded-full transition-all duration-1000 ease-in-out absolute"
+                            style={{
+                              width: `${circle.size}px`,
+                              height: `${circle.size}px`,
+                              border: `20px solid ${circle.color}`,
+                              backgroundColor: 'transparent',
+                              boxShadow: `0 0 ${circle.blur}px ${circle.color}`
+                            }}
+                          />
+                        ))}
                       </div>
 
                       {/* Timer Display */}
