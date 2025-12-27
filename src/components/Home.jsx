@@ -85,15 +85,16 @@ export default function Home() {
   const getCircleColor = () => {
     // Base color: #067AC3 with transparency changes
     // Start with darkest (100% opacity) as default, get lighter with each increment
+    // 25% increments for better visual difference
     // Timer 1: 100% opacity (darkest - default)
-    // Timer 2: 85% opacity (15% lighter)
-    // Timer 3: 70% opacity (15% lighter)
-    // Timer 4: 55% opacity (15% lighter - lightest)
+    // Timer 2: 75% opacity (25% lighter)
+    // Timer 3: 50% opacity (25% lighter)
+    // Timer 4: 25% opacity (25% lighter - lightest)
     const colors = {
       1: 'rgba(6, 122, 195, 1.0)',
-      2: 'rgba(6, 122, 195, 0.85)',
-      3: 'rgba(6, 122, 195, 0.70)',
-      4: 'rgba(6, 122, 195, 0.55)'
+      2: 'rgba(6, 122, 195, 0.75)',
+      3: 'rgba(6, 122, 195, 0.50)',
+      4: 'rgba(6, 122, 195, 0.25)'
     };
 
     if (breathingPhase === 'inhale' || breathingPhase === 'exhale') {
@@ -132,9 +133,9 @@ export default function Home() {
   // Get number of circles to display based on phase and timer
   const getVisibleCircleCount = () => {
     if (breathingPhase === 'inhale' || breathingPhase === 'exhale') {
-      return timer; // Show 1, 2, 3, or 4 circles
+      return timer; // INHALE/EXHALE: Show 1, 2, 3, 4 circles (small to big)
     } else {
-      return 5 - timer; // Show 4, 3, 2, or 1 circles
+      return timer; // HOLD: Show 4, 3, 2, 1 circles (big to small - timer decrements)
     }
   };
 
@@ -144,9 +145,9 @@ export default function Home() {
     const sizes = [183, 223, 263, 303];  // Each builds on previous with no gaps
     const colors = [
       'rgba(6, 122, 195, 1.0)',   // 100% opacity (darkest - innermost)
-      'rgba(6, 122, 195, 0.85)',  // 85% opacity (lighter)
-      'rgba(6, 122, 195, 0.70)',  // 70% opacity (lighter)
-      'rgba(6, 122, 195, 0.55)'   // 55% opacity (lightest - outermost)
+      'rgba(6, 122, 195, 0.75)',  // 75% opacity (25% lighter)
+      'rgba(6, 122, 195, 0.50)',  // 50% opacity (25% lighter)
+      'rgba(6, 122, 195, 0.25)'   // 25% opacity (25% lighter - lightest - outermost)
     ];
 
     const circles = [];
