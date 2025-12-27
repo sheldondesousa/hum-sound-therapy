@@ -427,8 +427,8 @@ export default function Home() {
                       <div className="w-14"></div>
                     </div>
 
-                    {/* Exercise Image/Animation Area - 80% */}
-                    <div className="flex-[0.8] bg-white rounded-lg flex flex-col items-center justify-center my-3 p-4">
+                    {/* Exercise Image/Animation Area - 70% */}
+                    <div className="flex-[0.7] bg-white rounded-lg flex flex-col items-center justify-center my-3 p-4">
                       {/* Conditional Animation based on exercise */}
                       {selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
                         <>
@@ -515,7 +515,7 @@ export default function Home() {
                     </div>
 
                     {/* Bottom Section - Fixed height to prevent shifting */}
-                    <div className="flex-[0.1] flex flex-col">
+                    <div className="flex-[0.2] flex flex-col">
                       {/* Cycle Display Area - With equal spacing from circles and navigation */}
                       <div className="flex-1 flex flex-col items-center justify-center">
                         {/* Progress Display - Show during exercise */}
