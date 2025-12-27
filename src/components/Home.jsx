@@ -206,27 +206,29 @@ export default function Home() {
 
             {/* Music Player - iPhone 17 Pro Max dimensions on desktop */}
             <div className="music-player-desktop bg-white border-2 border-gray-300 rounded-2xl p-6 flex flex-col w-full lg:flex-shrink-0">
-              {/* Album Art & Info */}
-              <div className="mb-6">
-                <div className="w-full aspect-square bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
-                  <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                  </svg>
+              {/* Album Art & Info - Hide when breathing exercise is selected */}
+              {!(selectedOption === 'breathe' && selectedExercise) && (
+                <div className="mb-6">
+                  <div className="w-full aspect-square bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
+                    <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                  </div>
+                  <h3 className="font-semibold text-xl text-black mb-1 capitalize">
+                    {selectedOption === 'breathe' ? 'Breathing Techniques' : selectedOption ? `${selectedOption} Collection` : 'Select Your Path'}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {selectedOption === 'breathe'
+                      ? `${currentTracks.length} Exercise${currentTracks.length !== 1 ? 's' : ''}`
+                      : selectedOption
+                      ? `${currentTracks.length} Track${currentTracks.length !== 1 ? 's' : ''}`
+                      : 'Choose Focus, Calm, or Breathe'}
+                  </p>
                 </div>
-                <h3 className="font-semibold text-xl text-black mb-1 capitalize">
-                  {selectedOption === 'breathe' ? 'Breathing Techniques' : selectedOption ? `${selectedOption} Collection` : 'Select Your Path'}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  {selectedOption === 'breathe'
-                    ? `${currentTracks.length} Exercise${currentTracks.length !== 1 ? 's' : ''}`
-                    : selectedOption
-                    ? `${currentTracks.length} Track${currentTracks.length !== 1 ? 's' : ''}`
-                    : 'Choose Focus, Calm, or Breathe'}
-                </p>
-              </div>
+              )}
 
               {/* Track List or Exercise Detail View */}
-              <div className="flex-1 space-y-0 mb-6">
+              <div className={`flex-1 ${selectedOption === 'breathe' && selectedExercise ? 'flex' : 'space-y-0 mb-6'}`}>
                 {!selectedOption ? (
                   <div className="flex items-center justify-center py-12 text-center">
                     <p className="text-gray-400 text-sm">Select Focus, Calm, or Breathe to see tracks</p>
