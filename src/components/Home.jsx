@@ -270,64 +270,54 @@ export default function Home() {
     return 0;
   };
 
-  // Get triangle vertical position for 4-7-8 breathing (0 = bottom, 1 = top)
-  const getTrianglePosition478 = () => {
-    if (!isExercising) return 0; // At bottom when not exercising
+  // Get visible triangle count for 4-7-8 breathing (similar to Box Breathing)
+  const getVisibleTriangleCount478 = () => {
+    if (!isExercising) return 0;
 
     if (breathingPhase === 'inhale') {
-      // INHALE: Move from bottom (0) to top (1) over 4 seconds
-      return timer / 4; // 0 → 1.0
+      // INHALE: Add 1 triangle per second (timer 0→4 shows 0,1,2,3,4 triangles)
+      return timer;
     } else if (breathingPhase === 'hold1') {
-      // HOLD: Stay at top
-      return 1.0;
+      // HOLD: Keep all 4 triangles visible
+      return 4;
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: Move from top (1) to bottom (0) over 8 seconds (timer 7→0)
-      return timer / 7; // 1.0 → 0
+      // EXHALE: Gradually reduce over 8 seconds (timer 7→0)
+      // Map 8 seconds to 4 triangles: timer 7→0 maps to count 4→0
+      return Math.ceil((timer / 7) * 4);
     }
 
     return 0;
   };
 
-  // Get triangle layers with colors and positions
-  const getTriangleLayers478 = () => {
-    const position = getTrianglePosition478();
-    const baseY = 300; // Bottom position
-    const topY = 80; // Top position
-    const currentY = baseY - (baseY - topY) * position;
+  // Get triangle layer data for 4-7-8 breathing
+  const getTriangleLayersData478 = () => {
+    const triangleCount = getVisibleTriangleCount478();
 
-    // 4 layers with different sizes and opacities (matching Box Breathing colors)
-    const layers = [
-      { size: 140, color: 'rgba(6, 122, 195, 1.0)', blur: 20 },   // Innermost, darkest
-      { size: 180, color: 'rgba(6, 122, 195, 0.75)', blur: 22 },
-      { size: 220, color: 'rgba(6, 122, 195, 0.5)', blur: 24 },
-      { size: 260, color: 'rgba(6, 122, 195, 0.25)', blur: 26 }   // Outermost, lightest
+    // 4 layers with increasing heights (filling from bottom up)
+    // Heights: 70px, 140px, 210px, 280px (quarters of full triangle)
+    const heights = [70, 140, 210, 280];
+    const widths = [80, 160, 240, 320]; // Proportional widths
+    const colors = [
+      'rgba(6, 122, 195, 1.0)',   // 100% opacity (smallest - innermost)
+      'rgba(6, 122, 195, 0.75)',  // 75% opacity
+      'rgba(6, 122, 195, 0.5)',   // 50% opacity
+      'rgba(6, 122, 195, 0.25)'   // 25% opacity (largest - outermost)
     ];
+    const blurs = [20, 22, 24, 26];
 
-    return layers.map((layer, i) => ({ ...layer, y: currentY, key: i }));
-  };
-
-  // Get pulse rings for HOLD phase (7 pulses over 7 seconds)
-  const getTrianglePulses478 = () => {
-    if (breathingPhase !== 'hold1' || !isExercising) return [];
-
-    const pulses = [];
-    const currentSecond = timer; // 0-6 for 7 seconds
-
-    // Create pulse for current second
-    for (let i = 0; i <= currentSecond; i++) {
-      const age = currentSecond - i; // 0 = newest, 6 = oldest
-      const progress = age / 6; // 0 to 1
-      const size = 100 + (progress * 200); // Expand from 100 to 300
-      const opacity = Math.max(0, 0.6 - progress * 0.6); // Fade from 0.6 to 0
-
-      pulses.push({
-        size,
-        opacity,
+    const triangles = [];
+    for (let i = 0; i < triangleCount; i++) {
+      triangles.push({
+        height: heights[i],
+        width: widths[i],
+        color: colors[i],
+        blur: blurs[i],
         key: i
       });
     }
 
-    return pulses;
+    // Render from largest to smallest so all are visible
+    return triangles.reverse();
   };
 
   // Generate 4-7-8 wave path: rise → plateau → decline
@@ -873,33 +863,60 @@ export default function Home() {
                         <>
                           {/* Triangle Illustration */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Pulse rings during HOLD phase */}
-                            {getTrianglePulses478().map((pulse) => (
-                              <div
-                                key={pulse.key}
-                                className="absolute rounded-full border-4 transition-all duration-1000 ease-out"
-                                style={{
-                                  width: `${pulse.size}px`,
-                                  height: `${pulse.size}px`,
-                                  borderColor: `rgba(6, 122, 195, ${pulse.opacity})`,
-                                  opacity: pulse.opacity,
-                                }}
+                            {/* Gray Outline Triangle - Always visible */}
+                            <svg
+                              className="absolute"
+                              width="363"
+                              height="363"
+                              viewBox="0 0 363 363"
+                            >
+                              <polygon
+                                points="181.5,41.5 321.5,321.5 41.5,321.5"
+                                fill="none"
+                                stroke="#E5E7EB"
+                                strokeWidth="4"
                               />
-                            ))}
+                            </svg>
 
-                            {/* Triangle layers - render largest to smallest */}
-                            {getTriangleLayers478().reverse().map((layer) => (
+                            {/* Blue Progress Triangle - Shows during HOLD phase */}
+                            {breathingPhase === 'hold1' && (
+                              <svg
+                                className="absolute"
+                                width="363"
+                                height="363"
+                                viewBox="0 0 363 363"
+                              >
+                                <defs>
+                                  <clipPath id="triangleClip478">
+                                    <polygon points="181.5,41.5 321.5,321.5 41.5,321.5" />
+                                  </clipPath>
+                                </defs>
+                                <rect
+                                  x="41.5"
+                                  y={41.5 + (280 * (1 - timer / 6))}
+                                  width="280"
+                                  height={280 * (timer / 6)}
+                                  fill="#067AC3"
+                                  clipPath="url(#triangleClip478)"
+                                  className="transition-all duration-1000"
+                                />
+                              </svg>
+                            )}
+
+                            {/* Filled Triangle Layers - Build from bottom up */}
+                            {getTriangleLayersData478().map((triangle) => (
                               <div
-                                key={layer.key}
+                                key={triangle.key}
                                 className="absolute transition-all duration-1000 ease-in-out"
                                 style={{
                                   width: 0,
                                   height: 0,
-                                  borderLeft: `${layer.size / 2}px solid transparent`,
-                                  borderRight: `${layer.size / 2}px solid transparent`,
-                                  borderTop: `${layer.size}px solid ${layer.color}`,
-                                  filter: `drop-shadow(0 0 ${layer.blur}px ${layer.color})`,
-                                  transform: `translateY(${layer.y}px)`,
+                                  borderLeft: `${triangle.width / 2}px solid transparent`,
+                                  borderRight: `${triangle.width / 2}px solid transparent`,
+                                  borderTop: `${triangle.height}px solid ${triangle.color}`,
+                                  filter: `drop-shadow(0 0 ${triangle.blur}px ${triangle.color})`,
+                                  bottom: '50%',
+                                  transform: 'translateY(50%)',
                                 }}
                               />
                             ))}
