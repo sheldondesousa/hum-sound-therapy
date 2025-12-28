@@ -320,6 +320,50 @@ export default function Home() {
     return triangles.reverse();
   };
 
+  // Get blue ball position for HOLD phase (moves along triangle points)
+  const getBallPosition478 = () => {
+    if (breathingPhase !== 'hold1' || !isExercising) return null;
+
+    // Inverted triangle points (pointing down):
+    // Point 1 (top-left): (41.5, 41.5)
+    // Point 2 (top-right): (321.5, 41.5)
+    // Point 3 (bottom center): (181.5, 321.5)
+    const points = [
+      { x: 41.5, y: 41.5 },    // Top-left
+      { x: 321.5, y: 41.5 },   // Top-right
+      { x: 181.5, y: 321.5 }   // Bottom (apex)
+    ];
+
+    // 7 seconds (timer 0-6): divide into 3 segments
+    // 0-2: point 0 → point 1
+    // 2-4: point 1 → point 2
+    // 4-6: point 2 → point 0
+    let segment, progress, startPoint, endPoint;
+
+    if (timer <= 2) {
+      segment = 0;
+      progress = timer / 2; // 0 to 1
+      startPoint = points[0];
+      endPoint = points[1];
+    } else if (timer <= 4) {
+      segment = 1;
+      progress = (timer - 2) / 2; // 0 to 1
+      startPoint = points[1];
+      endPoint = points[2];
+    } else {
+      segment = 2;
+      progress = (timer - 4) / 2; // 0 to 1
+      startPoint = points[2];
+      endPoint = points[0];
+    }
+
+    // Interpolate position
+    const x = startPoint.x + (endPoint.x - startPoint.x) * progress;
+    const y = startPoint.y + (endPoint.y - startPoint.y) * progress;
+
+    return { x, y };
+  };
+
   // Generate 4-7-8 wave path: rise → plateau → decline
   const generateWavePath478 = () => {
     const width = 700; // Width for one cycle
@@ -863,7 +907,7 @@ export default function Home() {
                         <>
                           {/* Triangle Illustration */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Gray Outline Triangle - Always visible */}
+                            {/* Gray Outline Triangle - Always visible (INVERTED - pointing down) */}
                             <svg
                               className="absolute"
                               width="363"
@@ -871,39 +915,32 @@ export default function Home() {
                               viewBox="0 0 363 363"
                             >
                               <polygon
-                                points="181.5,41.5 321.5,321.5 41.5,321.5"
+                                points="41.5,41.5 321.5,41.5 181.5,321.5"
                                 fill="none"
                                 stroke="#E5E7EB"
                                 strokeWidth="4"
                               />
                             </svg>
 
-                            {/* Blue Progress Triangle - Shows during HOLD phase */}
-                            {breathingPhase === 'hold1' && (
+                            {/* Blue Ball - Shows during HOLD phase, moves along triangle edges */}
+                            {breathingPhase === 'hold1' && getBallPosition478() && (
                               <svg
                                 className="absolute"
                                 width="363"
                                 height="363"
                                 viewBox="0 0 363 363"
                               >
-                                <defs>
-                                  <clipPath id="triangleClip478">
-                                    <polygon points="181.5,41.5 321.5,321.5 41.5,321.5" />
-                                  </clipPath>
-                                </defs>
-                                <rect
-                                  x="41.5"
-                                  y={41.5 + (280 * (1 - timer / 6))}
-                                  width="280"
-                                  height={280 * (timer / 6)}
+                                <circle
+                                  cx={getBallPosition478().x}
+                                  cy={getBallPosition478().y}
+                                  r="8"
                                   fill="#067AC3"
-                                  clipPath="url(#triangleClip478)"
-                                  className="transition-all duration-1000"
+                                  className="transition-all duration-1000 ease-linear"
                                 />
                               </svg>
                             )}
 
-                            {/* Filled Triangle Layers - Build from bottom up */}
+                            {/* Filled Triangle Layers - Build from bottom up (INVERTED) */}
                             {getTriangleLayersData478().map((triangle) => (
                               <div
                                 key={triangle.key}
@@ -913,10 +950,10 @@ export default function Home() {
                                   height: 0,
                                   borderLeft: `${triangle.width / 2}px solid transparent`,
                                   borderRight: `${triangle.width / 2}px solid transparent`,
-                                  borderTop: `${triangle.height}px solid ${triangle.color}`,
+                                  borderBottom: `${triangle.height}px solid ${triangle.color}`,
                                   filter: `drop-shadow(0 0 ${triangle.blur}px ${triangle.color})`,
-                                  bottom: '50%',
-                                  transform: 'translateY(50%)',
+                                  top: '50%',
+                                  transform: 'translateY(-50%)',
                                 }}
                               />
                             ))}
