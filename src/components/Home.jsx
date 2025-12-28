@@ -270,20 +270,19 @@ export default function Home() {
     return 0;
   };
 
-  // Get visible triangle count for 4-7-8 breathing (similar to Box Breathing)
+  // Get visible triangle count for 4-7-8 breathing
   const getVisibleTriangleCount478 = () => {
     if (!isExercising) return 0;
 
     if (breathingPhase === 'inhale') {
-      // INHALE: Add 1 triangle per second (timer 0→4 shows 0,1,2,3,4 triangles)
-      return timer;
+      // INHALE: Add 2 triangles per second (timer 0→4 shows 0,2,4,6,8 triangles)
+      return timer * 2;
     } else if (breathingPhase === 'hold1') {
-      // HOLD: Keep all 4 triangles visible
-      return 4;
+      // HOLD: Keep all 8 triangles visible
+      return 8;
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: Gradually reduce over 8 seconds (timer 7→0)
-      // Map 8 seconds to 4 triangles: timer 7→0 maps to count 4→0
-      return Math.ceil((timer / 7) * 4);
+      // EXHALE: Remove 1 triangle at a time over 8 seconds (timer 7→0 shows 8,7,6,5,4,3,2,1 triangles)
+      return Math.max(timer, 1);
     }
 
     return 0;
@@ -293,17 +292,21 @@ export default function Home() {
   const getTriangleLayersData478 = () => {
     const triangleCount = getVisibleTriangleCount478();
 
-    // 4 layers with increasing heights (filling from bottom up)
-    // Heights: 70px, 140px, 210px, 280px (quarters of full triangle)
-    const heights = [70, 140, 210, 280];
-    const widths = [80, 160, 240, 320]; // Proportional widths
+    // 8 layers with 10% opacity decrements (filling from bottom up)
+    // Heights: 35px, 70px, 105px, 140px, 175px, 210px, 245px, 280px
+    const heights = [35, 70, 105, 140, 175, 210, 245, 280];
+    const widths = [40, 80, 120, 160, 200, 240, 280, 320]; // Proportional widths
     const colors = [
       'rgba(6, 122, 195, 1.0)',   // 100% opacity (smallest - innermost)
-      'rgba(6, 122, 195, 0.75)',  // 75% opacity
+      'rgba(6, 122, 195, 0.9)',   // 90% opacity
+      'rgba(6, 122, 195, 0.8)',   // 80% opacity
+      'rgba(6, 122, 195, 0.7)',   // 70% opacity
+      'rgba(6, 122, 195, 0.6)',   // 60% opacity
       'rgba(6, 122, 195, 0.5)',   // 50% opacity
-      'rgba(6, 122, 195, 0.25)'   // 25% opacity (largest - outermost)
+      'rgba(6, 122, 195, 0.4)',   // 40% opacity
+      'rgba(6, 122, 195, 0.3)'    // 30% opacity (largest - outermost)
     ];
-    const blurs = [20, 22, 24, 26];
+    const blurs = [20, 21, 22, 23, 24, 25, 26, 27];
 
     const triangles = [];
     for (let i = 0; i < triangleCount; i++) {
@@ -324,14 +327,14 @@ export default function Home() {
   const getBallPosition478 = () => {
     if (breathingPhase !== 'hold1' || !isExercising) return null;
 
-    // Inverted triangle points (pointing down):
-    // Point 1 (top-left): (41.5, 41.5)
-    // Point 2 (top-right): (321.5, 41.5)
-    // Point 3 (bottom center): (181.5, 321.5)
+    // Inverted triangle points (pointing down) - larger gray outline:
+    // Point 1 (top-left): (21.5, 21.5)
+    // Point 2 (top-right): (341.5, 21.5)
+    // Point 3 (bottom center): (181.5, 341.5)
     const points = [
-      { x: 41.5, y: 41.5 },    // Top-left
-      { x: 321.5, y: 41.5 },   // Top-right
-      { x: 181.5, y: 321.5 }   // Bottom (apex)
+      { x: 21.5, y: 21.5 },    // Top-left
+      { x: 341.5, y: 21.5 },   // Top-right
+      { x: 181.5, y: 341.5 }   // Bottom (apex)
     ];
 
     // 7 seconds (timer 0-6): divide into 3 segments
@@ -907,7 +910,7 @@ export default function Home() {
                         <>
                           {/* Triangle Illustration */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Gray Outline Triangle - Always visible (INVERTED - pointing down) */}
+                            {/* Gray Outline Triangle - Always visible (INVERTED - pointing down) - Larger than fill */}
                             <svg
                               className="absolute"
                               width="363"
@@ -915,7 +918,7 @@ export default function Home() {
                               viewBox="0 0 363 363"
                             >
                               <polygon
-                                points="41.5,41.5 321.5,41.5 181.5,321.5"
+                                points="21.5,21.5 341.5,21.5 181.5,341.5"
                                 fill="none"
                                 stroke="#E5E7EB"
                                 strokeWidth="4"
@@ -952,7 +955,7 @@ export default function Home() {
                                   borderRight: `${triangle.width / 2}px solid transparent`,
                                   borderTop: `${triangle.height}px solid ${triangle.color}`,
                                   filter: `drop-shadow(0 0 ${triangle.blur}px ${triangle.color})`,
-                                  bottom: 'calc(50% - 140px)',
+                                  bottom: 'calc(50% - 160px)',
                                   left: '50%',
                                   transform: 'translateX(-50%)',
                                 }}
