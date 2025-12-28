@@ -293,9 +293,9 @@ export default function Home() {
     const triangleCount = getVisibleTriangleCount478();
 
     // 8 layers with 10% opacity decrements (filling from bottom up)
-    // Heights: 35px, 70px, 105px, 140px, 175px, 210px, 245px, 280px
-    const heights = [35, 70, 105, 140, 175, 210, 245, 280];
-    const widths = [40, 80, 120, 160, 200, 240, 280, 320]; // Proportional widths
+    // Smaller sizes to stay inside gray outline: Heights 30-240px, Widths 35-280px
+    const heights = [30, 60, 90, 120, 150, 180, 210, 240];
+    const widths = [35, 70, 105, 140, 175, 210, 245, 280]; // Proportional widths
     const colors = [
       'rgba(6, 122, 195, 1.0)',   // 100% opacity (smallest - innermost)
       'rgba(6, 122, 195, 0.9)',   // 90% opacity
@@ -321,50 +321,6 @@ export default function Home() {
 
     // Render from largest to smallest so all are visible
     return triangles.reverse();
-  };
-
-  // Get blue ball position for HOLD phase (moves along triangle points)
-  const getBallPosition478 = () => {
-    if (breathingPhase !== 'hold1' || !isExercising) return null;
-
-    // Inverted triangle points (pointing down) - larger gray outline:
-    // Point 1 (top-left): (21.5, 21.5)
-    // Point 2 (top-right): (341.5, 21.5)
-    // Point 3 (bottom center): (181.5, 341.5)
-    const points = [
-      { x: 21.5, y: 21.5 },    // Top-left
-      { x: 341.5, y: 21.5 },   // Top-right
-      { x: 181.5, y: 341.5 }   // Bottom (apex)
-    ];
-
-    // 7 seconds (timer 0-6): divide into 3 segments
-    // 0-2: point 0 → point 1
-    // 2-4: point 1 → point 2
-    // 4-6: point 2 → point 0
-    let segment, progress, startPoint, endPoint;
-
-    if (timer <= 2) {
-      segment = 0;
-      progress = timer / 2; // 0 to 1
-      startPoint = points[0];
-      endPoint = points[1];
-    } else if (timer <= 4) {
-      segment = 1;
-      progress = (timer - 2) / 2; // 0 to 1
-      startPoint = points[1];
-      endPoint = points[2];
-    } else {
-      segment = 2;
-      progress = (timer - 4) / 2; // 0 to 1
-      startPoint = points[2];
-      endPoint = points[0];
-    }
-
-    // Interpolate position
-    const x = startPoint.x + (endPoint.x - startPoint.x) * progress;
-    const y = startPoint.y + (endPoint.y - startPoint.y) * progress;
-
-    return { x, y };
   };
 
   // Generate 4-7-8 wave path: rise → plateau → decline
@@ -922,26 +878,10 @@ export default function Home() {
                                 fill="none"
                                 stroke="#E5E7EB"
                                 strokeWidth="4"
+                                strokeLinejoin="round"
+                                strokeLinecap="round"
                               />
                             </svg>
-
-                            {/* Blue Ball - Shows during HOLD phase, moves along triangle edges */}
-                            {breathingPhase === 'hold1' && getBallPosition478() && (
-                              <svg
-                                className="absolute"
-                                width="363"
-                                height="363"
-                                viewBox="0 0 363 363"
-                              >
-                                <circle
-                                  cx={getBallPosition478().x}
-                                  cy={getBallPosition478().y}
-                                  r="8"
-                                  fill="#067AC3"
-                                  className="transition-all duration-1000 ease-linear"
-                                />
-                              </svg>
-                            )}
 
                             {/* Filled Triangle Layers - Build from bottom up (INVERTED) */}
                             {getTriangleLayersData478().map((triangle) => (
@@ -955,9 +895,10 @@ export default function Home() {
                                   borderRight: `${triangle.width / 2}px solid transparent`,
                                   borderTop: `${triangle.height}px solid ${triangle.color}`,
                                   filter: `drop-shadow(0 0 ${triangle.blur}px ${triangle.color})`,
-                                  bottom: 'calc(50% - 160px)',
+                                  bottom: 'calc(50% - 140px)',
                                   left: '50%',
                                   transform: 'translateX(-50%)',
+                                  borderRadius: '8px',
                                 }}
                               />
                             ))}
