@@ -270,31 +270,64 @@ export default function Home() {
     return 0;
   };
 
-  // Get balloon fill scale for 4-7-8 breathing animation (mirrors timer)
-  const getBalloonFillScale478 = () => {
-    if (!isExercising) return 0; // Empty when not exercising
+  // Get triangle vertical position for 4-7-8 breathing (0 = bottom, 1 = top)
+  const getTrianglePosition478 = () => {
+    if (!isExercising) return 0; // At bottom when not exercising
 
     if (breathingPhase === 'inhale') {
-      // INHALE: Fill from 0 to 1.0 over 4 seconds (timer 0→4)
+      // INHALE: Move from bottom (0) to top (1) over 4 seconds
       return timer / 4; // 0 → 1.0
     } else if (breathingPhase === 'hold1') {
-      // HOLD: Stay filled (timer 0→6)
+      // HOLD: Stay at top
       return 1.0;
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: Deflate from 1.0 to 0 over 8 seconds (timer 7→0, descending)
+      // EXHALE: Move from top (1) to bottom (0) over 8 seconds (timer 7→0)
       return timer / 7; // 1.0 → 0
     }
 
     return 0;
   };
 
-  // Get balloon sway rotation for HOLD phase
-  const getBalloonSway478 = () => {
-    if (breathingPhase === 'hold1') {
-      const swayProgress = (timer % 3) / 3; // Sway cycle every 3 seconds
-      return Math.sin(swayProgress * Math.PI * 2) * 5; // ±5 degrees
+  // Get triangle layers with colors and positions
+  const getTriangleLayers478 = () => {
+    const position = getTrianglePosition478();
+    const baseY = 300; // Bottom position
+    const topY = 80; // Top position
+    const currentY = baseY - (baseY - topY) * position;
+
+    // 4 layers with different sizes and opacities (matching Box Breathing colors)
+    const layers = [
+      { size: 140, color: 'rgba(6, 122, 195, 1.0)', blur: 20 },   // Innermost, darkest
+      { size: 180, color: 'rgba(6, 122, 195, 0.75)', blur: 22 },
+      { size: 220, color: 'rgba(6, 122, 195, 0.5)', blur: 24 },
+      { size: 260, color: 'rgba(6, 122, 195, 0.25)', blur: 26 }   // Outermost, lightest
+    ];
+
+    return layers.map((layer, i) => ({ ...layer, y: currentY, key: i }));
+  };
+
+  // Get pulse rings for HOLD phase (7 pulses over 7 seconds)
+  const getTrianglePulses478 = () => {
+    if (breathingPhase !== 'hold1' || !isExercising) return [];
+
+    const pulses = [];
+    const currentSecond = timer; // 0-6 for 7 seconds
+
+    // Create pulse for current second
+    for (let i = 0; i <= currentSecond; i++) {
+      const age = currentSecond - i; // 0 = newest, 6 = oldest
+      const progress = age / 6; // 0 to 1
+      const size = 100 + (progress * 200); // Expand from 100 to 300
+      const opacity = Math.max(0, 0.6 - progress * 0.6); // Fade from 0.6 to 0
+
+      pulses.push({
+        size,
+        opacity,
+        key: i
+      });
     }
-    return 0;
+
+    return pulses;
   };
 
   // Generate 4-7-8 wave path: rise → plateau → decline
@@ -836,85 +869,40 @@ export default function Home() {
                           </div>
                         </>
                       ) : selectedExercise?.name === '4-7-8 Breathing' ? (
-                        /* 4-7-8 Hot Air Balloon Animation */
+                        /* 4-7-8 Triangle Animation */
                         <>
-                          {/* Hot Air Balloon Illustration */}
+                          {/* Triangle Illustration */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Gray Outline Balloon - Always visible */}
-                            <svg
-                              className="absolute"
-                              width="400"
-                              height="400"
-                              viewBox="0 0 400 400"
-                            >
-                              <defs>
-                                <clipPath id="balloonClip">
-                                  {/* Hot air balloon shape - wider for text */}
-                                  <path d="M 200 50
-                                           C 280 50, 320 110, 320 170
-                                           C 320 230, 280 280, 200 290
-                                           C 120 280, 80 230, 80 170
-                                           C 80 110, 120 50, 200 50 Z" />
-                                </clipPath>
-                              </defs>
-
-                              {/* Gray outline */}
-                              <path
-                                d="M 200 50
-                                   C 280 50, 320 110, 320 170
-                                   C 320 230, 280 280, 200 290
-                                   C 120 280, 80 230, 80 170
-                                   C 80 110, 120 50, 200 50 Z"
-                                fill="none"
-                                stroke="#E5E7EB"
-                                strokeWidth="4"
+                            {/* Pulse rings during HOLD phase */}
+                            {getTrianglePulses478().map((pulse) => (
+                              <div
+                                key={pulse.key}
+                                className="absolute rounded-full border-4 transition-all duration-1000 ease-out"
+                                style={{
+                                  width: `${pulse.size}px`,
+                                  height: `${pulse.size}px`,
+                                  borderColor: `rgba(6, 122, 195, ${pulse.opacity})`,
+                                  opacity: pulse.opacity,
+                                }}
                               />
-                            </svg>
+                            ))}
 
-                            {/* Blue Filled Balloon - Scales during INHALE/EXHALE with sway */}
-                            <svg
-                              className="absolute transition-all duration-1000 ease-in-out"
-                              width="400"
-                              height="400"
-                              viewBox="0 0 400 400"
-                              style={{ transform: `rotate(${getBalloonSway478()}deg)` }}
-                            >
-                              {/* Filled balloon with scaling and glow */}
-                              <g transform={`translate(200, 170) scale(${getBalloonFillScale478()})`} style={{ transformOrigin: 'center' }}>
-                                <path
-                                  d="M 0 -120
-                                     C 80 -120, 120 -60, 120 0
-                                     C 120 60, 80 110, 0 120
-                                     C -80 110, -120 60, -120 0
-                                     C -120 -60, -80 -120, 0 -120 Z"
-                                  fill="rgba(6, 122, 195, 0.3)"
-                                  style={{
-                                    filter: 'drop-shadow(0 0 20px rgba(6, 122, 195, 0.5))',
-                                  }}
-                                  className="transition-all duration-1000"
-                                />
-                                {/* Inner balloon for depth */}
-                                <path
-                                  d="M 0 -90
-                                     C 60 -90, 90 -45, 90 0
-                                     C 90 45, 60 82, 0 90
-                                     C -60 82, -90 45, -90 0
-                                     C -90 -45, -60 -90, 0 -90 Z"
-                                  fill="rgba(6, 122, 195, 0.5)"
-                                  className="transition-all duration-1000"
-                                />
-                                {/* Core balloon */}
-                                <path
-                                  d="M 0 -60
-                                     C 40 -60, 60 -30, 60 0
-                                     C 60 30, 40 55, 0 60
-                                     C -40 55, -60 30, -60 0
-                                     C -60 -30, -40 -60, 0 -60 Z"
-                                  fill="rgba(6, 122, 195, 0.7)"
-                                  className="transition-all duration-1000"
-                                />
-                              </g>
-                            </svg>
+                            {/* Triangle layers - render largest to smallest */}
+                            {getTriangleLayers478().reverse().map((layer) => (
+                              <div
+                                key={layer.key}
+                                className="absolute transition-all duration-1000 ease-in-out"
+                                style={{
+                                  width: 0,
+                                  height: 0,
+                                  borderLeft: `${layer.size / 2}px solid transparent`,
+                                  borderRight: `${layer.size / 2}px solid transparent`,
+                                  borderTop: `${layer.size}px solid ${layer.color}`,
+                                  filter: `drop-shadow(0 0 ${layer.blur}px ${layer.color})`,
+                                  transform: `translateY(${layer.y}px)`,
+                                }}
+                              />
+                            ))}
 
                             {/* Phase Text - At Center */}
                             <div className="absolute text-center">
