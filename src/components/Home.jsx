@@ -526,8 +526,9 @@ export default function Home() {
                 ) : selectedOption === 'breathe' && selectedExercise ? (
                   /* Breathing Exercise Detail View */
                   <div className="flex flex-col h-full w-full justify-between">
-                    {/* Header - 10% */}
-                    <div className="flex-[0.1] flex items-center justify-between px-2">
+                    {/* Header - 15% */}
+                    <div className="flex-[0.15] flex items-center justify-center px-2">
+                      <div className="flex items-center justify-between w-full max-w-md">
                       <button
                         onClick={() => {
                           setSelectedExercise(null);
@@ -547,10 +548,38 @@ export default function Home() {
 
                       {/* Spacer to balance layout */}
                       <div className="w-14"></div>
+                      </div>
                     </div>
 
-                    {/* Exercise Image/Animation Area - 50% */}
-                    <div className="flex-[0.5] bg-white rounded-lg flex flex-col items-center justify-center mt-3 p-4">
+                    {/* Cycle Count Section - 15% */}
+                    <div className="flex-[0.15] flex items-center justify-center">
+                      {/* Countdown Progress Bar - Show during countdown */}
+                      {countdown !== null && countdown > 0 && (
+                        <div className="w-full max-w-xs px-4">
+                          <span className="text-sm text-gray-600 font-medium mb-2 block text-center">
+                            Exercise starting
+                          </span>
+                          {/* Progress Bar Container */}
+                          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            {/* Segmented Progress */}
+                            <div className="h-full flex gap-1">
+                              {/* Show segments based on countdown value - decrements from left to right */}
+                              {Array.from({ length: 3 }).map((_, index) => (
+                                <div
+                                  key={index}
+                                  className={`flex-1 transition-all duration-300 ${
+                                    index >= (3 - countdown) ? 'bg-black' : 'bg-transparent'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Breathing Circles Area - 40% */}
+                    <div className="flex-[0.4] bg-white rounded-lg flex flex-col items-center justify-center p-4">
                       {/* Conditional Animation based on exercise */}
                       {selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
                         <>
@@ -630,33 +659,6 @@ export default function Home() {
                       )}
                     </div>
 
-                    {/* Cycle Count Section - 5% */}
-                    <div className="flex-[0.05] flex items-center justify-center">
-                      {/* Countdown Progress Bar - Show during countdown */}
-                      {countdown !== null && countdown > 0 && (
-                        <div className="w-full max-w-xs px-4">
-                          <span className="text-sm text-gray-600 font-medium mb-2 block text-center">
-                            Exercise starting
-                          </span>
-                          {/* Progress Bar Container */}
-                          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                            {/* Segmented Progress */}
-                            <div className="h-full flex gap-1">
-                              {/* Show segments based on countdown value - decrements from left to right */}
-                              {Array.from({ length: 3 }).map((_, index) => (
-                                <div
-                                  key={index}
-                                  className={`flex-1 transition-all duration-300 ${
-                                    index >= (3 - countdown) ? 'bg-black' : 'bg-transparent'
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
                     {/* Timer Section - 15% */}
                     <div className="flex-[0.15] flex items-center justify-center">
                       {/* Timer Display - Show during INHALE and EXHALE */}
@@ -669,8 +671,8 @@ export default function Home() {
                       )}
                     </div>
 
-                    {/* Navigation Section - 20% */}
-                    <div className="flex-[0.2] flex items-center justify-center py-6">
+                    {/* Navigation Section - 15% */}
+                    <div className="flex-[0.15] flex items-center justify-center py-6">
                       <div className="flex items-center justify-between px-4 w-full max-w-md">
                       <button
                         onClick={() => {
