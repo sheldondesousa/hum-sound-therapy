@@ -852,16 +852,9 @@ export default function Home() {
                         </>
                       ) : selectedExercise?.name === '4-7-8 Breathing' ? (
                         /* 4-7-8 Balloon Animation: Inflate → Hold → Deflate */
-                        <div className="flex-1 flex flex-col items-center justify-center w-full relative p-8">
-                          {/* Cycle counter */}
-                          <div className="text-center mb-4">
-                            <div className="text-sm font-semibold text-gray-500">
-                              Cycle {currentCycle + 1} of {selectedCycles || 4}
-                            </div>
-                          </div>
-
-                          {/* Balloon Container */}
-                          <div className="flex-1 flex items-center justify-center w-full">
+                        <>
+                          {/* Balloon Illustration */}
+                          <div className="flex-1 flex items-center justify-center w-full relative">
                             <svg
                               viewBox="0 0 400 500"
                               className="w-full h-full"
@@ -918,17 +911,17 @@ export default function Home() {
                                 />
                               </g>
                             </svg>
-                          </div>
 
-                          {/* Phase indicator */}
-                          <div className="text-center mt-4">
-                            <div className="text-2xl font-bold text-gray-800 uppercase tracking-wider bg-white/90 backdrop-blur-sm px-6 py-3 rounded-xl shadow-lg border border-gray-200 inline-block">
-                              {breathingPhase === 'inhale' && 'INHALE'}
-                              {breathingPhase === 'hold1' && 'HOLD'}
-                              {breathingPhase === 'exhale' && 'EXHALE'}
+                            {/* Phase Text - At Center */}
+                            <div className="absolute text-center">
+                              <div className="text-lg font-semibold text-gray-700 uppercase tracking-wider">
+                                {breathingPhase === 'inhale' && 'INHALE'}
+                                {breathingPhase === 'hold1' && 'HOLD'}
+                                {breathingPhase === 'exhale' && 'EXHALE'}
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        </>
                       ) : (
                         /* Placeholder for other breathing exercises */
                         <div className="flex-1 flex items-center justify-center w-full">
