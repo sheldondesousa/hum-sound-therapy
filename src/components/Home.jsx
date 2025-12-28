@@ -622,12 +622,12 @@ export default function Home() {
                                   boxShadow: `0 0 ${circle.blur}px ${circle.color}`
                                 }}
                               >
-                                {/* Count number at top of each circle */}
+                                {/* Count number inside the ring at top */}
                                 <span
-                                  className="font-bold text-gray-700 transition-all duration-1000"
+                                  className="font-bold transition-all duration-1000"
                                   style={{
-                                    fontSize: '14px',
-                                    marginTop: '-8px',
+                                    fontSize: '16px',
+                                    marginTop: '6px',
                                     color: circle.color
                                   }}
                                 >
