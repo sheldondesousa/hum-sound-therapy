@@ -631,8 +631,8 @@ export default function Home() {
                     </div>
 
                     {/* Bottom Section - Fixed height to prevent shifting */}
-                    <div className="flex-[0.2] flex flex-col justify-between py-6">
-                      {/* Cycle Display Area - Fixed height to prevent nav bar shift */}
+                    <div className="flex-[0.2] flex flex-col justify-evenly py-6">
+                      {/* Cycle Display Area - Equidistant between circles and nav bar */}
                       <div className="flex flex-col items-center justify-center" style={{ minHeight: '80px' }}>
                         {/* Countdown Progress Bar - Show during countdown */}
                         {countdown !== null && countdown > 0 && (
