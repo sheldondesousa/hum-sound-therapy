@@ -8,6 +8,28 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedExercise, setSelectedExercise] = useState(null);
+
+  // Exercise content data
+  const exerciseContent = {
+    'Box Breathing (4-4-4-4)': {
+      description: 'Box breathing (4-4-4-4) is a simple, effective relaxation technique where you inhale for 4 counts, hold for 4, exhale for 4, and hold again for 4, creating a pattern to calm the nervous system, reduce stress, and improve focus for important moments.',
+      sectionTitle: 'Why it works',
+      sectionContent: [
+        { label: 'Calms your nervous system:', text: 'Activates the parasympathetic (rest-and-digest) system, counteracting the fight-or-flight response.' },
+        { label: 'Reduces stress & anxiety:', text: 'Helps lower heart rate and blood pressure, bringing a sense of calm.' },
+        { label: 'Improves focus:', text: 'Enhances concentration, making it great for high-pressure situations like presentations or exams.' }
+      ]
+    },
+    '4-7-8 Breathing': {
+      description: 'The 4-7-8 breathing technique, also known as the "Relaxing Breath," is a rhythmic breathing pattern developed by Dr. Andrew Weil. Rooted in the ancient yogic practice of pranayama, it acts as a "natural tranquilizer" for the nervous system by activating the parasympathetic response.',
+      sectionTitle: 'Tips',
+      sectionContent: [
+        { label: '', text: 'Breathe in normally through your nose.' },
+        { label: 'Position your tongue:', text: 'Place the tip of your tongue against the ridge of tissue just behind your upper front teeth and keep it there throughout the entire exercise.' },
+        { label: 'Create sound:', text: 'Exhale completely through your mouth, making an audible "whoosh" sound as you release the air.' }
+      ]
+    }
+  };
   const [showingInfo, setShowingInfo] = useState(false); // Track if showing info screen
   const [countdown, setCountdown] = useState(null); // Track countdown: 3, 2, 1, or null
   const [isExercising, setIsExercising] = useState(false);
@@ -471,21 +493,21 @@ export default function Home() {
 
                       {/* Description */}
                       <p className="text-base text-gray-700 mb-6 leading-relaxed">
-                        Box breathing (4-4-4-4) is a simple, effective relaxation technique where you inhale for 4 counts, hold for 4, exhale for 4, and hold again for 4, creating a pattern to calm the nervous system, reduce stress, and improve focus for important moments.
+                        {exerciseContent[selectedExercise.name]?.description || 'Exercise description not available.'}
                       </p>
 
-                      {/* Why It Works Section */}
+                      {/* Section (Why it works / Tips) */}
                       <h2 className="text-2xl font-bold mb-3 text-black">
-                        Why it works
+                        {exerciseContent[selectedExercise.name]?.sectionTitle || 'Information'}
                       </h2>
 
-                      <p className="text-base text-gray-700 mb-6 leading-relaxed">
-                        <strong>Calms your nervous system:</strong> Activates the parasympathetic (rest-and-digest) system, counteracting the fight-or-flight response.
-                        <br/><br/>
-                        <strong>Reduces stress & anxiety:</strong> Helps lower heart rate and blood pressure, bringing a sense of calm.
-                        <br/><br/>
-                        <strong>Improves focus:</strong> Enhances concentration, making it great for high-pressure situations like presentations or exams.
-                      </p>
+                      <div className="text-base text-gray-700 mb-6 leading-relaxed">
+                        {exerciseContent[selectedExercise.name]?.sectionContent.map((item, index) => (
+                          <p key={index} className={index > 0 ? 'mt-4' : ''}>
+                            {item.label && <strong>{item.label}</strong>} {item.text}
+                          </p>
+                        ))}
+                      </div>
 
                       {/* Cycle Selector */}
                       <div className="mb-6">
