@@ -552,20 +552,6 @@ export default function Home() {
                       {/* Conditional Animation based on exercise */}
                       {selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
                         <>
-                          {/* Phase Text at Top */}
-                          <div className="w-full text-center mb-4">
-                            <div
-                              className={`text-lg font-semibold text-gray-700 uppercase tracking-wider ${
-                                (breathingPhase === 'hold1' || breathingPhase === 'hold2') ? 'pulse-hold' : ''
-                              }`}
-                            >
-                              {breathingPhase === 'inhale' && 'INHALE'}
-                              {breathingPhase === 'hold1' && 'HOLD'}
-                              {breathingPhase === 'exhale' && 'EXHALE'}
-                              {breathingPhase === 'hold2' && 'HOLD'}
-                            </div>
-                          </div>
-
                           {/* Breathing Circle Illustration - Box Breathing Only */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
                             {/* Timeline Progress Ring - Shows during HOLD phases */}
@@ -615,14 +601,19 @@ export default function Home() {
                               />
                             ))}
 
-                            {/* Timer Count - At Center of Circles */}
-                            {(breathingPhase === 'inhale' || breathingPhase === 'exhale') && (
-                              <div className="absolute text-center">
-                                <div className="text-5xl font-bold text-gray-900">
-                                  {timer}
-                                </div>
+                            {/* Phase Text - At Center of Circles */}
+                            <div className="absolute text-center">
+                              <div
+                                className={`text-lg font-semibold text-gray-700 uppercase tracking-wider ${
+                                  (breathingPhase === 'hold1' || breathingPhase === 'hold2') ? 'pulse-hold' : ''
+                                }`}
+                              >
+                                {breathingPhase === 'inhale' && 'INHALE'}
+                                {breathingPhase === 'hold1' && 'HOLD'}
+                                {breathingPhase === 'exhale' && 'EXHALE'}
+                                {breathingPhase === 'hold2' && 'HOLD'}
                               </div>
-                            )}
+                            </div>
                           </div>
                         </>
                       ) : (
@@ -671,6 +662,15 @@ export default function Home() {
                             <span className="text-sm text-gray-600 font-medium">
                               Cycle {currentCycle + 1} of {selectedCycles}
                             </span>
+                          </div>
+                        )}
+
+                        {/* Timer Display - Show during INHALE and EXHALE */}
+                        {isExercising && (breathingPhase === 'inhale' || breathingPhase === 'exhale') && (
+                          <div className="text-center mt-4">
+                            <div className="text-5xl font-bold text-gray-900">
+                              {timer}
+                            </div>
                           </div>
                         )}
                       </div>
