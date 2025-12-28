@@ -12,9 +12,20 @@ const BreathingInfoScreen = () => {
     box: {
       title: 'Box Breathing',
       description: 'Box breathing (4-4-4-4) is a simple, effective relaxation technique where you inhale for 4 counts, hold for 4, exhale for 4, and hold again for 4, creating a pattern to calm the nervous system, reduce stress, and improve focus for important moments.',
-      whyItWorks: `Calms your nervous system: Activates the parasympathetic (rest-and-digest) system, counteracting the fight-or-flight response.
+      sectionTitle: 'Why it works',
+      sectionContent: `Calms your nervous system: Activates the parasympathetic (rest-and-digest) system, counteracting the fight-or-flight response.
 Reduces stress & anxiety: Helps lower heart rate and blood pressure, bringing a sense of calm.
 Improves focus: Enhances concentration, making it great for high-pressure situations like presentations or exams.`
+    },
+    '4-7-8': {
+      title: '4-7-8 Breathing',
+      description: 'The 4-7-8 breathing technique, also known as the "Relaxing Breath," is a rhythmic breathing pattern developed by Dr. Andrew Weil. Rooted in the ancient yogic practice of pranayama, it acts as a "natural tranquilizer" for the nervous system by activating the parasympathetic response.',
+      sectionTitle: 'Tips',
+      sectionContent: [
+        'Breathe in normally through your nose.',
+        'Position your tongue: Place the tip of your tongue against the ridge of tissue just behind your upper front teeth and keep it there throughout the entire exercise.',
+        'Create sound: Exhale completely through your mouth, making an audible "whoosh" sound as you release the air.'
+      ]
     }
   };
 
@@ -50,14 +61,25 @@ Improves focus: Enhances concentration, making it great for high-pressure situat
             {exercise.description}
           </p>
 
-          {/* Why It Works Section */}
+          {/* Section (Why it works / Tips) */}
           <h2 className="text-3xl font-bold mb-4" style={{ fontFamily: "'SF Pro Display', sans-serif" }}>
-            Why it works
+            {exercise.sectionTitle}
           </h2>
 
-          <p className="text-lg text-gray-700 mb-8 leading-relaxed whitespace-pre-line" style={{ fontFamily: "'Roboto Serif', serif" }}>
-            {exercise.whyItWorks}
-          </p>
+          {Array.isArray(exercise.sectionContent) ? (
+            <ul className="text-lg text-gray-700 mb-8 leading-relaxed space-y-3" style={{ fontFamily: "'Roboto Serif', serif" }}>
+              {exercise.sectionContent.map((tip, index) => (
+                <li key={index} className="flex gap-2">
+                  <span className="text-gray-400">•</span>
+                  <span>{tip}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-lg text-gray-700 mb-8 leading-relaxed whitespace-pre-line" style={{ fontFamily: "'Roboto Serif', serif" }}>
+              {exercise.sectionContent}
+            </p>
+          )}
 
           {/* Cycle Selector */}
           <div className="mb-8">

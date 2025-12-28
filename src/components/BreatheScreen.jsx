@@ -11,7 +11,12 @@ const BreatheScreen = () => {
       subtitle: '4-4-4-4 pattern',
       description: 'Equal counts for inhale, hold, exhale, hold'
     },
-    // Additional breathing exercises can be added here in the future
+    {
+      id: '4-7-8',
+      title: '4-7-8 Breathing',
+      subtitle: 'Relaxing breath pattern',
+      description: 'Inhale for 4, hold for 7, exhale for 8'
+    }
   ];
 
   return (
