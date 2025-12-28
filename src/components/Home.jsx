@@ -619,27 +619,9 @@ export default function Home() {
                                   height: `${circle.size}px`,
                                   border: `20px solid ${circle.color}`,
                                   backgroundColor: 'transparent',
-                                  boxShadow: `0 0 ${circle.blur}px ${circle.color}`,
-                                  position: 'relative'
+                                  boxShadow: `0 0 ${circle.blur}px ${circle.color}`
                                 }}
-                              >
-                                {/* Count number on the border at top */}
-                                <span
-                                  className="font-bold transition-all duration-1000"
-                                  style={{
-                                    position: 'absolute',
-                                    top: '0px',
-                                    left: '50%',
-                                    transform: 'translateX(-50%)',
-                                    fontSize: '18px',
-                                    color: '#ffffff',
-                                    textShadow: '0 0 8px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3)',
-                                    fontWeight: '700'
-                                  }}
-                                >
-                                  {circle.key + 1}
-                                </span>
-                              </div>
+                              />
                             ))}
 
                             {/* Phase Text - At Center of Circles */}
