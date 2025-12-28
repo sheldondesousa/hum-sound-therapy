@@ -613,7 +613,7 @@ export default function Home() {
                             {getCirclesData().map((circle) => (
                               <div
                                 key={circle.key}
-                                className="rounded-full transition-all duration-1000 ease-in-out absolute"
+                                className="rounded-full transition-all duration-1000 ease-in-out absolute flex items-start justify-center"
                                 style={{
                                   width: `${circle.size}px`,
                                   height: `${circle.size}px`,
@@ -621,7 +621,19 @@ export default function Home() {
                                   backgroundColor: 'transparent',
                                   boxShadow: `0 0 ${circle.blur}px ${circle.color}`
                                 }}
-                              />
+                              >
+                                {/* Count number at top of each circle */}
+                                <span
+                                  className="font-bold text-gray-700 transition-all duration-1000"
+                                  style={{
+                                    fontSize: '14px',
+                                    marginTop: '-8px',
+                                    color: circle.color
+                                  }}
+                                >
+                                  {circle.key + 1}
+                                </span>
+                              </div>
                             ))}
 
                             {/* Phase Text - At Center of Circles */}
