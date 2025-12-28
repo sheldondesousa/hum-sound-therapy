@@ -270,46 +270,31 @@ export default function Home() {
     return 0;
   };
 
-  // Get balloon animation properties for 4-7-8 breathing
-  const getBalloonAnimation478 = () => {
-    if (!isExercising) {
-      return { scale: 0.15, translateY: 0, rotation: 0 };
-    }
+  // Get balloon fill scale for 4-7-8 breathing animation (mirrors timer)
+  const getBalloonFillScale478 = () => {
+    if (!isExercising) return 0; // Empty when not exercising
 
     if (breathingPhase === 'inhale') {
-      // INHALE: Scale from 0.15 to 1.0 AND move upward (0 to -170px)
-      const progress = timer / 4;
-      const easeProgress = progress < 0.5
-        ? 2 * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 2) / 2; // easeInOut
-      return {
-        scale: 0.15 + (0.85 * easeProgress),
-        translateY: -170 * easeProgress,
-        rotation: 0
-      };
+      // INHALE: Fill from 0 to 1.0 over 4 seconds (timer 0→4)
+      return timer / 4; // 0 → 1.0
     } else if (breathingPhase === 'hold1') {
-      // HOLD: Stay at full size with gentle sway side to side
-      const swayProgress = (timer % 3) / 3; // Sway cycle every 3 seconds
-      const rotation = Math.sin(swayProgress * Math.PI * 2) * 3; // ±3 degrees
-      return {
-        scale: 1.0,
-        translateY: -170,
-        rotation: rotation
-      };
+      // HOLD: Stay filled (timer 0→6)
+      return 1.0;
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: Scale from 1.0 to 0.15 AND move downward (-170 to 0)
-      const progress = timer / 7;
-      const easeProgress = progress < 0.5
-        ? 2 * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 2) / 2; // easeInOut
-      return {
-        scale: 0.15 + (0.85 * easeProgress),
-        translateY: -170 * easeProgress,
-        rotation: 0
-      };
+      // EXHALE: Deflate from 1.0 to 0 over 8 seconds (timer 7→0, descending)
+      return timer / 7; // 1.0 → 0
     }
 
-    return { scale: 0.15, translateY: 0, rotation: 0 };
+    return 0;
+  };
+
+  // Get balloon sway rotation for HOLD phase
+  const getBalloonSway478 = () => {
+    if (breathingPhase === 'hold1') {
+      const swayProgress = (timer % 3) / 3; // Sway cycle every 3 seconds
+      return Math.sin(swayProgress * Math.PI * 2) * 5; // ±5 degrees
+    }
+    return 0;
   };
 
   // Generate 4-7-8 wave path: rise → plateau → decline
@@ -851,70 +836,93 @@ export default function Home() {
                           </div>
                         </>
                       ) : selectedExercise?.name === '4-7-8 Breathing' ? (
-                        /* 4-7-8 Balloon Animation: Inflate → Hold → Deflate */
+                        /* 4-7-8 Hot Air Balloon Animation */
                         <>
-                          {/* Balloon Illustration */}
+                          {/* Hot Air Balloon Illustration */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Gray Outline Balloon - Always visible */}
                             <svg
-                              viewBox="0 0 400 500"
-                              className="w-full h-full"
-                              style={{ maxHeight: '100%', maxWidth: '100%' }}
+                              className="absolute"
+                              width="400"
+                              height="400"
+                              viewBox="0 0 400 400"
                             >
                               <defs>
-                                {/* Gradient for balloon */}
-                                <linearGradient id="balloonGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                  <stop offset="0%" stopColor="#60A5FA" />
-                                  <stop offset="50%" stopColor="#3B82F6" />
-                                  <stop offset="100%" stopColor="#2563EB" />
-                                </linearGradient>
-
-                                {/* Shadow/glow effect */}
-                                <filter id="balloonGlow">
-                                  <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
-                                  <feMerge>
-                                    <feMergeNode in="coloredBlur"/>
-                                    <feMergeNode in="SourceGraphic"/>
-                                  </feMerge>
-                                </filter>
+                                <clipPath id="balloonClip">
+                                  {/* Hot air balloon shape - wider for text */}
+                                  <path d="M 200 50
+                                           C 280 50, 320 110, 320 170
+                                           C 320 230, 280 280, 200 290
+                                           C 120 280, 80 230, 80 170
+                                           C 80 110, 120 50, 200 50 Z" />
+                                </clipPath>
                               </defs>
 
-                              {/* Balloon body */}
-                              <g
-                                transform={`translate(200, ${420 + getBalloonAnimation478().translateY}) scale(${getBalloonAnimation478().scale}) rotate(${getBalloonAnimation478().rotation})`}
-                                className="transition-all duration-1000 ease-out"
-                                style={{ transformOrigin: 'center' }}
-                              >
-                                {/* Main balloon shape */}
-                                <ellipse
-                                  cx="0"
-                                  cy="0"
-                                  rx="120"
-                                  ry="150"
-                                  fill="url(#balloonGradient)"
-                                  filter="url(#balloonGlow)"
-                                />
+                              {/* Gray outline */}
+                              <path
+                                d="M 200 50
+                                   C 280 50, 320 110, 320 170
+                                   C 320 230, 280 280, 200 290
+                                   C 120 280, 80 230, 80 170
+                                   C 80 110, 120 50, 200 50 Z"
+                                fill="none"
+                                stroke="#E5E7EB"
+                                strokeWidth="4"
+                              />
+                            </svg>
 
-                                {/* Balloon highlight */}
-                                <ellipse
-                                  cx="-30"
-                                  cy="-40"
-                                  rx="35"
-                                  ry="50"
-                                  fill="white"
-                                  opacity="0.4"
-                                />
-
-                                {/* Balloon tie/knot */}
+                            {/* Blue Filled Balloon - Scales during INHALE/EXHALE with sway */}
+                            <svg
+                              className="absolute transition-all duration-1000 ease-in-out"
+                              width="400"
+                              height="400"
+                              viewBox="0 0 400 400"
+                              style={{ transform: `rotate(${getBalloonSway478()}deg)` }}
+                            >
+                              {/* Filled balloon with scaling and glow */}
+                              <g transform={`translate(200, 170) scale(${getBalloonFillScale478()})`} style={{ transformOrigin: 'center' }}>
                                 <path
-                                  d="M -8,145 Q -8,155 0,158 Q 8,155 8,145 Z"
-                                  fill="#2563EB"
+                                  d="M 0 -120
+                                     C 80 -120, 120 -60, 120 0
+                                     C 120 60, 80 110, 0 120
+                                     C -80 110, -120 60, -120 0
+                                     C -120 -60, -80 -120, 0 -120 Z"
+                                  fill="rgba(6, 122, 195, 0.3)"
+                                  style={{
+                                    filter: 'drop-shadow(0 0 20px rgba(6, 122, 195, 0.5))',
+                                  }}
+                                  className="transition-all duration-1000"
+                                />
+                                {/* Inner balloon for depth */}
+                                <path
+                                  d="M 0 -90
+                                     C 60 -90, 90 -45, 90 0
+                                     C 90 45, 60 82, 0 90
+                                     C -60 82, -90 45, -90 0
+                                     C -90 -45, -60 -90, 0 -90 Z"
+                                  fill="rgba(6, 122, 195, 0.5)"
+                                  className="transition-all duration-1000"
+                                />
+                                {/* Core balloon */}
+                                <path
+                                  d="M 0 -60
+                                     C 40 -60, 60 -30, 60 0
+                                     C 60 30, 40 55, 0 60
+                                     C -40 55, -60 30, -60 0
+                                     C -60 -30, -40 -60, 0 -60 Z"
+                                  fill="rgba(6, 122, 195, 0.7)"
+                                  className="transition-all duration-1000"
                                 />
                               </g>
                             </svg>
 
                             {/* Phase Text - At Center */}
                             <div className="absolute text-center">
-                              <div className="text-lg font-semibold text-gray-700 uppercase tracking-wider">
+                              <div
+                                className={`text-lg font-semibold text-gray-700 uppercase tracking-wider ${
+                                  breathingPhase === 'hold1' ? 'pulse-hold' : ''
+                                }`}
+                              >
                                 {breathingPhase === 'inhale' && 'INHALE'}
                                 {breathingPhase === 'hold1' && 'HOLD'}
                                 {breathingPhase === 'exhale' && 'EXHALE'}
