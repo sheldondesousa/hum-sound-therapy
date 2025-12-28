@@ -29,7 +29,7 @@ Improves focus: Enhances concentration, making it great for high-pressure situat
       <div className="w-full max-w-[430px] h-[932px] bg-white flex flex-col p-6">
         {/* Back Button */}
         <button
-          onClick={() => navigate('/breathe')}
+          onClick={() => navigate('/home')}
           className="mb-6 flex items-center gap-2 text-black hover:text-gray-600 transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

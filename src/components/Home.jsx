@@ -353,14 +353,25 @@ export default function Home() {
 
               {/* Breathe Option */}
               <button
-                onClick={() => navigate('/breathe')}
-                className="w-full py-3 lg:py-4 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-all group"
+                onClick={() => {
+                  setSelectedOption('breathe');
+                  setSelectedExercise(null);
+                }}
+                className={`w-full py-3 lg:py-4 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-all group ${
+                  selectedOption === 'breathe' ? 'bg-black' : ''
+                }`}
               >
                 <div className="flex-1 text-left pl-4">
-                  <h2 className="text-xl lg:text-2xl font-semibold mb-1 text-black">Breathe</h2>
-                  <p className="text-sm lg:text-base text-gray-700">Reset your rhythm</p>
+                  <h2 className={`text-xl lg:text-2xl font-semibold mb-1 ${
+                    selectedOption === 'breathe' ? 'text-white' : 'text-black'
+                  }`}>Breathe</h2>
+                  <p className={`text-sm lg:text-base ${
+                    selectedOption === 'breathe' ? 'text-gray-300' : 'text-gray-700'
+                  }`}>Reset your rhythm</p>
                 </div>
-                <svg className="w-8 h-8 lg:w-9 lg:h-9 transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4 text-black" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <svg className={`w-8 h-8 lg:w-9 lg:h-9 transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4 ${
+                  selectedOption === 'breathe' ? 'text-white' : 'text-black'
+                }`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
                 </svg>
               </button>
@@ -377,7 +388,7 @@ export default function Home() {
                     </svg>
                   </div>
                   <h3 className="font-semibold text-xl text-black mb-1 capitalize">
-                    {selectedOption === 'breathe' ? 'Breathing Techniques' : selectedOption ? `${selectedOption} Collection` : 'Select Your Path'}
+                    {selectedOption === 'breathe' ? 'Breathing exercises' : selectedOption ? `${selectedOption} Collection` : 'Select Your Path'}
                   </h3>
                   <p className="text-sm text-gray-600">
                     {selectedOption === 'breathe'
@@ -598,7 +609,9 @@ export default function Home() {
                       key={track.id}
                       onClick={() => {
                         if (selectedOption === 'breathe') {
-                          setSelectedExercise(track);
+                          // Navigate to info screen for breathing exercises
+                          const type = track.name.toLowerCase().split(' ')[0]; // e.g., 'box' from 'Box Breathing'
+                          navigate(`/breathe/${type}/info`);
                         }
                       }}
                       className="w-full flex items-center justify-between py-4 border-b border-gray-200 hover:bg-gray-50 hover:opacity-70 transition-all group"
