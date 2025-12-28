@@ -44,15 +44,15 @@ export default function Home() {
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
         // Handle phase transitions and timer logic
-        // INHALE: 0-1-2-3 (increment)
+        // INHALE: 0-1-2-3-4 (increment) - 5 counts over 4 seconds
         if (breathingPhase === 'inhale') {
-          if (prevTimer < 3) {
+          if (prevTimer < 4) {
             return prevTimer + 1;
           } else {
             setBreathingPhase('hold1');
-            return 3;
+            return 4;
           }
-        // HOLD: 3-2-1-0 (decrement)
+        // HOLD: 4-3-2-1-0 (decrement) - 5 counts over 4 seconds
         } else if (breathingPhase === 'hold1') {
           if (prevTimer > 0) {
             return prevTimer - 1;
@@ -60,15 +60,15 @@ export default function Home() {
             setBreathingPhase('exhale');
             return 0;
           }
-        // EXHALE: 0-1-2-3 (increment)
+        // EXHALE: 0-1-2-3-4 (increment) - 5 counts over 4 seconds
         } else if (breathingPhase === 'exhale') {
-          if (prevTimer < 3) {
+          if (prevTimer < 4) {
             return prevTimer + 1;
           } else {
             setBreathingPhase('hold2');
-            return 3;
+            return 4;
           }
-        // HOLD: 3-2-1-0 (decrement)
+        // HOLD: 4-3-2-1-0 (decrement) - 5 counts over 4 seconds
         } else if (breathingPhase === 'hold2') {
           if (prevTimer > 0) {
             return prevTimer - 1;
@@ -91,7 +91,7 @@ export default function Home() {
         }
         return prevTimer;
       });
-    }, 1000);
+    }, 800);
 
     return () => clearInterval(interval);
   }, [isExercising, breathingPhase, currentCycle, selectedCycles]);
@@ -121,17 +121,18 @@ export default function Home() {
   // Get circle color based on breathing phase and timer
   const getCircleColor = () => {
     // Base color: #067AC3 with transparency changes
-    // Start with darkest (100% opacity) as default, get lighter with each increment
-    // 25% increments for better visual difference
-    // Timer 1: 100% opacity (darkest - default)
-    // Timer 2: 75% opacity (25% lighter)
-    // Timer 3: 50% opacity (25% lighter)
-    // Timer 4: 25% opacity (25% lighter - lightest)
+    // Timer 0-4: 5 values over 4 seconds
+    // Timer 0: 100% opacity (darkest)
+    // Timer 1: 80% opacity
+    // Timer 2: 60% opacity
+    // Timer 3: 40% opacity
+    // Timer 4: 20% opacity (lightest)
     const colors = {
-      1: 'rgba(6, 122, 195, 1.0)',
-      2: 'rgba(6, 122, 195, 0.75)',
-      3: 'rgba(6, 122, 195, 0.50)',
-      4: 'rgba(6, 122, 195, 0.25)'
+      0: 'rgba(6, 122, 195, 1.0)',
+      1: 'rgba(6, 122, 195, 0.8)',
+      2: 'rgba(6, 122, 195, 0.6)',
+      3: 'rgba(6, 122, 195, 0.4)',
+      4: 'rgba(6, 122, 195, 0.2)'
     };
 
     if (breathingPhase === 'inhale' || breathingPhase === 'exhale') {
@@ -139,19 +140,21 @@ export default function Home() {
       return colors[timer];
     } else {
       // HOLD: Decrement - reverse to become darker
-      return colors[5 - timer];
+      return colors[4 - timer];
     }
   };
 
   // Get circle size based on breathing phase and timer
   const getCircleSize = () => {
-    // First circle reduced by 30% from original 262px
-    // Each subsequent circle builds on previous with no gaps (adds 40px for 20px border on each side)
-    // Timer 1: 183px (base - 30% reduction)
-    // Timer 2: 223px (builds on previous + 40px)
-    // Timer 3: 263px (builds on previous + 40px)
-    // Timer 4: 303px (builds on previous + 40px)
+    // Timer 0-4: 5 size values
+    // Each subsequent value adds ~40px
+    // Timer 0: 143px (smallest)
+    // Timer 1: 183px
+    // Timer 2: 223px
+    // Timer 3: 263px
+    // Timer 4: 303px (largest)
     const sizes = {
+      0: 143,
       1: 183,
       2: 223,
       3: 263,
@@ -163,20 +166,20 @@ export default function Home() {
       return sizes[timer];
     } else {
       // Decrement: shrinks smaller (reverse the sizes)
-      return sizes[5 - timer];
+      return sizes[4 - timer];
     }
   };
 
   // Get number of circles to display based on phase and timer
   const getVisibleCircleCount = () => {
     if (breathingPhase === 'inhale') {
-      return timer; // INHALE: Show 1, 2, 3, 4 circles (small to big)
+      return timer; // INHALE: timer 0-4 shows 0-4 circles (expanding)
     } else if (breathingPhase === 'hold1') {
       return 4; // HOLD after INHALE: Keep all 4 circles expanded
     } else if (breathingPhase === 'exhale') {
-      return 5 - timer; // EXHALE: Show 4, 3, 2, 1 circles (big to small)
+      return 4 - timer; // EXHALE: timer 0-4 shows 4-0 circles (contracting)
     } else if (breathingPhase === 'hold2') {
-      return 1; // HOLD after EXHALE: Keep 1 circle (smallest)
+      return 0; // HOLD after EXHALE: No circles (minimal)
     }
     return timer;
   };
