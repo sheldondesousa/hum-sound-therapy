@@ -270,39 +270,30 @@ export default function Home() {
     return 0;
   };
 
-  // Generate smooth wave path for 4-7-8 breathing animation
+  // Generate smooth sinusoidal wave path for 4-7-8 breathing animation
   const generateWavePath478 = () => {
-    const cycleWidth = 90;
-    const startX = 30;
-    const baseY = 150;
-    const amplitude = 60;
     const cycles = selectedCycles || 4;
+    const totalWidth = 800; // Total width for all cycles
+    const cycleWidth = totalWidth / cycles; // Width per cycle
+    const baseY = 200; // Center line (middle of 400px height)
+    const amplitude = 140; // Wave height from center
+    const points = 200; // Number of points for smooth curve
 
-    let path = `M ${startX},${baseY}`;
+    let path = '';
 
-    for (let cycle = 0; cycle < cycles; cycle++) {
-      const offsetX = startX + (cycle * cycleWidth);
+    // Generate smooth sine wave using many small line segments
+    for (let i = 0; i <= points * cycles; i++) {
+      const x = (i / points) * cycleWidth;
+      const progress = i / points; // 0 to cycles
 
-      // INHALE - smooth curve upward (~21% of cycle width)
-      const inhaleWidth = cycleWidth * (4/19);
-      const inhaleEndX = offsetX + inhaleWidth;
-      const inhaleEndY = baseY - amplitude;
-      path += ` Q ${offsetX + inhaleWidth/2},${baseY - amplitude * 1.2} ${inhaleEndX},${inhaleEndY}`;
+      // Calculate Y using sine wave
+      const y = baseY + amplitude * Math.sin(progress * Math.PI * 2);
 
-      // HOLD - gentle wave at top (~37% of cycle width)
-      const holdWidth = cycleWidth * (7/19);
-      const holdEndX = inhaleEndX + holdWidth;
-      const holdMid1X = inhaleEndX + holdWidth * 0.25;
-      const holdMid2X = inhaleEndX + holdWidth * 0.5;
-      const holdMid3X = inhaleEndX + holdWidth * 0.75;
-      path += ` Q ${holdMid1X},${inhaleEndY - 8} ${holdMid2X},${inhaleEndY}`;
-      path += ` Q ${holdMid3X},${inhaleEndY + 8} ${holdEndX},${inhaleEndY}`;
-
-      // EXHALE - smooth curve downward (~42% of cycle width)
-      const exhaleWidth = cycleWidth * (8/19);
-      const exhaleEndX = holdEndX + exhaleWidth;
-      const exhaleEndY = baseY;
-      path += ` Q ${holdEndX + exhaleWidth/2},${inhaleEndY + amplitude * 1.2} ${exhaleEndX},${exhaleEndY}`;
+      if (i === 0) {
+        path = `M ${x},${y}`;
+      } else {
+        path += ` L ${x},${y}`;
+      }
     }
 
     return path;
@@ -310,50 +301,28 @@ export default function Home() {
 
   // Get dot position for 4-7-8 breathing animation
   const getDotPosition478 = () => {
-    // Calculate position along smooth wave path
-    // Each cycle: INHALE (4s) + HOLD (7s) + EXHALE (8s) = 19s total
-    const cycleWidth = 90; // Width of one complete wave cycle
-    const startX = 30;
-    const baseY = 150; // Center line
-    const amplitude = 60; // Height of wave peaks/troughs
+    const cycles = selectedCycles || 4;
+    const totalWidth = 800;
+    const cycleWidth = totalWidth / cycles;
+    const baseY = 200;
+    const amplitude = 140;
 
-    let cycleProgress = 0; // 0 to 1 within current cycle phase
-    let phaseOffset = 0; // How far into total cycle are we
+    // Calculate overall progress through current cycle (0 to 1)
+    let cycleProgress = 0;
 
     if (breathingPhase === 'inhale') {
-      // INHALE: 0-4 (4 seconds, ~21% of cycle)
-      phaseOffset = 0;
-      cycleProgress = timer / 4; // 0 to 1
+      cycleProgress = timer / 4 / 19; // 0 to ~0.21
     } else if (breathingPhase === 'hold1') {
-      // HOLD: 0-6 (7 seconds, ~37% of cycle)
-      phaseOffset = 4 / 19;
-      cycleProgress = timer / 6; // 0 to 1
+      cycleProgress = (4 / 19) + (timer / 6) * (7 / 19); // ~0.21 to ~0.58
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: 7-0 (8 seconds, ~42% of cycle)
-      phaseOffset = 11 / 19;
-      cycleProgress = (7 - timer) / 7; // 0 to 1
+      cycleProgress = (11 / 19) + ((7 - timer) / 7) * (8 / 19); // ~0.58 to 1.0
     }
 
-    const totalProgress = phaseOffset + (cycleProgress * (breathingPhase === 'inhale' ? 4/19 : breathingPhase === 'hold1' ? 7/19 : 8/19));
-    const x = startX + (currentCycle * cycleWidth) + (totalProgress * cycleWidth);
+    // Calculate X position across the full wave
+    const x = (currentCycle + cycleProgress) * cycleWidth;
 
-    // Calculate Y using smooth sine-like curve for soundwave effect
-    let y;
-    if (breathingPhase === 'inhale') {
-      // Smooth curve upward
-      const t = cycleProgress;
-      y = baseY - (amplitude * Math.sin(t * Math.PI / 2));
-    } else if (breathingPhase === 'hold1') {
-      // Gentle wave at top
-      const t = cycleProgress;
-      y = baseY - amplitude + (8 * Math.sin(t * Math.PI * 3));
-    } else if (breathingPhase === 'exhale') {
-      // Smooth curve downward
-      const t = cycleProgress;
-      y = baseY - amplitude + (amplitude * Math.sin(t * Math.PI / 2));
-    } else {
-      y = baseY;
-    }
+    // Calculate Y using sine wave (matching the wave pattern)
+    const y = baseY + amplitude * Math.sin((currentCycle + cycleProgress) * Math.PI * 2);
 
     return { x, y };
   };
@@ -805,16 +774,50 @@ export default function Home() {
                           </div>
                         </>
                       ) : selectedExercise?.name === '4-7-8 Breathing' ? (
-                        /* 4-7-8 Smooth Wave Animation */
-                        <div className="flex-1 flex items-center justify-center w-full relative overflow-x-auto">
+                        /* 4-7-8 Sinusoidal Wave Animation - Full Height */
+                        <div className="flex-1 flex items-center justify-center w-full relative overflow-hidden">
+                          <style>{`
+                            @keyframes waveFlow {
+                              0% { transform: translateX(0); }
+                              100% { transform: translateX(-100px); }
+                            }
+                          `}</style>
+
                           <svg
-                            width={30 + ((selectedCycles || 4) * 90) + 30}
-                            height="300"
-                            viewBox={`0 0 ${30 + ((selectedCycles || 4) * 90) + 30} 300`}
-                            className="min-w-full h-full"
+                            width="800"
+                            height="400"
+                            viewBox="0 0 800 400"
+                            className="w-full h-full"
                             preserveAspectRatio="xMidYMid meet"
                           >
-                            {/* Draw the smooth wave path for all cycles */}
+                            {/* Animated background waves for motion effect */}
+                            {isExercising && (
+                              <>
+                                <path
+                                  d={generateWavePath478()}
+                                  stroke="#F3F4F6"
+                                  strokeWidth="2"
+                                  fill="none"
+                                  opacity="0.3"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  style={{ animation: 'waveFlow 3s linear infinite' }}
+                                />
+                                <path
+                                  d={generateWavePath478()}
+                                  stroke="#F3F4F6"
+                                  strokeWidth="2"
+                                  fill="none"
+                                  opacity="0.2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  style={{ animation: 'waveFlow 4s linear infinite' }}
+                                  transform="translate(50, 0)"
+                                />
+                              </>
+                            )}
+
+                            {/* Main wave path */}
                             <path
                               d={generateWavePath478()}
                               stroke="#E5E7EB"
@@ -829,38 +832,50 @@ export default function Home() {
                               <circle
                                 cx={getDotPosition478().x}
                                 cy={getDotPosition478().y}
-                                r="6"
+                                r="8"
                                 fill="#067AC3"
                                 className="transition-all duration-1000 ease-linear"
+                                filter="url(#glow)"
                               >
                                 <animate
                                   attributeName="r"
-                                  values="6;10;6"
+                                  values="8;12;8"
                                   dur="1.5s"
                                   repeatCount="indefinite"
                                 />
                               </circle>
                             )}
 
+                            {/* Glow effect for dot */}
+                            <defs>
+                              <filter id="glow">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                <feMerge>
+                                  <feMergeNode in="coloredBlur"/>
+                                  <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                              </filter>
+                            </defs>
+
                             {/* Cycle markers */}
                             {Array.from({ length: selectedCycles || 4 }).map((_, i) => (
                               <text
                                 key={i}
-                                x={30 + (i * 90) + 45}
-                                y={280}
+                                x={(i * (800 / (selectedCycles || 4))) + (800 / (selectedCycles || 4) / 2)}
+                                y="380"
                                 textAnchor="middle"
                                 fill="#9CA3AF"
-                                fontSize="12"
-                                fontWeight="500"
+                                fontSize="14"
+                                fontWeight="600"
                               >
-                                {i + 1}
+                                Cycle {i + 1}
                               </text>
                             ))}
                           </svg>
 
                           {/* Phase Text */}
                           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center">
-                            <div className="text-lg font-semibold text-gray-700 uppercase tracking-wider bg-white px-3 py-1 rounded-lg shadow-sm">
+                            <div className="text-xl font-bold text-gray-800 uppercase tracking-wider bg-white/90 backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg border border-gray-200">
                               {breathingPhase === 'inhale' && 'INHALE'}
                               {breathingPhase === 'hold1' && 'HOLD'}
                               {breathingPhase === 'exhale' && 'EXHALE'}
