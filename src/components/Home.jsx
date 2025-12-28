@@ -270,24 +270,46 @@ export default function Home() {
     return 0;
   };
 
-  // Get balloon scale for 4-7-8 breathing animation
-  const getBalloonScale478 = () => {
-    if (!isExercising) return 0.3; // Small when not exercising
-
-    if (breathingPhase === 'inhale') {
-      // INHALE: Scale from 0.3 to 1.0 over 4 seconds (timer 0→4)
-      const progress = timer / 4;
-      return 0.3 + (0.7 * progress); // 0.3 → 1.0
-    } else if (breathingPhase === 'hold1') {
-      // HOLD: Stay at full size (timer 0→6)
-      return 1.0;
-    } else if (breathingPhase === 'exhale') {
-      // EXHALE: Scale from 1.0 to 0.3 over 8 seconds (timer 7→0, descending)
-      const progress = timer / 7;
-      return 0.3 + (0.7 * progress); // 1.0 → 0.3
+  // Get balloon animation properties for 4-7-8 breathing
+  const getBalloonAnimation478 = () => {
+    if (!isExercising) {
+      return { scale: 0.3, translateY: 0, rotation: 0 };
     }
 
-    return 0.3;
+    if (breathingPhase === 'inhale') {
+      // INHALE: Scale from 0.3 to 1.0 AND move upward (0 to -100px)
+      const progress = timer / 4;
+      const easeProgress = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2; // easeInOut
+      return {
+        scale: 0.3 + (0.7 * easeProgress),
+        translateY: -100 * easeProgress,
+        rotation: 0
+      };
+    } else if (breathingPhase === 'hold1') {
+      // HOLD: Stay at full size with gentle sway side to side
+      const swayProgress = (timer % 3) / 3; // Sway cycle every 3 seconds
+      const rotation = Math.sin(swayProgress * Math.PI * 2) * 3; // ±3 degrees
+      return {
+        scale: 1.0,
+        translateY: -100,
+        rotation: rotation
+      };
+    } else if (breathingPhase === 'exhale') {
+      // EXHALE: Scale from 1.0 to 0.3 AND move downward (-100 to 0)
+      const progress = timer / 7;
+      const easeProgress = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2; // easeInOut
+      return {
+        scale: 0.3 + (0.7 * easeProgress),
+        translateY: -100 * easeProgress,
+        rotation: 0
+      };
+    }
+
+    return { scale: 0.3, translateY: 0, rotation: 0 };
   };
 
   // Generate 4-7-8 wave path: rise → plateau → decline
@@ -866,18 +888,18 @@ export default function Home() {
                               {/* Balloon string */}
                               <line
                                 x1="200"
-                                y1={350 - (getBalloonScale478() * 100)}
+                                y1={350 + getBalloonAnimation478().translateY + (getBalloonAnimation478().scale * 150)}
                                 x2="200"
                                 y2="480"
                                 stroke="#94A3B8"
                                 strokeWidth="2"
                                 strokeLinecap="round"
-                                className="transition-all duration-1000"
+                                className="transition-all duration-1000 ease-out"
                               />
 
                               {/* Balloon body */}
                               <g
-                                transform={`translate(200, 200) scale(${getBalloonScale478()})`}
+                                transform={`translate(200, ${350 + getBalloonAnimation478().translateY}) scale(${getBalloonAnimation478().scale}) rotate(${getBalloonAnimation478().rotation})`}
                                 className="transition-all duration-1000 ease-out"
                                 style={{ transformOrigin: 'center' }}
                               >
