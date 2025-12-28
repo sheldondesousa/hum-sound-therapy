@@ -29,11 +29,6 @@ Improves focus: Enhances concentration, making it great for high-pressure situat
     }
   };
 
-  // Debug: Log the type parameter
-  console.log('Exercise type from URL:', type);
-  console.log('Available exercises:', Object.keys(exerciseData));
-  console.log('Exercise data found:', exerciseData[type]);
-
   const exercise = exerciseData[type] || exerciseData['box'];
 
   const handleStartExercise = () => {
