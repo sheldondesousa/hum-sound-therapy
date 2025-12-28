@@ -65,56 +65,111 @@ export default function Home() {
   useEffect(() => {
     if (!isExercising || isPaused) return;
 
-    // Dynamic interval based on breathing phase
-    // INHALE and EXHALE: 5 counts (0-4) over 4 seconds = 800ms per count
-    // HOLD1 and HOLD2: 4 counts (1-4) over 4 seconds = 1000ms per count
-    const intervalDuration = (breathingPhase === 'inhale' || breathingPhase === 'exhale') ? 800 : 1000;
+    // Exercise-specific timing configurations
+    const is478 = selectedExercise?.name === '4-7-8 Breathing';
+
+    // Dynamic interval based on breathing phase and exercise type
+    let intervalDuration;
+    if (is478) {
+      // 4-7-8: INHALE=4s (5 counts, 800ms), HOLD=7s (7 counts, 1000ms), EXHALE=8s (8 counts, 1000ms)
+      if (breathingPhase === 'inhale') intervalDuration = 800; // 5 counts * 800ms = 4s
+      else if (breathingPhase === 'hold1') intervalDuration = 1000; // 7 counts * 1000ms = 7s
+      else if (breathingPhase === 'exhale') intervalDuration = 1000; // 8 counts * 1000ms = 8s
+      else intervalDuration = 1000;
+    } else {
+      // Box breathing: all phases use same interval pattern
+      // INHALE and EXHALE: 5 counts (0-4) over 4 seconds = 800ms per count
+      // HOLD1 and HOLD2: 4 counts (1-4) over 4 seconds = 1000ms per count
+      intervalDuration = (breathingPhase === 'inhale' || breathingPhase === 'exhale') ? 800 : 1000;
+    }
 
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
-        // Handle phase transitions and timer logic
-        // INHALE: 0-1-2-3-4 (increment) - 5 counts over 4 seconds (800ms each)
-        if (breathingPhase === 'inhale') {
-          if (prevTimer < 4) {
-            return prevTimer + 1;
-          } else {
-            setBreathingPhase('hold1');
-            return 1; // Start HOLD1 at 1
-          }
-        // HOLD1: 1-2-3-4 (increment) - 4 counts over 4 seconds (1000ms each)
-        } else if (breathingPhase === 'hold1') {
-          if (prevTimer < 4) {
-            return prevTimer + 1;
-          } else {
-            setBreathingPhase('exhale');
-            return 4; // Start EXHALE at 4
-          }
-        // EXHALE: 4-3-2-1-0 (decrement) - 5 counts over 4 seconds (800ms each)
-        } else if (breathingPhase === 'exhale') {
-          if (prevTimer > 0) {
-            return prevTimer - 1;
-          } else {
-            setBreathingPhase('hold2');
-            return 1; // Start HOLD2 at 1
-          }
-        // HOLD2: 1-2-3-4 (increment) - 4 counts over 4 seconds (1000ms each)
-        } else if (breathingPhase === 'hold2') {
-          if (prevTimer < 4) {
-            return prevTimer + 1;
-          } else {
-            // Cycle completed, check if we should continue
-            const nextCycle = currentCycle + 1;
-            if (nextCycle >= selectedCycles) {
-              // Reached target cycles, stop the exercise
-              setIsExercising(false);
-              setCurrentCycle(0);
-              setBreathingPhase('inhale');
-              return 0;
+        // Handle phase transitions and timer logic based on exercise type
+        if (is478) {
+          // 4-7-8 Breathing pattern
+          if (breathingPhase === 'inhale') {
+            // INHALE: 0-1-2-3-4 (5 counts over 4s)
+            if (prevTimer < 4) {
+              return prevTimer + 1;
             } else {
-              // Continue to next cycle
-              setCurrentCycle(nextCycle);
-              setBreathingPhase('inhale');
-              return 0;
+              setBreathingPhase('hold1');
+              return 0; // Start HOLD1 at 0
+            }
+          } else if (breathingPhase === 'hold1') {
+            // HOLD: 0-1-2-3-4-5-6 (7 counts over 7s)
+            if (prevTimer < 6) {
+              return prevTimer + 1;
+            } else {
+              setBreathingPhase('exhale');
+              return 7; // Start EXHALE at 7
+            }
+          } else if (breathingPhase === 'exhale') {
+            // EXHALE: 7-6-5-4-3-2-1-0 (8 counts over 8s, descending)
+            if (prevTimer > 0) {
+              return prevTimer - 1;
+            } else {
+              // Cycle completed, check if we should continue
+              const nextCycle = currentCycle + 1;
+              if (nextCycle >= selectedCycles) {
+                // Reached target cycles, stop the exercise
+                setIsExercising(false);
+                setCurrentCycle(0);
+                setBreathingPhase('inhale');
+                return 0;
+              } else {
+                // Continue to next cycle
+                setCurrentCycle(nextCycle);
+                setBreathingPhase('inhale');
+                return 0;
+              }
+            }
+          }
+        } else {
+          // Box Breathing pattern (4-4-4-4)
+          if (breathingPhase === 'inhale') {
+            // INHALE: 0-1-2-3-4 (5 counts over 4s)
+            if (prevTimer < 4) {
+              return prevTimer + 1;
+            } else {
+              setBreathingPhase('hold1');
+              return 1; // Start HOLD1 at 1
+            }
+          } else if (breathingPhase === 'hold1') {
+            // HOLD1: 1-2-3-4 (4 counts over 4s)
+            if (prevTimer < 4) {
+              return prevTimer + 1;
+            } else {
+              setBreathingPhase('exhale');
+              return 4; // Start EXHALE at 4
+            }
+          } else if (breathingPhase === 'exhale') {
+            // EXHALE: 4-3-2-1-0 (5 counts over 4s)
+            if (prevTimer > 0) {
+              return prevTimer - 1;
+            } else {
+              setBreathingPhase('hold2');
+              return 1; // Start HOLD2 at 1
+            }
+          } else if (breathingPhase === 'hold2') {
+            // HOLD2: 1-2-3-4 (4 counts over 4s)
+            if (prevTimer < 4) {
+              return prevTimer + 1;
+            } else {
+              // Cycle completed, check if we should continue
+              const nextCycle = currentCycle + 1;
+              if (nextCycle >= selectedCycles) {
+                // Reached target cycles, stop the exercise
+                setIsExercising(false);
+                setCurrentCycle(0);
+                setBreathingPhase('inhale');
+                return 0;
+              } else {
+                // Continue to next cycle
+                setCurrentCycle(nextCycle);
+                setBreathingPhase('inhale');
+                return 0;
+              }
             }
           }
         }
@@ -123,7 +178,7 @@ export default function Home() {
     }, intervalDuration);
 
     return () => clearInterval(interval);
-  }, [isExercising, isPaused, breathingPhase, currentCycle, selectedCycles]);
+  }, [isExercising, isPaused, breathingPhase, currentCycle, selectedCycles, selectedExercise]);
 
   // Track data for each option
   const tracksByOption = {
@@ -213,6 +268,36 @@ export default function Home() {
       return 0; // HOLD after EXHALE: No circles
     }
     return 0;
+  };
+
+  // Get dot position for 4-7-8 breathing animation
+  const getDotPosition478 = () => {
+    // Path coordinates:
+    // INHALE (4s, 0-4): Move from (50,250) to (130,170) - 45° upward angle
+    // HOLD (7s, 0-6): Move from (130,170) to (260,170) - horizontal
+    // EXHALE (8s, 7-0): Move from (260,170) to (310,270) - ~70° downward angle
+
+    if (breathingPhase === 'inhale') {
+      // INHALE: 4 seconds (timer 0→4)
+      const progress = timer / 4; // 0 to 1
+      const x = 50 + (130 - 50) * progress; // 50 → 130
+      const y = 250 - (250 - 170) * progress; // 250 → 170
+      return { x, y };
+    } else if (breathingPhase === 'hold1') {
+      // HOLD: 7 seconds (timer 0→6)
+      const progress = timer / 6; // Normalize to 0-1
+      const x = 130 + (260 - 130) * progress; // 130 → 260
+      const y = 170; // Stay horizontal
+      return { x, y };
+    } else if (breathingPhase === 'exhale') {
+      // EXHALE: 8 seconds (timer 7→0, descending)
+      const progress = (7 - timer) / 7; // 0 to 1 (reversed from 7 to 0)
+      const x = 260 + (310 - 260) * progress; // 260 → 310
+      const y = 170 + (270 - 170) * progress; // 170 → 270
+      return { x, y };
+    }
+
+    return { x: 50, y: 250 }; // Default starting position
   };
 
   // Get data for all circles to render
@@ -661,6 +746,48 @@ export default function Home() {
                             </div>
                           </div>
                         </>
+                      ) : selectedExercise?.name === '4-7-8 Breathing' ? (
+                        /* 4-7-8 Wave Animation */
+                        <div className="flex-1 flex items-center justify-center w-full relative">
+                          <svg width="400" height="300" viewBox="0 0 400 300" className="w-full h-full">
+                            {/* Draw the wave path */}
+                            <path
+                              d="M 50,250 L 130,170 L 260,170 L 310,270"
+                              stroke="#E5E7EB"
+                              strokeWidth="3"
+                              fill="none"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+
+                            {/* Blue dot that moves along the path */}
+                            {isExercising && (
+                              <circle
+                                cx={getDotPosition478().x}
+                                cy={getDotPosition478().y}
+                                r="8"
+                                fill="#067AC3"
+                                className="transition-all duration-1000 ease-linear"
+                              >
+                                <animate
+                                  attributeName="r"
+                                  values="8;12;8"
+                                  dur="1s"
+                                  repeatCount="indefinite"
+                                />
+                              </circle>
+                            )}
+                          </svg>
+
+                          {/* Phase Text */}
+                          <div className="absolute bottom-4 text-center">
+                            <div className="text-lg font-semibold text-gray-700 uppercase tracking-wider">
+                              {breathingPhase === 'inhale' && 'INHALE'}
+                              {breathingPhase === 'hold1' && 'HOLD'}
+                              {breathingPhase === 'exhale' && 'EXHALE'}
+                            </div>
+                          </div>
+                        </div>
                       ) : (
                         /* Placeholder for other breathing exercises */
                         <div className="flex-1 flex items-center justify-center w-full">
