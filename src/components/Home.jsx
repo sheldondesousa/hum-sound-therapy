@@ -8,6 +8,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedExercise, setSelectedExercise] = useState(null);
+  const [showingInfo, setShowingInfo] = useState(false); // Track if showing info screen
   const [isExercising, setIsExercising] = useState(false);
   const [breathingPhase, setBreathingPhase] = useState('inhale'); // inhale, hold1, exhale, hold2
   const [timer, setTimer] = useState(1);
@@ -406,13 +407,111 @@ export default function Home() {
                   <div className="flex items-center justify-center py-12 text-center">
                     <p className="text-gray-400 text-sm">Select Focus, Calm, or Breathe to see tracks</p>
                   </div>
+                ) : selectedOption === 'breathe' && selectedExercise && showingInfo ? (
+                  /* Breathing Exercise Info Screen */
+                  <div className="flex flex-col h-full w-full">
+                    {/* Header */}
+                    <div className="flex-[0.1] flex items-center justify-between px-2 mb-4">
+                      <button
+                        onClick={() => {
+                          setSelectedExercise(null);
+                          setShowingInfo(false);
+                        }}
+                        className="flex items-center gap-2 text-sm text-gray-700 hover:text-black transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        <span>Back</span>
+                      </button>
+                      <div className="w-14"></div>
+                    </div>
+
+                    {/* Scrollable Content */}
+                    <div className="flex-1 overflow-y-auto px-2">
+                      {/* Title */}
+                      <h1 className="text-4xl font-bold mb-4 text-black">
+                        {selectedExercise.name.replace(/\s*\([^)]*\)/, '')}
+                      </h1>
+
+                      {/* Description */}
+                      <p className="text-base text-gray-700 mb-6 leading-relaxed">
+                        Box breathing (4-4-4-4) is a simple, effective relaxation technique where you inhale for 4 counts, hold for 4, exhale for 4, and hold again for 4, creating a pattern to calm the nervous system, reduce stress, and improve focus for important moments.
+                      </p>
+
+                      {/* Why It Works Section */}
+                      <h2 className="text-2xl font-bold mb-3 text-black">
+                        Why it works
+                      </h2>
+
+                      <p className="text-base text-gray-700 mb-6 leading-relaxed">
+                        <strong>Calms your nervous system:</strong> Activates the parasympathetic (rest-and-digest) system, counteracting the fight-or-flight response.
+                        <br/><br/>
+                        <strong>Reduces stress & anxiety:</strong> Helps lower heart rate and blood pressure, bringing a sense of calm.
+                        <br/><br/>
+                        <strong>Improves focus:</strong> Enhances concentration, making it great for high-pressure situations like presentations or exams.
+                      </p>
+
+                      {/* Cycle Selector */}
+                      <div className="mb-6">
+                        <h3 className="text-lg font-bold mb-3 text-black">Select Cycle Count</h3>
+                        <div className="flex gap-3">
+                          {[3, 5, 7, 10].map((cycles) => (
+                            <button
+                              key={cycles}
+                              onClick={() => setSelectedCycles(cycles)}
+                              className={`w-14 h-14 rounded-xl font-bold text-lg transition-all ${
+                                selectedCycles === cycles
+                                  ? 'bg-black text-white'
+                                  : 'bg-gray-100 text-black hover:bg-gray-200'
+                              }`}
+                            >
+                              {cycles}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom Buttons */}
+                    <div className="pt-4 px-2">
+                      <button
+                        onClick={() => {
+                          setShowingInfo(false);
+                          setIsExercising(true);
+                          setBreathingPhase('inhale');
+                          setTimer(1);
+                          setCurrentCycle(0);
+                        }}
+                        className="w-full py-3 bg-black text-white text-base font-bold rounded-xl hover:bg-gray-800 transition-colors mb-2"
+                      >
+                        Start Exercise
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowingInfo(false);
+                          setIsExercising(true);
+                          setBreathingPhase('inhale');
+                          setTimer(1);
+                          setCurrentCycle(0);
+                        }}
+                        className="w-full py-2 text-gray-600 text-sm hover:text-black transition-colors"
+                      >
+                        Skip
+                      </button>
+                    </div>
+                  </div>
                 ) : selectedOption === 'breathe' && selectedExercise ? (
                   /* Breathing Exercise Detail View */
                   <div className="flex flex-col h-full w-full">
                     {/* Header - 10% */}
                     <div className="flex-[0.1] flex items-center justify-between px-2">
                       <button
-                        onClick={() => setSelectedExercise(null)}
+                        onClick={() => {
+                          setSelectedExercise(null);
+                          setIsExercising(false);
+                          setShowingInfo(false);
+                        }}
                         className="flex items-center gap-2 text-sm text-gray-700 hover:text-black transition-colors"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -609,9 +708,9 @@ export default function Home() {
                       key={track.id}
                       onClick={() => {
                         if (selectedOption === 'breathe') {
-                          // Navigate to info screen for breathing exercises
-                          const type = track.name.toLowerCase().split(' ')[0]; // e.g., 'box' from 'Box Breathing'
-                          navigate(`/breathe/${type}/info`);
+                          // Show info screen for breathing exercises
+                          setSelectedExercise(track);
+                          setShowingInfo(true);
                         }
                       }}
                       className="w-full flex items-center justify-between py-4 border-b border-gray-200 hover:bg-gray-50 hover:opacity-70 transition-all group"
