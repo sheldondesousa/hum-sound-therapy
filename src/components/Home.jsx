@@ -178,13 +178,13 @@ export default function Home() {
   // Get number of circles to display based on phase and timer
   const getVisibleCircleCount = () => {
     if (breathingPhase === 'inhale') {
-      // INHALE: timer 0 = 0 circles, timer 1-4 = 1-4 circles expanding
+      // INHALE: timer 0→4, circles 0→4 (expanding)
       return timer === 0 ? 0 : timer;
     } else if (breathingPhase === 'hold1') {
       return 4; // HOLD after INHALE: Keep all 4 circles at max size
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: timer 0 = 0 circles, timer 1-4 = 4-1 circles contracting
-      return timer === 0 ? 0 : (5 - timer);
+      // EXHALE: timer 4→0, circles 4→0 (contracting from max)
+      return timer;
     } else if (breathingPhase === 'hold2') {
       return 0; // HOLD after EXHALE: No circles
     }
