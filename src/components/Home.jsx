@@ -497,25 +497,16 @@ export default function Home() {
                       </div>
                     </div>
 
-                    {/* Bottom Buttons */}
+                    {/* Bottom Button */}
                     <div className="pt-4 px-2">
                       <button
                         onClick={() => {
                           setShowingInfo(false);
                           setCountdown(3); // Start countdown
                         }}
-                        className="w-full py-3 bg-black text-white text-base font-bold rounded-xl hover:bg-gray-800 transition-colors mb-2"
+                        className="w-full py-3 bg-black text-white text-base font-bold rounded-xl hover:bg-gray-800 transition-colors"
                       >
                         Start Exercise
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowingInfo(false);
-                          setCountdown(3); // Start countdown (same as Start)
-                        }}
-                        className="w-full py-2 text-gray-600 text-sm hover:text-black transition-colors"
-                      >
-                        Skip
                       </button>
                     </div>
                   </div>
@@ -646,12 +637,12 @@ export default function Home() {
                             <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
                               {/* Segmented Progress */}
                               <div className="h-full flex gap-1">
-                                {/* Show segments based on countdown value */}
+                                {/* Show segments based on countdown value - decrements from left to right */}
                                 {Array.from({ length: 3 }).map((_, index) => (
                                   <div
                                     key={index}
                                     className={`flex-1 transition-all duration-300 ${
-                                      index < countdown ? 'bg-black' : 'bg-transparent'
+                                      index >= (3 - countdown) ? 'bg-black' : 'bg-transparent'
                                     }`}
                                   />
                                 ))}
