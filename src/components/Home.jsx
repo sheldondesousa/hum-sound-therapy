@@ -698,10 +698,10 @@ export default function Home() {
                             setIsPaused(true);
                           }
                         }}
-                        className={`px-8 py-3 rounded-full hover:opacity-90 transition-opacity font-medium text-sm ${
+                        className={`px-8 py-3 rounded-full hover:opacity-90 transition-opacity font-medium text-sm border-2 ${
                           isPaused
-                            ? 'bg-black text-white'
-                            : 'bg-transparent text-black border-2 border-black'
+                            ? 'bg-black text-white border-black'
+                            : 'bg-transparent text-black border-black'
                         }`}
                       >
                         {isPaused ? 'Start' : 'Pause'}
