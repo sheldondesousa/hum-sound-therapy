@@ -9,11 +9,33 @@ export default function Home() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [showingInfo, setShowingInfo] = useState(false); // Track if showing info screen
+  const [countdown, setCountdown] = useState(null); // Track countdown: 3, 2, 1, or null
   const [isExercising, setIsExercising] = useState(false);
   const [breathingPhase, setBreathingPhase] = useState('inhale'); // inhale, hold1, exhale, hold2
   const [timer, setTimer] = useState(1);
   const [selectedCycles, setSelectedCycles] = useState(4);
   const [currentCycle, setCurrentCycle] = useState(0);
+
+  // Countdown effect
+  useEffect(() => {
+    if (countdown === null) return;
+
+    if (countdown === 0) {
+      // Countdown finished, start exercise
+      setCountdown(null);
+      setIsExercising(true);
+      setBreathingPhase('inhale');
+      setTimer(1);
+      setCurrentCycle(0);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setCountdown(countdown - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [countdown]);
 
   // Breathing animation cycle effect
   useEffect(() => {
@@ -454,21 +476,23 @@ export default function Home() {
 
                       {/* Cycle Selector */}
                       <div className="mb-6">
-                        <h3 className="text-lg font-bold mb-3 text-black">Select Cycle Count</h3>
-                        <div className="flex gap-3">
-                          {[3, 5, 7, 10].map((cycles) => (
-                            <button
-                              key={cycles}
-                              onClick={() => setSelectedCycles(cycles)}
-                              className={`w-14 h-14 rounded-xl font-bold text-lg transition-all ${
-                                selectedCycles === cycles
-                                  ? 'bg-black text-white'
-                                  : 'bg-gray-100 text-black hover:bg-gray-200'
-                              }`}
-                            >
-                              {cycles}
-                            </button>
-                          ))}
+                        <div className="flex flex-col items-center gap-2">
+                          <span className="text-sm text-gray-600 font-medium">Select Cycles</span>
+                          <div className="flex gap-3">
+                            {[4, 8, 12].map((cycles) => (
+                              <button
+                                key={cycles}
+                                onClick={() => setSelectedCycles(cycles)}
+                                className={`w-12 h-12 rounded-full text-base font-bold transition-all ${
+                                  selectedCycles === cycles
+                                    ? 'bg-black text-white shadow-lg'
+                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                }`}
+                              >
+                                {cycles}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -478,10 +502,7 @@ export default function Home() {
                       <button
                         onClick={() => {
                           setShowingInfo(false);
-                          setIsExercising(true);
-                          setBreathingPhase('inhale');
-                          setTimer(1);
-                          setCurrentCycle(0);
+                          setCountdown(3); // Start countdown
                         }}
                         className="w-full py-3 bg-black text-white text-base font-bold rounded-xl hover:bg-gray-800 transition-colors mb-2"
                       >
@@ -490,10 +511,7 @@ export default function Home() {
                       <button
                         onClick={() => {
                           setShowingInfo(false);
-                          setIsExercising(true);
-                          setBreathingPhase('inhale');
-                          setTimer(1);
-                          setCurrentCycle(0);
+                          setCountdown(3); // Start countdown (same as Start)
                         }}
                         className="w-full py-2 text-gray-600 text-sm hover:text-black transition-colors"
                       >
@@ -511,6 +529,7 @@ export default function Home() {
                           setSelectedExercise(null);
                           setIsExercising(false);
                           setShowingInfo(false);
+                          setCountdown(null);
                         }}
                         className="flex items-center gap-2 text-sm text-gray-700 hover:text-black transition-colors"
                       >
@@ -617,34 +636,24 @@ export default function Home() {
                     <div className="flex-[0.2] flex flex-col justify-between py-6">
                       {/* Cycle Display Area - Centered with equal spacing */}
                       <div className="flex flex-col items-center justify-center">
-                        {/* Progress Display - Show during exercise */}
-                        {isExercising && (
+                        {/* Countdown Display - Show during countdown */}
+                        {countdown !== null && countdown > 0 && (
                           <div className="text-center">
-                            <span className="text-sm text-gray-600 font-medium">
-                              Cycle {currentCycle + 1} of {selectedCycles}
+                            <span className="text-sm text-gray-600 font-medium mb-2 block">
+                              Exercise starting
+                            </span>
+                            <span className="text-5xl font-bold text-black">
+                              {countdown}
                             </span>
                           </div>
                         )}
 
-                        {/* Cycle Selection - Only show when not exercising */}
-                        {!isExercising && (
-                          <div className="flex flex-col items-center gap-2">
-                            <span className="text-sm text-gray-600 font-medium">Select Cycles</span>
-                            <div className="flex gap-3">
-                              {[4, 8, 12].map((cycles) => (
-                                <button
-                                  key={cycles}
-                                  onClick={() => setSelectedCycles(cycles)}
-                                  className={`w-12 h-12 rounded-full text-base font-bold transition-all ${
-                                    selectedCycles === cycles
-                                      ? 'bg-black text-white shadow-lg'
-                                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                  }`}
-                                >
-                                  {cycles}
-                                </button>
-                              ))}
-                            </div>
+                        {/* Progress Display - Show during exercise */}
+                        {isExercising && countdown === null && (
+                          <div className="text-center">
+                            <span className="text-sm text-gray-600 font-medium">
+                              Cycle {currentCycle + 1} of {selectedCycles}
+                            </span>
                           </div>
                         )}
                       </div>
