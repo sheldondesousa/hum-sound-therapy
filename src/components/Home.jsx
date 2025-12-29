@@ -50,6 +50,7 @@ export default function Home() {
   const [selectedCycles, setSelectedCycles] = useState(4);
   const [currentCycle, setCurrentCycle] = useState(0);
   const [showTipsSheet, setShowTipsSheet] = useState(false); // Track tips bottom sheet visibility
+  const [exerciseCompleted, setExerciseCompleted] = useState(false); // Track if exercise completed
 
   // Auto-start countdown when exercise view loads
   useEffect(() => {
@@ -134,8 +135,9 @@ export default function Home() {
               // Cycle completed, check if we should continue
               const nextCycle = currentCycle + 1;
               if (nextCycle >= selectedCycles) {
-                // Reached target cycles, stop the exercise
+                // Reached target cycles, show completion screen
                 setIsExercising(false);
+                setExerciseCompleted(true);
                 setCurrentCycle(0);
                 setBreathingPhase('inhale');
                 return 0;
@@ -173,8 +175,9 @@ export default function Home() {
               // Cycle completed, check if we should continue
               const nextCycle = currentCycle + 1;
               if (nextCycle >= selectedCycles) {
-                // Reached target cycles, stop the exercise
+                // Reached target cycles, show completion screen
                 setIsExercising(false);
+                setExerciseCompleted(true);
                 setCurrentCycle(0);
                 setBreathingPhase('inhale');
                 return 0;
@@ -220,8 +223,9 @@ export default function Home() {
               // Cycle completed, check if we should continue
               const nextCycle = currentCycle + 1;
               if (nextCycle >= selectedCycles) {
-                // Reached target cycles, stop the exercise
+                // Reached target cycles, show completion screen
                 setIsExercising(false);
+                setExerciseCompleted(true);
                 setCurrentCycle(0);
                 setBreathingPhase('inhale');
                 return 0;
@@ -959,6 +963,14 @@ export default function Home() {
 
                     {/* Breathing Circles Area - 40% */}
                     <div className="flex-[0.4] bg-white rounded-lg flex flex-col items-center justify-center p-4">
+                      {/* Show completion screen when exercise is completed */}
+                      {exerciseCompleted ? (
+                        <div className="flex flex-col items-center justify-center text-center">
+                          <h2 className="text-6xl font-bold text-black mb-4">COMPLETE</h2>
+                          <p className="text-2xl text-gray-600">You Got This!</p>
+                        </div>
+                      ) : (
+                        <>
                       {/* Conditional Animation based on exercise */}
                       {selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
                         <>
@@ -1163,12 +1175,14 @@ export default function Home() {
                           </div>
                         </div>
                       )}
+                        </>
+                      )}
                     </div>
 
                     {/* Exercise Starting Section - 15% */}
                     <div className="flex-[0.15] flex items-center justify-center">
-                      {/* Countdown Progress Bar - Show during countdown */}
-                      {countdown !== null && countdown > 0 && (
+                      {/* Countdown Progress Bar - Show during countdown (only on first start, not after completion) */}
+                      {countdown !== null && countdown > 0 && !exerciseCompleted && (
                         <div className="w-full max-w-xs px-4">
                           <span className="text-sm text-gray-600 font-medium mb-2 block text-center">
                             Exercise starting
@@ -1221,7 +1235,15 @@ export default function Home() {
                       {/* Start/Pause Button */}
                       <button
                         onClick={() => {
-                          if (isPaused) {
+                          if (exerciseCompleted) {
+                            // Restart exercise from beginning with countdown
+                            setExerciseCompleted(false);
+                            setCountdown(3);
+                            setIsPaused(false);
+                            setCurrentCycle(0);
+                            setBreathingPhase('inhale');
+                            setTimer(0);
+                          } else if (isPaused) {
                             // Resume from pause
                             setIsPaused(false);
                           } else if (countdown !== null && countdown > 0) {
@@ -1233,12 +1255,12 @@ export default function Home() {
                           }
                         }}
                         className={`px-8 py-3 rounded-full hover:opacity-90 transition-opacity font-medium text-sm border-2 ${
-                          isPaused
+                          isPaused || exerciseCompleted
                             ? 'bg-black text-white border-black'
                             : 'bg-transparent text-black border-black'
                         }`}
                       >
-                        {isPaused ? 'Start' : 'Pause'}
+                        {exerciseCompleted || isPaused ? 'Start' : 'Pause'}
                       </button>
 
                       <button
