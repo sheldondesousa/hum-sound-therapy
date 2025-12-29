@@ -15,9 +15,11 @@ export default function Home() {
       description: 'Box breathing (4-4-4-4) is a simple, effective relaxation technique where you inhale for 4 counts, hold for 4, exhale for 4, and hold again for 4, creating a pattern to calm the nervous system, reduce stress, and improve focus for important moments.',
       sectionTitle: 'Tips',
       sectionContent: [
-        { label: 'Calms your nervous system:', text: 'Activates the parasympathetic (rest-and-digest) system, counteracting the fight-or-flight response.' },
-        { label: 'Reduces stress & anxiety:', text: 'Helps lower heart rate and blood pressure, bringing a sense of calm.' },
-        { label: 'Improves focus:', text: 'Enhances concentration, making it great for high-pressure situations like presentations or exams.' }
+        { label: '', text: 'If 4 seconds feels too long, start with a 2 or 3-second count and gradually increase it as you become more comfortable.' },
+        { label: '', text: 'Inhale slowly through your nose, filling your lungs and abdomen.' },
+        { label: '', text: 'Hold your breath at the top.' },
+        { label: '', text: 'Exhale gently through your mouth or nose, emptying your lungs completely.' },
+        { label: '', text: 'Hold on empty before starting the next cycle.' }
       ]
     },
     '4-7-8 Breathing': {
