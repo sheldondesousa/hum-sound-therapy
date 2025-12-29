@@ -295,14 +295,14 @@ export default function Home() {
     // 8 circles with 10% opacity decrements - adjusted sizes to fit container
     const sizes = [100, 140, 180, 220, 260, 300, 340, 360];
     const colors = [
-      'rgba(6, 122, 195, 1.0)',   // 100% opacity (darkest - innermost)
-      'rgba(6, 122, 195, 0.9)',   // 90% opacity
-      'rgba(6, 122, 195, 0.8)',   // 80% opacity
-      'rgba(6, 122, 195, 0.7)',   // 70% opacity
-      'rgba(6, 122, 195, 0.6)',   // 60% opacity
-      'rgba(6, 122, 195, 0.5)',   // 50% opacity
-      'rgba(6, 122, 195, 0.4)',   // 40% opacity
-      'rgba(6, 122, 195, 0.3)'    // 30% opacity (lightest - outermost)
+      'rgba(5, 104, 166, 1.0)',   // 100% opacity (darkest - innermost) - 15% darker base
+      'rgba(5, 104, 166, 0.9)',   // 90% opacity
+      'rgba(5, 104, 166, 0.8)',   // 80% opacity
+      'rgba(5, 104, 166, 0.7)',   // 70% opacity
+      'rgba(5, 104, 166, 0.6)',   // 60% opacity
+      'rgba(5, 104, 166, 0.5)',   // 50% opacity
+      'rgba(5, 104, 166, 0.4)',   // 40% opacity
+      'rgba(5, 104, 166, 0.3)'    // 30% opacity (lightest - outermost)
     ];
     const blurs = [20, 21, 22, 23, 24, 25, 26, 27];
 
@@ -921,7 +921,7 @@ export default function Home() {
                             {/* Phase Text - At Center of Circles */}
                             <div className="absolute text-center">
                               <div
-                                className={`text-lg font-semibold text-gray-800 uppercase tracking-wider bg-gradient-to-b from-white/85 to-gray-100/80 backdrop-blur-sm px-6 py-3 rounded-xl border border-gray-200 inline-block ${
+                                className={`text-lg font-semibold text-gray-800 uppercase tracking-wider bg-gradient-to-b from-white/85 to-gray-100/80 backdrop-blur-sm px-6 py-3 rounded-xl inline-block ${
                                   breathingPhase === 'hold1' ? 'pulse-hold' : ''
                                 }`}
                               >
