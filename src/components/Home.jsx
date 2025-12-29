@@ -86,6 +86,7 @@ export default function Home() {
 
     // Exercise-specific timing configurations
     const is478 = selectedExercise?.name === '4-7-8 Breathing';
+    const isCoherent = selectedExercise?.name === 'Coherent breathing (5-5)';
 
     // Dynamic interval based on breathing phase and exercise type
     let intervalDuration;
@@ -95,6 +96,9 @@ export default function Home() {
       else if (breathingPhase === 'hold1') intervalDuration = 1000; // 7 counts * 1000ms = 7s
       else if (breathingPhase === 'exhale') intervalDuration = 1000; // 8 counts * 1000ms = 8s
       else intervalDuration = 1000;
+    } else if (isCoherent) {
+      // Coherent: INHALE=5s (50 counts, 100ms), EXHALE=5s (50 counts, 100ms) for smooth animation
+      intervalDuration = 100; // 100ms for smooth transitions
     } else {
       // Box breathing: all phases use same interval pattern
       // INHALE and EXHALE: 5 counts (0-4) over 4 seconds = 800ms per count
@@ -105,7 +109,38 @@ export default function Home() {
     const interval = setInterval(() => {
       setTimer((prevTimer) => {
         // Handle phase transitions and timer logic based on exercise type
-        if (is478) {
+        if (isCoherent) {
+          // Coherent Breathing pattern (5-5)
+          if (breathingPhase === 'inhale') {
+            // INHALE: 0-49 (50 counts over 5s)
+            if (prevTimer < 49) {
+              return prevTimer + 1;
+            } else {
+              setBreathingPhase('exhale');
+              return 49; // Start EXHALE at 49
+            }
+          } else if (breathingPhase === 'exhale') {
+            // EXHALE: 49-0 (50 counts over 5s, descending)
+            if (prevTimer > 0) {
+              return prevTimer - 1;
+            } else {
+              // Cycle completed, check if we should continue
+              const nextCycle = currentCycle + 1;
+              if (nextCycle >= selectedCycles) {
+                // Reached target cycles, stop the exercise
+                setIsExercising(false);
+                setCurrentCycle(0);
+                setBreathingPhase('inhale');
+                return 0;
+              } else {
+                // Continue to next cycle
+                setCurrentCycle(nextCycle);
+                setBreathingPhase('inhale');
+                return 0;
+              }
+            }
+          }
+        } else if (is478) {
           // 4-7-8 Breathing pattern
           if (breathingPhase === 'inhale') {
             // INHALE: 0-1-2-3-4 (5 counts over 4s)
@@ -456,6 +491,53 @@ export default function Home() {
 
     // Render from largest to smallest so all rings are visible
     return circles.reverse();
+  };
+
+  // Get smooth circle data for Coherent Breathing (5-5)
+  const getCoherentCircleData = () => {
+    if (!isExercising) return { size: 100, opacity: 0, gradients: [] };
+
+    // Timer ranges from 0-49 for both inhale and exhale
+    const progress = timer / 49; // 0 to 1
+    const minSize = 100;
+    const maxSize = 340;
+
+    // Calculate current size with smooth easing
+    const easeProgress = progress < 0.5
+      ? 2 * progress * progress
+      : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+    const currentSize = minSize + (maxSize - minSize) * easeProgress;
+
+    // Calculate how many gradient layers to show (4 total like Box Breathing)
+    const totalLayers = 4;
+    const layerSizes = [160, 220, 280, 340]; // Same as Box Breathing
+    const layerColors = [
+      'rgba(6, 122, 195, 1.0)',   // 100% opacity (darkest - innermost)
+      'rgba(6, 122, 195, 0.75)',  // 75% opacity
+      'rgba(6, 122, 195, 0.5)',   // 50% opacity
+      'rgba(6, 122, 195, 0.25)'   // 25% opacity (lightest - outermost)
+    ];
+    const layerBlurs = [20, 22, 24, 26];
+
+    // Determine which gradient layers are visible based on current size
+    const gradients = [];
+    for (let i = 0; i < totalLayers; i++) {
+      if (currentSize >= layerSizes[i]) {
+        gradients.push({
+          size: layerSizes[i],
+          color: layerColors[i],
+          blur: layerBlurs[i],
+          key: i
+        });
+      }
+    }
+
+    return {
+      size: currentSize,
+      opacity: 1,
+      gradients: gradients.reverse() // Largest to smallest for proper rendering
+    };
   };
 
   const handleLogout = async () => {
@@ -852,7 +934,10 @@ export default function Home() {
                       {isExercising && (breathingPhase === 'inhale' || breathingPhase === 'exhale') && (
                         <div className="text-center">
                           <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
-                            {timer}
+                            {selectedExercise?.name === 'Coherent breathing (5-5)'
+                              ? Math.floor(timer / 10) // Convert 0-49 to 0-5 for display
+                              : timer
+                            }
                           </div>
                         </div>
                       )}
@@ -1003,6 +1088,55 @@ export default function Home() {
                               >
                                 {breathingPhase === 'inhale' && 'INHALE'}
                                 {breathingPhase === 'hold1' && 'HOLD'}
+                                {breathingPhase === 'exhale' && 'EXHALE'}
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : selectedExercise?.name === 'Coherent breathing (5-5)' ? (
+                        /* Coherent Breathing Animation */
+                        <>
+                          {/* Breathing Circle Illustration - Coherent */}
+                          <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Gray Background Circle - Always visible */}
+                            <svg
+                              className="absolute"
+                              width="363"
+                              height="363"
+                              style={{ transform: 'rotate(-90deg)' }}
+                            >
+                              <circle
+                                cx="181.5"
+                                cy="181.5"
+                                r="175"
+                                fill="none"
+                                stroke="#E5E7EB"
+                                strokeWidth="4"
+                              />
+                            </svg>
+
+                            {/* Gradient Circles - Smooth growing animation */}
+                            {getCoherentCircleData().gradients.map((circle) => (
+                              <div
+                                key={circle.key}
+                                className="rounded-full absolute"
+                                style={{
+                                  width: `${circle.size}px`,
+                                  height: `${circle.size}px`,
+                                  border: `20px solid ${circle.color}`,
+                                  backgroundColor: 'transparent',
+                                  boxShadow: `0 0 ${circle.blur}px ${circle.color}`,
+                                  transition: 'all 100ms linear'
+                                }}
+                              />
+                            ))}
+
+                            {/* Phase Text - At Center of Circles */}
+                            <div className="absolute text-center">
+                              <div
+                                className={`text-lg font-semibold text-gray-700 uppercase tracking-wider`}
+                              >
+                                {breathingPhase === 'inhale' && 'INHALE'}
                                 {breathingPhase === 'exhale' && 'EXHALE'}
                               </div>
                             </div>
