@@ -757,10 +757,15 @@ export default function Home() {
                       <div className="flex items-center justify-between w-full max-w-md">
                       <button
                         onClick={() => {
+                          // Reset all exercise state when going back
                           setSelectedExercise(null);
                           setIsExercising(false);
                           setShowingInfo(false);
                           setCountdown(null);
+                          setIsPaused(false);
+                          setBreathingPhase('inhale');
+                          setTimer(0);
+                          setCurrentCycle(0);
                         }}
                         className="flex items-center gap-2 text-sm text-gray-700 hover:text-black transition-colors"
                       >
@@ -983,9 +988,18 @@ export default function Home() {
                       <div className="flex items-center justify-between px-4 w-full max-w-md">
                       <button
                         onClick={() => {
+                          // Navigate to previous exercise and show info screen
                           const currentIndex = currentTracks.findIndex(t => t.id === selectedExercise.id);
                           const prevIndex = currentIndex > 0 ? currentIndex - 1 : currentTracks.length - 1;
                           setSelectedExercise(currentTracks[prevIndex]);
+                          setShowingInfo(true);
+                          // Reset all exercise state
+                          setIsExercising(false);
+                          setCountdown(null);
+                          setIsPaused(false);
+                          setBreathingPhase('inhale');
+                          setTimer(0);
+                          setCurrentCycle(0);
                         }}
                         className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity"
                       >
@@ -1020,9 +1034,18 @@ export default function Home() {
 
                       <button
                         onClick={() => {
+                          // Navigate to next exercise and show info screen
                           const currentIndex = currentTracks.findIndex(t => t.id === selectedExercise.id);
                           const nextIndex = currentIndex < currentTracks.length - 1 ? currentIndex + 1 : 0;
                           setSelectedExercise(currentTracks[nextIndex]);
+                          setShowingInfo(true);
+                          // Reset all exercise state
+                          setIsExercising(false);
+                          setCountdown(null);
+                          setIsPaused(false);
+                          setBreathingPhase('inhale');
+                          setTimer(0);
+                          setCurrentCycle(0);
                         }}
                         className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity"
                       >
