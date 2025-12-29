@@ -15,7 +15,7 @@ export default function Home() {
       description: 'Box breathing (4-4-4-4) is a simple, effective relaxation technique where you inhale for 4 counts, hold for 4, exhale for 4, and hold again for 4, creating a pattern to calm the nervous system, reduce stress, and improve focus for important moments.',
       sectionTitle: 'Tips',
       sectionContent: [
-        { label: '', text: 'If 4 seconds feels too long, start with a 2 or 3-second count and gradually increase it as you become more comfortable.' },
+        { label: 'Duration:', text: 'If 4 seconds feels too long, start with a 2 or 3-second count and gradually increase it as you become more comfortable.' },
         { label: '', text: 'Inhale slowly through your nose, filling your lungs and abdomen.' },
         { label: '', text: 'Hold your breath at the top.' },
         { label: '', text: 'Exhale gently through your mouth or nose, emptying your lungs completely.' },
@@ -919,11 +919,31 @@ export default function Home() {
 
                             {/* Section Content */}
                             <div className="text-base text-gray-700 mb-6 leading-relaxed">
-                              {exerciseContent[selectedExercise.name]?.sectionContent.map((item, index) => (
-                                <p key={index} className={index > 0 ? 'mt-4' : ''}>
-                                  {item.label && <strong>{item.label}</strong>} {item.text}
-                                </p>
-                              ))}
+                              {exerciseContent[selectedExercise.name]?.sectionContent.map((item, index) => {
+                                // Helper function to bold "Inhale", "Hold", "Exhale"
+                                const formatText = (text) => {
+                                  const parts = text.split(/\b(Inhale|Hold|Exhale)\b/g);
+                                  return parts.map((part, i) =>
+                                    ['Inhale', 'Hold', 'Exhale'].includes(part) ?
+                                      <strong key={i}>{part}</strong> : part
+                                  );
+                                };
+
+                                return (
+                                  <div key={index} className={`flex gap-3 ${index > 0 ? 'mt-4' : ''}`}>
+                                    {/* Checkbox with tick mark for Box Breathing */}
+                                    {selectedExercise?.name === 'Box Breathing (4-4-4-4)' && (
+                                      <svg className="w-5 h-5 flex-shrink-0 text-green-600 mt-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                      </svg>
+                                    )}
+                                    <p>
+                                      {item.label && <strong>{item.label}</strong>}{' '}
+                                      {selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? formatText(item.text) : item.text}
+                                    </p>
+                                  </div>
+                                );
+                              })}
                             </div>
 
                             {/* Close Button */}
