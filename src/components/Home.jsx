@@ -494,8 +494,8 @@ export default function Home() {
   };
 
   // Get smooth circle data for Coherent Breathing (5-5)
-  const getCoherentCircleData = () => {
-    if (!isExercising) return { size: 100, opacity: 0, gradients: [] };
+  const getCoherentCircleSize = () => {
+    if (!isExercising) return 100;
 
     // Timer ranges from 0-49 for both inhale and exhale
     const progress = timer / 49; // 0 to 1
@@ -509,35 +509,7 @@ export default function Home() {
 
     const currentSize = minSize + (maxSize - minSize) * easeProgress;
 
-    // Calculate how many gradient layers to show (4 total like Box Breathing)
-    const totalLayers = 4;
-    const layerSizes = [160, 220, 280, 340]; // Same as Box Breathing
-    const layerColors = [
-      'rgba(6, 122, 195, 1.0)',   // 100% opacity (darkest - innermost)
-      'rgba(6, 122, 195, 0.75)',  // 75% opacity
-      'rgba(6, 122, 195, 0.5)',   // 50% opacity
-      'rgba(6, 122, 195, 0.25)'   // 25% opacity (lightest - outermost)
-    ];
-    const layerBlurs = [20, 22, 24, 26];
-
-    // Determine which gradient layers are visible based on current size
-    const gradients = [];
-    for (let i = 0; i < totalLayers; i++) {
-      if (currentSize >= layerSizes[i]) {
-        gradients.push({
-          size: layerSizes[i],
-          color: layerColors[i],
-          blur: layerBlurs[i],
-          key: i
-        });
-      }
-    }
-
-    return {
-      size: currentSize,
-      opacity: 1,
-      gradients: gradients.reverse() // Largest to smallest for proper rendering
-    };
+    return currentSize;
   };
 
   const handleLogout = async () => {
@@ -1115,26 +1087,22 @@ export default function Home() {
                               />
                             </svg>
 
-                            {/* Gradient Circles - Smooth growing animation */}
-                            {getCoherentCircleData().gradients.map((circle) => (
-                              <div
-                                key={circle.key}
-                                className="rounded-full absolute"
-                                style={{
-                                  width: `${circle.size}px`,
-                                  height: `${circle.size}px`,
-                                  border: `20px solid ${circle.color}`,
-                                  backgroundColor: 'transparent',
-                                  boxShadow: `0 0 ${circle.blur}px ${circle.color}`,
-                                  transition: 'all 100ms linear'
-                                }}
-                              />
-                            ))}
+                            {/* Single Expanding/Compressing Circle with Radial Gradient */}
+                            <div
+                              className="rounded-full absolute"
+                              style={{
+                                width: `${getCoherentCircleSize()}px`,
+                                height: `${getCoherentCircleSize()}px`,
+                                background: 'radial-gradient(circle, rgba(6, 122, 195, 1) 0%, rgba(6, 122, 195, 0.6) 50%, rgba(6, 122, 195, 0.2) 100%)',
+                                boxShadow: '0 0 30px rgba(6, 122, 195, 0.5)',
+                                transition: 'all 100ms linear'
+                              }}
+                            />
 
-                            {/* Phase Text - At Center of Circles */}
+                            {/* Phase Text - At Center of Circle */}
                             <div className="absolute text-center">
                               <div
-                                className={`text-lg font-semibold text-gray-700 uppercase tracking-wider`}
+                                className={`text-lg font-semibold text-white uppercase tracking-wider`}
                               >
                                 {breathingPhase === 'inhale' && 'INHALE'}
                                 {breathingPhase === 'exhale' && 'EXHALE'}
