@@ -16,10 +16,10 @@ export default function Home() {
       sectionTitle: 'Tips',
       sectionContent: [
         { label: 'Duration:', text: 'If 4 seconds feels too long, start with a 2 or 3-second count and gradually increase it as you become more comfortable.' },
-        { label: '', text: 'Inhale slowly through your nose, filling your lungs and abdomen.' },
-        { label: '', text: 'Hold your breath at the top.' },
-        { label: '', text: 'Exhale gently through your mouth or nose, emptying your lungs completely.' },
-        { label: '', text: 'Hold on empty before starting the next cycle.' }
+        { label: 'Focus on the Belly:', text: 'Ensure you are using "diaphragmatic breathing." Your stomach should rise as you inhale, rather than just your chest.' },
+        { label: '', text: 'Start on Empty.' },
+        { label: '', text: 'Inhale slowly through your nose, filling your lungs and abdomen. Then HOLD.' },
+        { label: '', text: 'Exhale gently through your mouth or nose, emptying your lungs completely. Then HOLD.' }
       ],
       preparationTitle: 'Preparation',
       preparationContent: [
@@ -920,11 +920,11 @@ export default function Home() {
                             {/* Section Content */}
                             <div className="text-base text-gray-700 mb-6 leading-relaxed">
                               {exerciseContent[selectedExercise.name]?.sectionContent.map((item, index) => {
-                                // Helper function to bold "Inhale", "Hold", "Exhale"
+                                // Helper function to bold "Start", "Inhale", "Hold", "Exhale", "HOLD"
                                 const formatText = (text) => {
-                                  const parts = text.split(/\b(Inhale|Hold|Exhale)\b/g);
+                                  const parts = text.split(/\b(Start|Inhale|Hold|Exhale|HOLD)\b/g);
                                   return parts.map((part, i) =>
-                                    ['Inhale', 'Hold', 'Exhale'].includes(part) ?
+                                    ['Start', 'Inhale', 'Hold', 'Exhale', 'HOLD'].includes(part) ?
                                       <strong key={i}>{part}</strong> : part
                                   );
                                 };
