@@ -33,7 +33,9 @@ export default function Home() {
         { label: 'Before Stressful Events:', text: 'Use it to steady nerves before major tasks like public speaking, exams, or interviews.' },
         { label: 'During a Mid-Day Reset:', text: 'Practice for 5 minutes during a work break or "afternoon slump" to regain focus and concentration.' },
         { label: 'Before Bedtime:', text: 'Perform a few cycles to quiet a racing mind and lower your heart rate for better sleep.' }
-      ]
+      ],
+      safetyTitle: 'Safety First',
+      safetyContent: 'Consult a doctor before practicing if you are pregnant, have a heart condition, or suffer from severe respiratory issues. Stop immediately if you feel dizzy or lightheaded, and return to your normal breathing rhythm.'
     },
     '4-7-8 Breathing': {
       description: 'The 4-7-8 breathing technique, also known as the "Relaxing Breath," is a rhythmic breathing pattern developed by Dr. Andrew Weil. Rooted in the ancient yogic practice of pranayama, it acts as a "natural tranquilizer" for the nervous system by activating the parasympathetic response.',
@@ -67,6 +69,7 @@ export default function Home() {
   const [showTipsSheet, setShowTipsSheet] = useState(false); // Track tips bottom sheet visibility
   const [showPreparationSheet, setShowPreparationSheet] = useState(false); // Track preparation bottom sheet visibility
   const [showWhenToUseSheet, setShowWhenToUseSheet] = useState(false); // Track when to use bottom sheet visibility
+  const [showSafetySheet, setShowSafetySheet] = useState(false); // Track safety bottom sheet visibility
   const [exerciseCompleted, setExerciseCompleted] = useState(false); // Track if exercise completed
 
   // Auto-start countdown when exercise view loads
@@ -861,6 +864,22 @@ export default function Home() {
                           <span className="text-2xl font-light text-gray-700">+</span>
                         </button>
                       )}
+
+                      {/* Safety Tile - Only for Box Breathing */}
+                      {selectedExercise?.name === 'Box Breathing (4-4-4-4)' && (
+                        <button
+                          onClick={() => setShowSafetySheet(true)}
+                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-6 hover:bg-gray-50 transition-colors"
+                        >
+                          <div className="flex items-center gap-3">
+                            <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <span className="text-base font-semibold text-black">Safety</span>
+                          </div>
+                          <span className="text-2xl font-light text-gray-700">+</span>
+                        </button>
+                      )}
                     </div>
 
                     {/* Cycle Selector - Static position */}
@@ -1074,6 +1093,42 @@ export default function Home() {
                             {/* Close Button */}
                             <button
                               onClick={() => setShowWhenToUseSheet(false)}
+                              className="w-full py-3 bg-gray-100 text-black text-base font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Safety Bottom Sheet */}
+                    {showSafetySheet && (
+                      <div
+                        className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-end"
+                        onClick={() => setShowSafetySheet(false)}
+                      >
+                        <div
+                          className="bg-white rounded-t-3xl w-full max-h-[70vh] overflow-y-auto animate-slide-up"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="p-6">
+                            {/* Sheet Handle */}
+                            <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div>
+
+                            {/* Section Title */}
+                            <h2 className="text-2xl font-bold mb-4 text-black">
+                              {exerciseContent[selectedExercise.name]?.safetyTitle || 'Safety'}
+                            </h2>
+
+                            {/* Section Content */}
+                            <div className="text-base text-gray-700 mb-6 leading-relaxed">
+                              <p>{exerciseContent[selectedExercise.name]?.safetyContent}</p>
+                            </div>
+
+                            {/* Close Button */}
+                            <button
+                              onClick={() => setShowSafetySheet(false)}
                               className="w-full py-3 bg-gray-100 text-black text-base font-bold rounded-xl hover:bg-gray-200 transition-colors"
                             >
                               Close
