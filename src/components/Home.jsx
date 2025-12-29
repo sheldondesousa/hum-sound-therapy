@@ -822,7 +822,7 @@ export default function Home() {
                       {/* Tips Tile */}
                       <button
                         onClick={() => setShowTipsSheet(true)}
-                        className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-6 hover:bg-gray-50 transition-colors"
+                        className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
                       >
                         <div className="flex items-center gap-3">
                           <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -837,7 +837,7 @@ export default function Home() {
                       {selectedExercise?.name === 'Box Breathing (4-4-4-4)' && (
                         <button
                           onClick={() => setShowPreparationSheet(true)}
-                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-6 hover:bg-gray-50 transition-colors"
+                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
                         >
                           <div className="flex items-center gap-3">
                             <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -853,7 +853,7 @@ export default function Home() {
                       {selectedExercise?.name === 'Box Breathing (4-4-4-4)' && (
                         <button
                           onClick={() => setShowWhenToUseSheet(true)}
-                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-6 hover:bg-gray-50 transition-colors"
+                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
                         >
                           <div className="flex items-center gap-3">
                             <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -869,7 +869,7 @@ export default function Home() {
                       {selectedExercise?.name === 'Box Breathing (4-4-4-4)' && (
                         <button
                           onClick={() => setShowSafetySheet(true)}
-                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-6 hover:bg-gray-50 transition-colors"
+                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
                         >
                           <div className="flex items-center gap-3">
                             <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
