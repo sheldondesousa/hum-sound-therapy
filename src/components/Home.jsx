@@ -13,7 +13,7 @@ export default function Home() {
   const exerciseContent = {
     'Box Breathing (4-4-4-4)': {
       description: 'Box breathing (4-4-4-4) is a simple, effective relaxation technique where you inhale for 4 counts, hold for 4, exhale for 4, and hold again for 4, creating a pattern to calm the nervous system, reduce stress, and improve focus for important moments.',
-      sectionTitle: 'Why it works',
+      sectionTitle: 'Tips',
       sectionContent: [
         { label: 'Calms your nervous system:', text: 'Activates the parasympathetic (rest-and-digest) system, counteracting the fight-or-flight response.' },
         { label: 'Reduces stress & anxiety:', text: 'Helps lower heart rate and blood pressure, bringing a sense of calm.' },
@@ -31,7 +31,7 @@ export default function Home() {
     },
     'Coherent breathing (5-5)': {
       description: 'Coherent breathing (or resonance breathing) is a slow, rhythmic breathing technique, typically inhaling for 6 seconds and exhaling for 6 seconds (5-6 breaths per minute), designed to sync your heart rate with your breath for optimal nervous system balance, reducing stress and anxiety while promoting calm and focus by activating the vagus nerve.',
-      sectionTitle: 'How it works',
+      sectionTitle: 'Tips',
       sectionContent: [
         { label: 'Find Your Rhythm:', text: 'Aim for about 5-6 breaths per minute, meaning roughly 6 seconds to inhale and 6 seconds to exhale.' },
         { label: 'Breathe Through Your Nose:', text: 'Inhale and exhale gently and silently through your nose.' },
