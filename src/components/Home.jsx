@@ -292,8 +292,8 @@ export default function Home() {
   const getCirclesData478 = () => {
     const circleCount = getVisibleCircleCount478();
 
-    // 8 circles with 10% opacity decrements
-    const sizes = [120, 160, 200, 240, 280, 320, 360, 400];
+    // 8 circles with 10% opacity decrements - adjusted sizes to fit container
+    const sizes = [100, 140, 180, 220, 260, 300, 340, 360];
     const colors = [
       'rgba(6, 122, 195, 1.0)',   // 100% opacity (darkest - innermost)
       'rgba(6, 122, 195, 0.9)',   // 90% opacity
@@ -873,7 +873,7 @@ export default function Home() {
                               <circle
                                 cx="181.5"
                                 cy="181.5"
-                                r="200"
+                                r="180"
                                 fill="none"
                                 stroke="#E5E7EB"
                                 strokeWidth="4"
@@ -891,12 +891,12 @@ export default function Home() {
                                 <circle
                                   cx="181.5"
                                   cy="181.5"
-                                  r="200"
+                                  r="180"
                                   fill="none"
                                   stroke="#067AC3"
                                   strokeWidth="4"
-                                  strokeDasharray="1256"
-                                  strokeDashoffset={1256 - (1256 * timer / 6)}
+                                  strokeDasharray="1131"
+                                  strokeDashoffset={1131 - (1131 * timer / 6)}
                                   className="transition-all duration-1000"
                                   strokeLinecap="round"
                                 />
