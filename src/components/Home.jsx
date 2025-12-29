@@ -487,6 +487,17 @@ export default function Home() {
         .pulse-hold {
           animation: subtlePulse 2s ease-in-out infinite;
         }
+        @keyframes slideUp {
+          from {
+            transform: translateY(100%);
+          }
+          to {
+            transform: translateY(0);
+          }
+        }
+        .animate-slide-up {
+          animation: slideUp 300ms ease-out;
+        }
       `}</style>
       <div className="flex min-h-screen flex-col lg:flex-row">
         {/* Sidebar - Desktop */}
@@ -728,7 +739,7 @@ export default function Home() {
                     </div>
 
                     {/* Cycle Selector - Static position */}
-                    <div className="px-2 mb-4">
+                    <div className="px-2 mb-[50px]">
                       <div className="flex flex-col items-center gap-2">
                         <span className="text-sm text-gray-600 font-medium">Select Cycles</span>
                         <div className="flex gap-3">
@@ -769,7 +780,7 @@ export default function Home() {
                         onClick={() => setShowTipsSheet(false)}
                       >
                         <div
-                          className="bg-white rounded-t-3xl w-full max-h-[70vh] overflow-y-auto"
+                          className="bg-white rounded-t-3xl w-full max-h-[70vh] overflow-y-auto animate-slide-up"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <div className="p-6">
