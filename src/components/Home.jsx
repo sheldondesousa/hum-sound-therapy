@@ -112,15 +112,15 @@ export default function Home() {
         if (isCoherent) {
           // Coherent Breathing pattern (5-5)
           if (breathingPhase === 'inhale') {
-            // INHALE: 0-49 (50 counts over 5s)
-            if (prevTimer < 49) {
+            // INHALE: 0-50 (51 counts over 5s)
+            if (prevTimer < 50) {
               return prevTimer + 1;
             } else {
               setBreathingPhase('exhale');
-              return 49; // Start EXHALE at 49
+              return 50; // Start EXHALE at 50
             }
           } else if (breathingPhase === 'exhale') {
-            // EXHALE: 49-0 (50 counts over 5s, descending)
+            // EXHALE: 50-0 (51 counts over 5s, descending)
             if (prevTimer > 0) {
               return prevTimer - 1;
             } else {
@@ -497,8 +497,8 @@ export default function Home() {
   const getCoherentCircleSize = () => {
     if (!isExercising) return 100;
 
-    // Timer ranges from 0-49 for both inhale and exhale
-    const progress = timer / 49; // 0 to 1
+    // Timer ranges from 0-50 for both inhale and exhale
+    const progress = timer / 50; // 0 to 1
     const minSize = 100;
     const maxSize = 340;
 
@@ -551,6 +551,17 @@ export default function Home() {
         }
         .animate-slide-up {
           animation: slideUp 300ms ease-out;
+        }
+        @keyframes purpleBlink {
+          0%, 100% {
+            stroke: #E5E7EB;
+          }
+          50% {
+            stroke: #9333EA;
+          }
+        }
+        .blink-purple {
+          animation: purpleBlink 400ms ease-in-out;
         }
       `}</style>
       <div className="flex min-h-screen flex-col lg:flex-row">
@@ -907,7 +918,7 @@ export default function Home() {
                         <div className="text-center">
                           <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
                             {selectedExercise?.name === 'Coherent breathing (5-5)'
-                              ? Math.floor(timer / 10) // Convert 0-49 to 0-5 for display
+                              ? Math.floor(timer / 10) // Convert 0-50 to 0-5 for display
                               : timer
                             }
                           </div>
@@ -1070,7 +1081,7 @@ export default function Home() {
                         <>
                           {/* Breathing Circle Illustration - Coherent */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Gray Background Circle - Always visible */}
+                            {/* Gray Background Circle - Blinks purple at transitions */}
                             <svg
                               className="absolute"
                               width="363"
@@ -1084,6 +1095,7 @@ export default function Home() {
                                 fill="none"
                                 stroke="#E5E7EB"
                                 strokeWidth="4"
+                                className={timer === 50 || timer === 0 ? 'blink-purple' : ''}
                               />
                             </svg>
 
