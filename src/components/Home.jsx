@@ -911,8 +911,8 @@ export default function Home() {
                                 style={{
                                   width: `${circle.size}px`,
                                   height: `${circle.size}px`,
-                                  border: `20px solid ${circle.color}`,
-                                  backgroundColor: 'transparent',
+                                  border: circle.size === 100 ? 'none' : `20px solid ${circle.color}`,
+                                  backgroundColor: circle.size === 100 ? circle.color : 'transparent',
                                   boxShadow: `0 0 ${circle.blur}px ${circle.color}`
                                 }}
                               />
