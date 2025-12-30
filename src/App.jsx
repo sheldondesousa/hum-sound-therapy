@@ -3,6 +3,10 @@ import { AuthProvider } from './contexts/AuthContext';
 import Login from './components/Login';
 import Home from './components/Home';
 import ProtectedRoute from './components/ProtectedRoute';
+import FocusExercise from './components/FocusExercise';
+import CalmExercise from './components/CalmExercise';
+import BreatheExercise from './components/BreatheExercise';
+import MeditateExercise from './components/MeditateExercise';
 
 function App() {
   return (
@@ -15,6 +19,38 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exercise/focus"
+            element={
+              <ProtectedRoute>
+                <FocusExercise />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exercise/calm"
+            element={
+              <ProtectedRoute>
+                <CalmExercise />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exercise/breathe"
+            element={
+              <ProtectedRoute>
+                <BreatheExercise />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exercise/meditate"
+            element={
+              <ProtectedRoute>
+                <MeditateExercise />
               </ProtectedRoute>
             }
           />

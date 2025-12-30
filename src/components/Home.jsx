@@ -49,7 +49,10 @@ export default function Home() {
         {/* Options List */}
         <div className="space-y-0">
           {/* Focus */}
-          <button className="w-full py-5 flex items-center gap-3 border-b border-gray-300 hover:bg-gray-50 transition-colors group">
+          <button
+            onClick={() => navigate('/exercise/focus')}
+            className="w-full py-5 flex items-center gap-3 border-b border-gray-300 hover:bg-gray-50 transition-colors group"
+          >
             <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
               <svg className="w-12 h-12" viewBox="0 0 80 80" fill="black">
                 <circle cx="40" cy="40" r="12" fill="black"/>
@@ -66,7 +69,10 @@ export default function Home() {
           </button>
 
           {/* Calm */}
-          <button className="w-full py-5 flex items-center gap-3 border-b border-gray-300 hover:bg-gray-50 transition-colors group">
+          <button
+            onClick={() => navigate('/exercise/calm')}
+            className="w-full py-5 flex items-center gap-3 border-b border-gray-300 hover:bg-gray-50 transition-colors group"
+          >
             <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
               <svg className="w-12 h-12" viewBox="0 0 80 80" fill="black">
                 <path d="M20 50 Q20 30, 30 25 Q35 22, 40 30 Q45 22, 50 25 Q60 30, 60 50" fill="black"/>
@@ -84,7 +90,10 @@ export default function Home() {
           </button>
 
           {/* Breathe */}
-          <button className="w-full py-5 flex items-center gap-3 border-b border-gray-300 hover:bg-gray-50 transition-colors group">
+          <button
+            onClick={() => navigate('/exercise/breathe')}
+            className="w-full py-5 flex items-center gap-3 border-b border-gray-300 hover:bg-gray-50 transition-colors group"
+          >
             <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
               <svg className="w-12 h-12" viewBox="0 0 80 80" fill="black">
                 <circle cx="40" cy="40" r="3" fill="black"/>
@@ -113,7 +122,10 @@ export default function Home() {
           </button>
 
           {/* Meditate */}
-          <button className="w-full py-5 flex items-center gap-3 hover:bg-gray-50 transition-colors group">
+          <button
+            onClick={() => navigate('/exercise/meditate')}
+            className="w-full py-5 flex items-center gap-3 hover:bg-gray-50 transition-colors group"
+          >
             <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
               <svg className="w-12 h-12" viewBox="0 0 80 80" fill="black">
                 <path d="M30 20 L50 20 L50 35 L30 35 Z" fill="black"/>
