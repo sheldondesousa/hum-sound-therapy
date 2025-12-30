@@ -167,6 +167,13 @@ export default function Home() {
     }
   }, [selectedExercise, selectedCycles]);
 
+  // Set default cycles for Physiological Sigh (3 cycles recommended)
+  useEffect(() => {
+    if (selectedExercise?.name === 'Physiological Sigh' && selectedCycles === 4) {
+      setSelectedCycles(3);
+    }
+  }, [selectedExercise, selectedCycles]);
+
   // Countdown effect
   useEffect(() => {
     if (countdown === null || isPaused) return;
@@ -196,6 +203,7 @@ export default function Home() {
     // Exercise-specific timing configurations
     const is478 = selectedExercise?.name === '4-7-8 Breathing';
     const isCoherent = selectedExercise?.name === 'Coherent breathing (5-5)';
+    const isPhysiological = selectedExercise?.name === 'Physiological Sigh';
 
     // Dynamic interval based on breathing phase and exercise type
     let intervalDuration;
@@ -208,6 +216,11 @@ export default function Home() {
     } else if (isCoherent) {
       // Coherent: INHALE=5s (50 counts, 100ms), EXHALE=5s (50 counts, 100ms) for smooth animation
       intervalDuration = 100; // 100ms for smooth transitions
+    } else if (isPhysiological) {
+      // Physiological Sigh: INHALE=4s (8 counts, 500ms), EXHALE=8s (8 counts, 1000ms)
+      if (breathingPhase === 'inhale') intervalDuration = 500; // 8 counts * 500ms = 4s
+      else if (breathingPhase === 'exhale') intervalDuration = 1000; // 8 counts * 1000ms = 8s
+      else intervalDuration = 1000;
     } else {
       // Box breathing: all phases use same interval pattern
       // INHALE and EXHALE: 5 counts (0-4) over 4 seconds = 800ms per count
@@ -270,6 +283,40 @@ export default function Home() {
             }
           } else if (breathingPhase === 'exhale') {
             // EXHALE: 7-6-5-4-3-2-1-0 (8 counts over 8s, descending)
+            if (prevTimer > 0) {
+              return prevTimer - 1;
+            } else {
+              // Cycle completed, check if we should continue
+              const nextCycle = currentCycle + 1;
+              if (nextCycle >= selectedCycles) {
+                // Reached target cycles, show completion screen
+                setIsExercising(false);
+                setExerciseCompleted(true);
+                setCurrentCycle(0);
+                setBreathingPhase('inhale');
+                return 0;
+              } else {
+                // Continue to next cycle
+                setCurrentCycle(nextCycle);
+                setBreathingPhase('inhale');
+                return 0;
+              }
+            }
+          }
+        } else if (isPhysiological) {
+          // Physiological Sigh pattern
+          if (breathingPhase === 'inhale') {
+            // INHALE: 0-7 (8 counts over 4s)
+            // 0-5: Blue boxes (6 boxes shown 2 at a time)
+            // 6-7: Green boxes (2 boxes)
+            if (prevTimer < 7) {
+              return prevTimer + 1;
+            } else {
+              setBreathingPhase('exhale');
+              return 7; // Start EXHALE at 7
+            }
+          } else if (breathingPhase === 'exhale') {
+            // EXHALE: 7-0 (8 counts over 8s, remove 1 box per second)
             if (prevTimer > 0) {
               return prevTimer - 1;
             } else {
@@ -484,6 +531,60 @@ export default function Home() {
 
     // Render from largest to smallest so all rings are visible
     return circles.reverse();
+  };
+
+  // Get box count for Physiological Sigh
+  const getVisibleBoxCountPhysiological = () => {
+    if (breathingPhase === 'inhale') {
+      // INHALE: 0-7 timer (8 counts)
+      // Timer 0-5: Show 6 blue boxes (2 at a time, so 2 boxes per count pair)
+      // Timer 6-7: Show 8 boxes total (added 2 green boxes)
+      if (timer <= 1) return 2;
+      else if (timer <= 3) return 4;
+      else if (timer <= 5) return 6;
+      else return 8; // timer 6-7
+    } else if (breathingPhase === 'exhale') {
+      // EXHALE: timer 7→0 shows 8,7,6,5,4,3,2,1 boxes (remove 1 per second)
+      return timer + 1;
+    }
+    return 0;
+  };
+
+  // Get box data for Physiological Sigh
+  const getBoxDataPhysiological = () => {
+    const boxCount = getVisibleBoxCountPhysiological();
+    const boxes = [];
+
+    // Box size (40x40 px squares)
+    const boxSize = 40;
+
+    // Blue gradient colors (for boxes 0-5)
+    const blueGradients = [
+      'linear-gradient(135deg, #067AC3 0%, #045a91 100%)',
+      'linear-gradient(135deg, #0892D0 0%, #067AC3 100%)',
+      'linear-gradient(135deg, #067AC3 0%, #045a91 100%)',
+      'linear-gradient(135deg, #0892D0 0%, #067AC3 100%)',
+      'linear-gradient(135deg, #067AC3 0%, #045a91 100%)',
+      'linear-gradient(135deg, #0892D0 0%, #067AC3 100%)'
+    ];
+
+    // Green gradient colors (for boxes 6-7)
+    const greenGradients = [
+      'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+      'linear-gradient(135deg, #34D399 0%, #10B981 100%)'
+    ];
+
+    for (let i = 0; i < boxCount; i++) {
+      const isGreen = i >= 6;
+      boxes.push({
+        size: boxSize,
+        gradient: isGreen ? greenGradients[i - 6] : blueGradients[i],
+        key: i,
+        isGreen: isGreen
+      });
+    }
+
+    return boxes;
   };
 
   // Generate 4-7-8 wave path: rise → plateau → decline
@@ -1493,6 +1594,52 @@ export default function Home() {
                               <div
                                 className={`text-lg font-semibold text-white uppercase tracking-wider`}
                               >
+                                {breathingPhase === 'inhale' && 'INHALE'}
+                                {breathingPhase === 'exhale' && 'EXHALE'}
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : selectedExercise?.name === 'Physiological Sigh' ? (
+                        /* Physiological Sigh Box Animation */
+                        <>
+                          {/* Breathing Box Illustration - Physiological Sigh */}
+                          <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Gray Border Box Container */}
+                            <div
+                              className="border-4 border-gray-300 rounded-3xl p-6 flex flex-wrap gap-2 items-center justify-center"
+                              style={{ width: '360px', minHeight: '200px' }}
+                            >
+                              {/* Render gradient boxes */}
+                              {getBoxDataPhysiological().map((box, index) => (
+                                <div key={box.key} className="flex items-center">
+                                  <div
+                                    className="transition-all duration-500 ease-in-out rounded-lg"
+                                    style={{
+                                      width: `${box.size}px`,
+                                      height: `${box.size}px`,
+                                      background: box.gradient,
+                                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                    }}
+                                  />
+                                  {/* Black divider line between 6th blue and 1st green box */}
+                                  {index === 5 && getBoxDataPhysiological().length > 6 && (
+                                    <div
+                                      className="mx-2"
+                                      style={{
+                                        width: '2px',
+                                        height: '50px',
+                                        backgroundColor: 'black'
+                                      }}
+                                    />
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Phase Text - Below the box */}
+                            <div className="absolute" style={{ bottom: '-60px' }}>
+                              <div className="text-lg font-semibold text-gray-800 uppercase tracking-wider">
                                 {breathingPhase === 'inhale' && 'INHALE'}
                                 {breathingPhase === 'exhale' && 'EXHALE'}
                               </div>
