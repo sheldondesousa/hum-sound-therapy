@@ -217,9 +217,8 @@ export default function Home() {
       // Coherent: INHALE=5s (50 counts, 100ms), EXHALE=5s (50 counts, 100ms) for smooth animation
       intervalDuration = 100; // 100ms for smooth transitions
     } else if (isPhysiological) {
-      // Physiological Sigh: INHALE=4s (4 counts, 1000ms), HOLD=400ms, EXHALE=8s (8 counts, 1000ms)
-      if (breathingPhase === 'hold1') intervalDuration = 400; // 400ms hold
-      else intervalDuration = 1000; // 1000ms (1 second) intervals
+      // Physiological Sigh: INHALE=4s (4 counts, 1000ms), EXHALE=8s (8 counts, 1000ms)
+      intervalDuration = 1000; // 1000ms (1 second) intervals
     } else {
       // Box breathing: all phases use same interval pattern
       // INHALE and EXHALE: 5 counts (0-4) over 4 seconds = 800ms per count
@@ -311,13 +310,10 @@ export default function Home() {
             if (prevTimer < 3) {
               return prevTimer + 1;
             } else {
-              setBreathingPhase('hold1');
-              return 0; // Start 400ms HOLD
+              // Transition to EXHALE, INHALE will dissolve over 400ms
+              setBreathingPhase('exhale');
+              return 7; // Start EXHALE at 7
             }
-          } else if (breathingPhase === 'hold1') {
-            // HOLD: 400ms pause before EXHALE
-            setBreathingPhase('exhale');
-            return 7; // Start EXHALE at 7
           } else if (breathingPhase === 'exhale') {
             // EXHALE: 7-0 (8 counts over 8s, 1s per count)
             // Slow decrease from 100% to 0%
@@ -577,28 +573,26 @@ export default function Home() {
 
   // Get blue gradient height for Physiological Sigh INHALE (0-2 seconds)
   const getPhysiologicalBlueHeight = () => {
-    if (!isExercising) return 0;
-    if (breathingPhase !== 'inhale' && breathingPhase !== 'hold1') return 0;
+    if (!isExercising || breathingPhase !== 'inhale') return 0;
 
     if (timer < 3) {
       // Fill to 75% of container over first 3 seconds (timer 0,1,2)
       // At timer=0: 25%, timer=1: 50%, timer=2: 75%
       return ((timer + 1) / 3) * 75;
     } else {
-      // Stay at 75% while green fills (timer 3) and during hold
+      // Stay at 75% while green fills (timer 3)
       return 75;
     }
   };
 
   // Get green gradient height for Physiological Sigh INHALE (3 seconds)
   const getPhysiologicalGreenHeight = () => {
-    if (!isExercising) return 0;
-    if (breathingPhase !== 'inhale' && breathingPhase !== 'hold1') return 0;
+    if (!isExercising || breathingPhase !== 'inhale') return 0;
 
     if (timer < 3) {
       return 0; // No green yet (timer 0,1,2)
     } else {
-      // Fill to 25% of container at timer 3 (final second) and during hold
+      // Fill to 25% of container at timer 3 (final second)
       return 25;
     }
   };
@@ -1633,13 +1627,13 @@ export default function Home() {
                                   <div
                                     className="w-full"
                                     style={{
-                                      height: (breathingPhase === 'inhale' || breathingPhase === 'hold1') ? `${getPhysiologicalGreenHeight()}%` : '0%',
+                                      height: breathingPhase === 'inhale' ? `${getPhysiologicalGreenHeight()}%` : '0%',
                                       background: `linear-gradient(to top,
                                         #6EE7B7 0%,
                                         #A7F3D0 100%
                                       )`,
-                                      transition: (breathingPhase === 'inhale' || breathingPhase === 'hold1') ? 'height 1000ms linear' : 'opacity 500ms ease-out',
-                                      opacity: (breathingPhase === 'inhale' || breathingPhase === 'hold1') ? 1 : 0,
+                                      transition: breathingPhase === 'inhale' ? 'height 1000ms linear' : 'opacity 400ms ease-out',
+                                      opacity: breathingPhase === 'inhale' ? 1 : 0,
                                       borderTopLeftRadius: '20px',
                                       borderTopRightRadius: '20px',
                                       borderBottomLeftRadius: '0',
@@ -1650,7 +1644,7 @@ export default function Home() {
                                   <div
                                     className="w-full"
                                     style={{
-                                      height: (breathingPhase === 'inhale' || breathingPhase === 'hold1') ? `${getPhysiologicalBlueHeight()}%` : '0%',
+                                      height: breathingPhase === 'inhale' ? `${getPhysiologicalBlueHeight()}%` : '0%',
                                       background: `linear-gradient(to top,
                                         #045a91 0%,
                                         #0568A6 16.67%,
@@ -1660,8 +1654,8 @@ export default function Home() {
                                         #6EC1E4 83.33%,
                                         #6EC1E4 100%
                                       )`,
-                                      transition: (breathingPhase === 'inhale' || breathingPhase === 'hold1') ? 'height 1000ms linear' : 'opacity 500ms ease-out',
-                                      opacity: (breathingPhase === 'inhale' || breathingPhase === 'hold1') ? 1 : 0,
+                                      transition: breathingPhase === 'inhale' ? 'height 1000ms linear' : 'opacity 400ms ease-out',
+                                      opacity: breathingPhase === 'inhale' ? 1 : 0,
                                       borderTopLeftRadius: '0',
                                       borderTopRightRadius: '0',
                                       borderBottomLeftRadius: '20px',
@@ -1687,7 +1681,7 @@ export default function Home() {
                                   <div
                                     className="w-full"
                                     style={{
-                                      height: `${breathingPhase === 'exhale' ? getPhysiologicalFillWidth() : (breathingPhase === 'hold1' ? 100 : 0)}%`,
+                                      height: `${breathingPhase === 'exhale' ? getPhysiologicalFillWidth() : 0}%`,
                                       background: `linear-gradient(to top,
                                         #045a91 0%,
                                         #0568A6 12.5%,
