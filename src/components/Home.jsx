@@ -1632,7 +1632,10 @@ export default function Home() {
                                       )`,
                                       transition: breathingPhase === 'inhale' ? 'height 1000ms linear' : 'opacity 500ms ease-out',
                                       opacity: breathingPhase === 'inhale' ? 1 : 0,
-                                      borderRadius: '20px'
+                                      borderTopLeftRadius: '20px',
+                                      borderTopRightRadius: '20px',
+                                      borderBottomLeftRadius: '0',
+                                      borderBottomRightRadius: '0'
                                     }}
                                   />
                                   {/* Blue gradient fill bar (0-3 seconds, bottom layer) */}
@@ -1651,7 +1654,10 @@ export default function Home() {
                                       )`,
                                       transition: breathingPhase === 'inhale' ? 'height 1000ms linear' : 'opacity 500ms ease-out',
                                       opacity: breathingPhase === 'inhale' ? 1 : 0,
-                                      borderRadius: '20px'
+                                      borderTopLeftRadius: '0',
+                                      borderTopRightRadius: '0',
+                                      borderBottomLeftRadius: '20px',
+                                      borderBottomRightRadius: '20px'
                                     }}
                                   />
                                 </div>
