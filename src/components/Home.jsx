@@ -1591,7 +1591,7 @@ export default function Home() {
                             {/* Gray Border Container */}
                             <div
                               className="border-4 border-gray-300 rounded-3xl flex items-center overflow-hidden"
-                              style={{ width: '360px', height: '200px', padding: '2px' }}
+                              style={{ width: '360px', height: '360px', padding: '2px' }}
                             >
                               {/* Smooth gradient fill bar */}
                               <div
@@ -1600,10 +1600,11 @@ export default function Home() {
                                   width: `${getPhysiologicalFillWidth()}%`,
                                   background: `linear-gradient(to right,
                                     #045a91 0%,
-                                    #0568A6 16.67%,
-                                    #067AC3 33.33%,
-                                    #0892D0 50%,
-                                    #3AA8DB 66.67%,
+                                    #0568A6 12.5%,
+                                    #067AC3 25%,
+                                    #0892D0 37.5%,
+                                    #3AA8DB 50%,
+                                    #6EC1E4 62.5%,
                                     #6EC1E4 75%,
                                     #6EE7B7 87.5%,
                                     #A7F3D0 100%
