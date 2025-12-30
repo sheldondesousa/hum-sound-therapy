@@ -104,6 +104,39 @@ export default function Home() {
         { label: 'Avoid Focus Tasks:', text: 'Do not practice this while driving or performing any task that requires your full, alert attention.' },
         { label: 'Listen to Your Body:', text: 'Stop immediately if you feel short of breath or distressed; your comfort dictates the correct pace.' }
       ]
+    },
+    'Physiological Sigh': {
+      description: 'The physiological sigh is a science-backed breathing technique featuring a double inhale followed by a long, slow exhale. It is designed to rapidly offload carbon dioxide and trigger the parasympathetic nervous system for immediate stress relief.',
+      sectionTitle: 'Tips',
+      sectionContent: [
+        { label: 'The "Second Sip":', text: 'Make the second inhale short and sharp to fully pop open the tiny air sacs (alveoli) in the lungs.' },
+        { label: 'Slow Exhale:', text: 'Aim to make the exhale roughly twice as long as the combined inhales to maximize the calming effect.' },
+        { label: 'Nose for Inhaling:', text: 'Use your nose for both inhales whenever possible to better regulate air intake.' },
+        { label: 'Minimal Repetition:', text: 'You typically only need 1 to 3 cycles to feel a noticeable reduction in autonomic arousal.' },
+        { label: 'Consistency:', text: 'While effective for immediate relief, practicing for 5 minutes daily can improve long-term mood and respiratory health.' }
+      ],
+      preparationTitle: 'Preparation',
+      preparationContent: [
+        { label: 'Find a Quiet Space:', text: 'Choose a distraction-free environment to help you focus entirely on your breath.' },
+        { label: 'Sit Upright:', text: 'Choose a comfortable chair where you can sit with your back supported and feet flat on the floor. This allows for better lung expansion.' },
+        { label: 'Relax Your Muscles:', text: 'Before starting, consciously drop your shoulders and release tension in your jaw.' },
+        { label: 'Begin on Empty:', text: 'To start correctly, first exhale all the air out of your lungs so you begin with a full, fresh inhale.' }
+      ],
+      whenToUseTitle: 'Try this when',
+      whenToUseContent: [
+        { label: 'Feeling Stress:', text: 'Use 1-3 cycles when you feel acute stress or tension building to rapidly calm your nervous system.' },
+        { label: 'Before Performance:', text: 'Practice right before important presentations, meetings, or high-pressure situations to reduce performance anxiety.' },
+        { label: 'Before Sleep:', text: 'Perform a few cycles if your mind is racing at bedtime to help transition into a restful state.' },
+        { label: 'Emotional Reset:', text: 'Use it when feeling overwhelmed or emotionally activated to quickly regain composure and clarity.' },
+        { label: 'Focus Recovery:', text: 'Practice during work breaks when feeling mentally scattered to restore attention and concentration.' }
+      ],
+      safetyTitle: 'Safety First',
+      safetyContent: [
+        { label: 'Limit Cycles:', text: 'Avoid excessive repetition (hyperventilation) by sticking to the recommended 1–3 cycles for immediate relief.' },
+        { label: 'Consult Professionals:', text: 'If you have respiratory conditions or cardiovascular issues or a history of hyperventilation, consult a doctor before trying.' },
+        { label: 'Avoid Focus Tasks:', text: 'Do not practice this while driving or performing any task that requires your full, alert attention.' },
+        { label: 'Listen to Your Body:', text: 'Stop immediately if you feel short of breath or distressed; your comfort dictates the correct pace.' }
+      ]
     }
   };
   const [showingInfo, setShowingInfo] = useState(false); // Track if showing info screen
@@ -882,7 +915,7 @@ export default function Home() {
                       </button>
 
                       {/* Preparation Tile - For all breathing exercises */}
-                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)') && (
+                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh') && (
                         <button
                           onClick={() => setShowPreparationSheet(true)}
                           className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
@@ -898,7 +931,7 @@ export default function Home() {
                       )}
 
                       {/* Try this when Tile - For all breathing exercises */}
-                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)') && (
+                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh') && (
                         <button
                           onClick={() => setShowWhenToUseSheet(true)}
                           className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
@@ -914,7 +947,7 @@ export default function Home() {
                       )}
 
                       {/* Precautions Tile - For all breathing exercises */}
-                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)') && (
+                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh') && (
                         <button
                           onClick={() => setShowSafetySheet(true)}
                           className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
