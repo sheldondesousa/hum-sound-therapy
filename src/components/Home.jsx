@@ -1595,15 +1595,14 @@ export default function Home() {
                                 style={{
                                   width: `${getPhysiologicalFillWidth()}%`,
                                   background: `linear-gradient(to right,
-                                    #045a91 0%, #045a91 12.5%,
-                                    #0568A6 12.5%, #0568A6 25%,
-                                    #067AC3 25%, #067AC3 37.5%,
-                                    #0892D0 37.5%, #0892D0 50%,
-                                    #3AA8DB 50%, #3AA8DB 62.5%,
-                                    #6EC1E4 62.5%, #6EC1E4 75%,
-                                    black 75%, black 75.5%,
-                                    #6EE7B7 75.5%, #6EE7B7 87.5%,
-                                    #A7F3D0 87.5%, #A7F3D0 100%
+                                    #045a91 0%,
+                                    #0568A6 16.67%,
+                                    #067AC3 33.33%,
+                                    #0892D0 50%,
+                                    #3AA8DB 66.67%,
+                                    #6EC1E4 75%,
+                                    #6EE7B7 87.5%,
+                                    #A7F3D0 100%
                                   )`,
                                   transition: 'width 100ms linear',
                                   borderRadius: '4px'
