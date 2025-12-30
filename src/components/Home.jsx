@@ -1615,9 +1615,10 @@ export default function Home() {
                             >
                               {/* Render gradient columns */}
                               {getBoxDataPhysiological().map((column, index) => (
-                                <React.Fragment key={column.key}>
+                                <>
                                   {/* Vertical column */}
                                   <div
+                                    key={column.key}
                                     className="transition-all duration-500 ease-in-out"
                                     style={{
                                       width: `${column.width}px`,
@@ -1637,7 +1638,7 @@ export default function Home() {
                                       }}
                                     />
                                   )}
-                                </React.Fragment>
+                                </>
                               ))}
                             </div>
 
