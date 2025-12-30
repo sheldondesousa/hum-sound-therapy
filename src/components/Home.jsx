@@ -1608,7 +1608,7 @@ export default function Home() {
                           <div className="flex-1 flex items-center justify-center w-full relative">
                             {/* Gray Border Box Container with columns */}
                             <div
-                              className="border-4 border-gray-300 rounded-3xl p-6 flex items-center justify-center gap-0"
+                              className="border-4 border-gray-300 rounded-3xl p-6 flex items-center justify-start gap-0"
                               style={{ width: '340px', height: '200px' }}
                             >
                               {/* Render gradient columns */}
