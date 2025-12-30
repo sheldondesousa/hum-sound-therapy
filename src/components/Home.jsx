@@ -570,6 +570,31 @@ export default function Home() {
     return 0;
   };
 
+  // Get blue gradient height for Physiological Sigh INHALE (0-3 seconds)
+  const getPhysiologicalBlueHeight = () => {
+    if (!isExercising || breathingPhase !== 'inhale') return 0;
+
+    if (timer <= 3) {
+      // Fill to 75% of container over 3 seconds
+      return (timer / 3) * 75;
+    } else {
+      // Stay at 75% while green fills (timer 4)
+      return 75;
+    }
+  };
+
+  // Get green gradient height for Physiological Sigh INHALE (3-4 seconds)
+  const getPhysiologicalGreenHeight = () => {
+    if (!isExercising || breathingPhase !== 'inhale') return 0;
+
+    if (timer <= 3) {
+      return 0; // No green yet
+    } else {
+      // Fill to 25% of container in 1 second (timer 3→4)
+      return ((timer - 3) / 1) * 25;
+    }
+  };
+
   // Generate 4-7-8 wave path: rise → plateau → decline
   const generateWavePath478 = () => {
     const width = 700; // Width for one cycle
@@ -1596,21 +1621,32 @@ export default function Home() {
                                   className="border-4 border-gray-300 rounded-3xl flex flex-col justify-end overflow-hidden"
                                   style={{ width: '175px', height: '360px', padding: '2px' }}
                                 >
-                                  {/* Vertical gradient fill bar */}
+                                  {/* Green gradient fill bar (3-4 seconds, top layer) */}
                                   <div
                                     className="w-full"
                                     style={{
-                                      height: `${breathingPhase === 'inhale' ? getPhysiologicalFillWidth() : 0}%`,
+                                      height: `${getPhysiologicalGreenHeight()}%`,
+                                      background: `linear-gradient(to top,
+                                        #6EE7B7 0%,
+                                        #A7F3D0 100%
+                                      )`,
+                                      transition: 'height 1000ms linear',
+                                      borderRadius: '4px'
+                                    }}
+                                  />
+                                  {/* Blue gradient fill bar (0-3 seconds, bottom layer) */}
+                                  <div
+                                    className="w-full"
+                                    style={{
+                                      height: `${getPhysiologicalBlueHeight()}%`,
                                       background: `linear-gradient(to top,
                                         #045a91 0%,
-                                        #0568A6 12.5%,
-                                        #067AC3 25%,
-                                        #0892D0 37.5%,
-                                        #3AA8DB 50%,
-                                        #6EC1E4 62.5%,
-                                        #6EC1E4 75%,
-                                        #6EE7B7 87.5%,
-                                        #A7F3D0 100%
+                                        #0568A6 16.67%,
+                                        #067AC3 33.33%,
+                                        #0892D0 50%,
+                                        #3AA8DB 66.67%,
+                                        #6EC1E4 83.33%,
+                                        #6EC1E4 100%
                                       )`,
                                       transition: 'height 1000ms linear',
                                       borderRadius: '4px'
