@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 export default function FocusExercise() {
   const navigate = useNavigate();
-  const [selectedTime, setSelectedTime] = useState('');
 
   const timeFrames = [
     { id: '15', name: '15 minutes' },
@@ -11,6 +10,9 @@ export default function FocusExercise() {
     { id: '45', name: '45 minutes' },
     { id: '60', name: '60 minutes' },
   ];
+
+  // Default to first option
+  const [selectedTime, setSelectedTime] = useState(timeFrames[0].id);
 
   const isStartEnabled = selectedTime;
 

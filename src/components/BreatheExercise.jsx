@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 export default function BreatheExercise() {
   const navigate = useNavigate();
-  const [selectedCycle, setSelectedCycle] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
 
   const cycles = [
     { id: '4-7-8', name: '4-7-8 Breathing', description: 'Inhale 4s, Hold 7s, Exhale 8s' },
@@ -18,6 +16,10 @@ export default function BreatheExercise() {
     { id: '15', name: '15 minutes' },
     { id: '20', name: '20 minutes' },
   ];
+
+  // Default to first option in each selector
+  const [selectedCycle, setSelectedCycle] = useState(cycles[0].id);
+  const [selectedTime, setSelectedTime] = useState(timeFrames[0].id);
 
   const isStartEnabled = selectedCycle && selectedTime;
 
