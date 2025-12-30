@@ -106,7 +106,7 @@ export default function Home() {
       ]
     },
     'Physiological Sigh': {
-      description: 'The physiological sigh is a science-backed breathing technique featuring a double inhale (1 long, 1 short) followed by a long, slow exhale. It is designed to rapidly offload carbon dioxide and trigger the parasympathetic nervous system for stress relief. Try for a total inhale of 4 seconds.',
+      description: 'The physiological sigh is a science-backed breathing technique featuring a double inhale (1 long, 1 short) followed by a long, slow exhale. It is designed to rapidly offload carbon dioxide and trigger the parasympathetic nervous system for stress relief. Suggested: Total inhale of 4 seconds.',
       sectionTitle: 'Tips',
       sectionContent: [
         { label: 'The "Second Sip":', text: 'Make the second inhale short and sharp to fully pop open the tiny air sacs (alveoli) in the lungs.' },
