@@ -38,7 +38,7 @@ export default function Home() {
       safetyContent: 'Consult a doctor before practicing if you are pregnant, have a heart condition, or suffer from severe respiratory issues. Stop immediately if you feel dizzy or lightheaded, and return to your normal breathing rhythm.'
     },
     '4-7-8 Breathing': {
-      description: 'The 4-7-8 breathing technique, also known as the "Relaxing Breath," is a rhythmic breathing pattern developed by Dr. Andrew Weil. Rooted in the ancient yogic practice of pranayama, it acts as a "natural tranquilizer" for the nervous system by activating the parasympathetic response.',
+      description: 'The 4-7-8 breathing technique, also known as the "Relaxing Breath," is a rhythmic breathing pattern. Rooted in the ancient yogic practice of pranayama, it acts as a "natural tranquilizer" for the nervous system by activating the parasympathetic response.',
       sectionTitle: 'Tips',
       sectionContent: [
         { label: 'Tongue Placement:', text: 'Keep the tip of your tongue against the ridge of tissue behind your upper front teeth throughout the entire exercise.' },
