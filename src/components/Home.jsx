@@ -1630,7 +1630,8 @@ export default function Home() {
                                         #6EE7B7 0%,
                                         #A7F3D0 100%
                                       )`,
-                                      transition: 'height 1000ms linear',
+                                      transition: breathingPhase === 'inhale' ? 'height 1000ms linear' : 'opacity 500ms ease-out',
+                                      opacity: breathingPhase === 'inhale' ? 1 : 0,
                                       borderRadius: '4px'
                                     }}
                                   />
@@ -1648,7 +1649,8 @@ export default function Home() {
                                         #6EC1E4 83.33%,
                                         #6EC1E4 100%
                                       )`,
-                                      transition: 'height 1000ms linear',
+                                      transition: breathingPhase === 'inhale' ? 'height 1000ms linear' : 'opacity 500ms ease-out',
+                                      opacity: breathingPhase === 'inhale' ? 1 : 0,
                                       borderRadius: '4px'
                                     }}
                                   />

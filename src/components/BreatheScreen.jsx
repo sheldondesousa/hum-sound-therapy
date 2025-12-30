@@ -16,6 +16,18 @@ const BreatheScreen = () => {
       title: '4-7-8 Breathing',
       subtitle: 'Relaxing breath pattern',
       description: 'Inhale for 4, hold for 7, exhale for 8'
+    },
+    {
+      id: 'coherent',
+      title: 'Coherent Breathing',
+      subtitle: '5-5 pattern',
+      description: 'Inhale for 5, exhale for 5'
+    },
+    {
+      id: 'physiological-sigh',
+      title: 'Physiological Sigh',
+      subtitle: 'Stress relief pattern',
+      description: 'Double inhale, extended exhale'
     }
   ];
 
