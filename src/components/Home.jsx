@@ -28,7 +28,7 @@ export default function Home() {
         { label: 'Relax Your Muscles:', text: 'Before starting, consciously drop your shoulders and release tension in your jaw.' },
         { label: 'Begin on Empty:', text: 'To start correctly, first exhale all the air out of your lungs so you begin with a full, fresh inhale.' }
       ],
-      whenToUseTitle: 'When to use',
+      whenToUseTitle: 'Try this when',
       whenToUseContent: [
         { label: 'Before Stressful Events:', text: 'Use it to steady nerves before major tasks like public speaking, exams, or interviews.' },
         { label: 'During a Mid-Day Reset:', text: 'Practice for 5 minutes during a work break or "afternoon slump" to regain focus and concentration.' },
@@ -58,7 +58,7 @@ export default function Home() {
         { label: 'Empty Your Lungs:', text: 'Begin by exhaling completely through your mouth to clear your lungs before starting the first inhale.' },
         { label: 'Relax Your Body:', text: 'Intentionally relax your shoulders, jaw, and brow to prevent tensing during the breath hold.' }
       ],
-      whenToUseTitle: 'When to use',
+      whenToUseTitle: 'Try this when',
       whenToUseContent: [
         { label: 'Before Bed:', text: 'Use it as part of a nighttime routine to quiet a racing mind and fall asleep faster.' },
         { label: 'During Acute Stress:', text: 'Practice before reacting to upsetting situations or when feeling internal tension.' },
@@ -90,7 +90,7 @@ export default function Home() {
         { label: 'Loosen Clothing:', text: 'Ensure your waistband or belt is not restrictive, as your abdomen needs to expand fully.' },
         { label: 'Hand Placement:', text: 'Place one hand on your belly and one on your chest to ensure only the belly hand moves significantly during the breath.' }
       ],
-      whenToUseTitle: 'When to use',
+      whenToUseTitle: 'Try this when',
       whenToUseContent: [
         { label: 'Commuting:', text: 'It is an effective "eyes-open" meditation for use on public transit or while sitting in traffic to stay calm.' },
         { label: 'Post-Exercise:', text: 'Use it as part of a workout cool-down to shift the body from an active to a recovery state.' },
@@ -897,7 +897,7 @@ export default function Home() {
                         </button>
                       )}
 
-                      {/* When to use Tile - For all breathing exercises */}
+                      {/* Try this when Tile - For all breathing exercises */}
                       {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)') && (
                         <button
                           onClick={() => setShowWhenToUseSheet(true)}
@@ -907,7 +907,7 @@ export default function Home() {
                             <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="text-base font-semibold text-black">When to use</span>
+                            <span className="text-base font-semibold text-black">Try this when</span>
                           </div>
                           <span className="text-2xl font-light text-gray-700">+</span>
                         </button>
