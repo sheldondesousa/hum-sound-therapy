@@ -555,9 +555,9 @@ export default function Home() {
     const boxCount = getVisibleBoxCountPhysiological();
     const boxes = [];
 
-    // Column dimensions (vertical rectangles)
-    const columnWidth = 35;
-    const columnHeight = 120;
+    // Column dimensions (tall vertical bars)
+    const columnWidth = 28;
+    const columnHeight = 140;
 
     // Blue gradient colors (for columns 0-5) - progressively lighter from dark to light blue
     // Using the same blue (#067AC3) as breathing circles, creating gradient effect
@@ -1610,12 +1610,12 @@ export default function Home() {
                           <div className="flex-1 flex items-center justify-center w-full relative">
                             {/* Gray Border Box Container with columns */}
                             <div
-                              className="border-4 border-gray-300 rounded-3xl p-6 flex items-center justify-center"
-                              style={{ width: '360px', height: '180px' }}
+                              className="border-4 border-gray-300 rounded-3xl p-6 flex items-center justify-center gap-0"
+                              style={{ width: '340px', height: '200px' }}
                             >
                               {/* Render gradient columns */}
                               {getBoxDataPhysiological().map((column, index) => (
-                                <div key={column.key} className="flex items-center">
+                                <React.Fragment key={column.key}>
                                   {/* Vertical column */}
                                   <div
                                     className="transition-all duration-500 ease-in-out"
@@ -1623,21 +1623,21 @@ export default function Home() {
                                       width: `${column.width}px`,
                                       height: `${column.height}px`,
                                       backgroundColor: column.color,
-                                      borderRadius: '4px'
+                                      borderRadius: '2px'
                                     }}
                                   />
                                   {/* Black divider line between 6th blue and 1st green column */}
                                   {index === 5 && getBoxDataPhysiological().length > 6 && (
                                     <div
-                                      className="mx-1"
                                       style={{
-                                        width: '2px',
-                                        height: '120px',
-                                        backgroundColor: 'black'
+                                        width: '3px',
+                                        height: '140px',
+                                        backgroundColor: 'black',
+                                        margin: '0 2px'
                                       }}
                                     />
                                   )}
-                                </div>
+                                </React.Fragment>
                               ))}
                             </div>
 
