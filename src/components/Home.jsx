@@ -217,10 +217,8 @@ export default function Home() {
       // Coherent: INHALE=5s (50 counts, 100ms), EXHALE=5s (50 counts, 100ms) for smooth animation
       intervalDuration = 100; // 100ms for smooth transitions
     } else if (isPhysiological) {
-      // Physiological Sigh: INHALE=4s (8 counts, 500ms), EXHALE=8s (8 counts, 1000ms)
-      if (breathingPhase === 'inhale') intervalDuration = 500; // 8 counts * 500ms = 4s
-      else if (breathingPhase === 'exhale') intervalDuration = 1000; // 8 counts * 1000ms = 8s
-      else intervalDuration = 1000;
+      // Physiological Sigh: INHALE=4s (5 counts: 0-4, 1000ms), EXHALE=8s (9 counts: 8-0, 1000ms)
+      intervalDuration = 1000; // 1000ms per count for both phases
     } else {
       // Box breathing: all phases use same interval pattern
       // INHALE and EXHALE: 5 counts (0-4) over 4 seconds = 800ms per count
@@ -306,17 +304,17 @@ export default function Home() {
         } else if (isPhysiological) {
           // Physiological Sigh pattern
           if (breathingPhase === 'inhale') {
-            // INHALE: 0-7 (8 counts over 4s)
-            // 0-5: Blue boxes (6 boxes shown 2 at a time)
-            // 6-7: Green boxes (2 boxes)
-            if (prevTimer < 7) {
+            // INHALE: 0-1-2-3-4 (5 counts over 4s, 1s per count)
+            // Timer 1: 2 blue bars, Timer 2: 4 blue bars, Timer 3: 6 blue bars (all blue complete)
+            // Timer 4: 8 bars (6 blue + 2 green)
+            if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
               setBreathingPhase('exhale');
-              return 7; // Start EXHALE at 7
+              return 8; // Start EXHALE at 8
             }
           } else if (breathingPhase === 'exhale') {
-            // EXHALE: 7-0 (8 counts over 8s, remove 1 box per second)
+            // EXHALE: 8-7-6-5-4-3-2-1-0 (9 counts over 8s, remove 1 bar per second)
             if (prevTimer > 0) {
               return prevTimer - 1;
             } else {
@@ -536,16 +534,16 @@ export default function Home() {
   // Get box count for Physiological Sigh
   const getVisibleBoxCountPhysiological = () => {
     if (breathingPhase === 'inhale') {
-      // INHALE: 0-7 timer (8 counts)
-      // Timer 0-5: Show 6 blue boxes (2 at a time, so 2 boxes per count pair)
-      // Timer 6-7: Show 8 boxes total (added 2 green boxes)
-      if (timer <= 1) return 2;
-      else if (timer <= 3) return 4;
-      else if (timer <= 5) return 6;
-      else return 8; // timer 6-7
+      // INHALE: timer 0-1-2-3-4 (5 counts over 4s)
+      // Timer 0: 0 bars, Timer 1: 2 bars, Timer 2: 4 bars, Timer 3: 6 bars (all blue), Timer 4: 8 bars (6 blue + 2 green)
+      if (timer === 0) return 0;
+      else if (timer === 1) return 2;
+      else if (timer === 2) return 4;
+      else if (timer === 3) return 6;
+      else return 8; // timer 4
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: timer 7→0 shows 8,7,6,5,4,3,2,1 boxes (remove 1 per second)
-      return timer + 1;
+      // EXHALE: timer 8→0 shows 8,7,6,5,4,3,2,1,0 bars (remove 1 bar per second)
+      return timer;
     }
     return 0;
   };
