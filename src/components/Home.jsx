@@ -75,11 +75,10 @@ export default function Home() {
       ]
     },
     'Coherent breathing (5-5)': {
-      description: 'Coherent breathing is a relaxation technique that involves breathing at a consistent rate of five to six breaths per minute to synchronize the heart, lungs, and brain. This practice optimizes Heart Rate Variability (HRV) to balance the nervous system and reduce physiological stress.',
+      description: 'Coherent breathing (or resonance breathing) is a slow, rhythmic breathing technique, typically inhaling for 6 seconds and exhaling for 6 seconds (5-6 breaths per minute), designed to sync your heart rate with your breath for optimal nervous system balance, reducing stress and anxiety while promoting calm and focus.',
       sectionTitle: 'Tips',
       sectionContent: [
         { label: 'Focus on the Transition:', text: 'Avoid holding your breath at the top or bottom; make the switch between inhaling and exhaling smooth and continuous.' },
-        { label: 'Use a Pacer:', text: 'Download a breath-pacing app or use a Coherent Breathing video to maintain a steady 6-second rhythm without counting manually.' },
         { label: 'Nasal Breathing:', text: 'Always breathe through your nose to better regulate airflow and filter the air entering your lungs.' },
         { label: 'Stay Relaxed:', text: 'Keep your jaw, shoulders, and face soft; tension in these areas can inhibit deep diaphragmatic movement.' },
         { label: 'Consistency Over Duration:', text: 'Practicing for five minutes every day is more effective for your nervous system than practicing for an hour once a week.' }
@@ -89,7 +88,6 @@ export default function Home() {
         { label: 'Find a Quiet Space:', text: 'Choose a location where you won\'t be interrupted for a few minutes.' },
         { label: 'Optimize Posture:', text: 'Sit upright in a chair with feet flat on the floor or lie flat on your back to allow the diaphragm to move freely.' },
         { label: 'Loosen Clothing:', text: 'Ensure your waistband or belt is not restrictive, as your abdomen needs to expand fully.' },
-        { label: 'Set a Timer:', text: 'Use a gentle alarm so you don\'t have to check the clock during the session.' },
         { label: 'Hand Placement:', text: 'Place one hand on your belly and one on your chest to ensure only the belly hand moves significantly during the breath.' }
       ],
       whenToUseTitle: 'When to use',
