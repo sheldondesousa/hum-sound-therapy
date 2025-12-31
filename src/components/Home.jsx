@@ -1641,7 +1641,8 @@ export default function Home() {
                                     style={{
                                       height: `${getPhysiologicalExhaleGreenHeight()}%`,
                                       background: `linear-gradient(to top,
-                                        #6EE7B7 0%,
+                                        #6EC1E4 0%,
+                                        #6EE7B7 50%,
                                         #A7F3D0 100%
                                       )`,
                                       transition: `height ${timer === 8 || timer === 0 ? '0ms' : '1000ms'} linear`,
