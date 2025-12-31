@@ -563,7 +563,9 @@ export default function Home() {
       return progress * 100; // 0% to 100%
     } else if (breathingPhase === 'exhale') {
       // EXHALE: timer 8-0 (8 seconds, 1s intervals)
-      // Slow decrease from 100% to 0%
+      // Adjust calculation to sync animation with timer display
+      // When displaying timer N, container should be at N/8 percentage
+      if (timer === 0) return 0; // Ensure 0% at timer 0
       const progress = timer / 8; // 1 to 0
       return progress * 100; // 100% to 0%
     }
@@ -1693,7 +1695,7 @@ export default function Home() {
                                         #6EE7B7 87.5%,
                                         #A7F3D0 100%
                                       )`,
-                                      transition: `height ${breathingPhase === 'exhale' && timer === 8 ? '0' : '1000'}ms linear`,
+                                      transition: `height ${breathingPhase === 'exhale' && timer === 8 ? '0ms' : (timer === 0 ? '0ms' : '950ms')} linear`,
                                       borderRadius: '20px'
                                     }}
                                   />
