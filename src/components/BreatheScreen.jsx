@@ -34,8 +34,19 @@ const BreatheScreen = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="w-full max-w-[430px] h-[932px] bg-white flex flex-col p-6">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate('/home')}
+          className="mb-6 flex items-center gap-2 text-black hover:text-gray-600 transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          <span className="text-lg">Back</span>
+        </button>
+
         {/* Title */}
-        <h1 className="text-5xl font-bold mb-8" style={{ fontFamily: "'SF Pro Display', sans-serif" }}>
+        <h1 className="text-5xl font-bold mb-2" style={{ fontFamily: "'SF Pro Display', sans-serif" }}>
           Breathe
         </h1>
 
