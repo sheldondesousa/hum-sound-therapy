@@ -1342,8 +1342,8 @@ export default function Home() {
 
                     {/* Timer Section - 15% */}
                     <div className="flex-[0.15] flex items-center justify-center">
-                      {/* Timer Display - Show during INHALE and EXHALE */}
-                      {isExercising && (breathingPhase === 'inhale' || breathingPhase === 'exhale') && (
+                      {/* Timer Display - Show during INHALE and EXHALE (hide when completed) */}
+                      {!exerciseCompleted && isExercising && (breathingPhase === 'inhale' || breathingPhase === 'exhale') && (
                         <div className="text-center">
                           <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
                             {selectedExercise?.name === 'Coherent breathing (5-5)'
@@ -1360,10 +1360,7 @@ export default function Home() {
                       {/* Show completion screen when exercise is completed */}
                       {exerciseCompleted ? (
                         <div className="flex flex-col items-center justify-center text-center gap-6">
-                          <div>
-                            <h2 className="font-bold text-black mb-4" style={{ fontSize: '1.59rem' }}>Completed</h2>
-                            <p className="text-2xl text-gray-600">You Got This!</p>
-                          </div>
+                          <h2 className="font-bold text-black mb-6" style={{ fontSize: '1.59rem' }}>Completed</h2>
                           <div className="flex flex-col gap-3 w-full max-w-xs">
                             <button
                               onClick={() => {
@@ -1754,7 +1751,8 @@ export default function Home() {
                       )}
                     </div>
 
-                    {/* Navigation Section - 15% */}
+                    {/* Navigation Section - 15% (hide when completed) */}
+                    {!exerciseCompleted && (
                     <div className="flex-[0.15] flex flex-col items-center justify-end pb-8">
                       <div className="flex items-center justify-between px-4 w-full max-w-md">
                       <button
@@ -1837,6 +1835,7 @@ export default function Home() {
                       </button>
                       </div>
                     </div>
+                    )}
                   </div>
                 ) : selectedOption === 'focus' || selectedOption === 'calm' ? (
                   /* Development Message for Focus and Calm */
