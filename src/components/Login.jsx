@@ -15,7 +15,7 @@ export default function Login() {
   // Redirect if already logged in
   useEffect(() => {
     if (currentUser) {
-      navigate('/home', { replace: true });
+      navigate('/breathe', { replace: true });
     }
   }, [currentUser, navigate]);
 
