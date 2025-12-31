@@ -1359,9 +1359,38 @@ export default function Home() {
                     <div className="flex-[0.4] bg-white rounded-lg flex flex-col items-center justify-center p-4">
                       {/* Show completion screen when exercise is completed */}
                       {exerciseCompleted ? (
-                        <div className="flex flex-col items-center justify-center text-center">
-                          <h2 className="text-3xl font-bold text-black mb-4">COMPLETE</h2>
-                          <p className="text-2xl text-gray-600">You Got This!</p>
+                        <div className="flex flex-col items-center justify-center text-center gap-6">
+                          <div>
+                            <h2 className="font-bold text-black mb-4" style={{ fontSize: '1.59rem' }}>Completed</h2>
+                            <p className="text-2xl text-gray-600">You Got This!</p>
+                          </div>
+                          <div className="flex flex-col gap-3 w-full max-w-xs">
+                            <button
+                              onClick={() => {
+                                setExerciseCompleted(false);
+                                setIsExercising(false);
+                                setSelectedExercise(null);
+                                setTimer(0);
+                                setCurrentCycle(0);
+                                setBreathingPhase('inhale');
+                              }}
+                              className="bg-black text-white py-3 px-6 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+                            >
+                              Return to Main Menu
+                            </button>
+                            <button
+                              onClick={() => {
+                                setExerciseCompleted(false);
+                                setCurrentCycle(0);
+                                setTimer(selectedExercise?.name === 'Physiological Sigh' ? 1 : 0);
+                                setBreathingPhase('inhale');
+                                setIsExercising(true);
+                              }}
+                              className="bg-white border-2 border-black text-black py-3 px-6 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                            >
+                              Restart
+                            </button>
+                          </div>
                         </div>
                       ) : (
                         <>
