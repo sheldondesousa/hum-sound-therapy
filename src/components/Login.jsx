@@ -41,9 +41,9 @@ export default function Login() {
   return (
     <>
       {loading && <Loader />}
-      <div className="min-h-screen bg-gray-50 flex">
+      <div className="h-screen bg-gray-50 flex overflow-hidden">
         {/* Left Half - Login Form */}
-        <div className="w-1/2 flex items-center justify-center p-4">
+        <div className="w-1/2 flex items-center justify-center p-4 overflow-y-auto">
           <div className="w-full max-w-md bg-white px-8 py-12 rounded-2xl shadow-sm">
 
 
@@ -159,7 +159,7 @@ export default function Login() {
         </div>
 
         {/* Right Half - Image */}
-        <div className="w-1/2 bg-gray-100">
+        <div className="w-1/2 h-full bg-gray-100">
           <img
             src="/Login Image.jpg"
             alt="Login background"
