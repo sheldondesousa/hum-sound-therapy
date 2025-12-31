@@ -6,7 +6,7 @@ export default function Home() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState('breathe');
   const [selectedExercise, setSelectedExercise] = useState(null);
 
   // Exercise content data
@@ -896,92 +896,8 @@ export default function Home() {
 
         {/* Main Content */}
         <main className="flex-1 flex items-center justify-center p-8 lg:p-16">
-          {/* Centered Container - Tiles + Music Player */}
-          <div className="flex flex-col lg:flex-row gap-9 lg:gap-12 items-center justify-center max-w-7xl">
-            {/* Cards Container */}
-            <div className="flex flex-col justify-center w-full lg:w-auto" style={{ minWidth: '340px', maxWidth: '493px' }}>
-              {/* Header */}
-              <h1 className="text-3xl lg:text-4xl font-bold text-black mb-8 whitespace-nowrap pl-4">Choose your path</h1>
-
-              {/* Separator */}
-              <div className="border-t border-gray-300 mb-0"></div>
-
-              {/* Focus Option */}
-              <button
-                onClick={() => {
-                  setSelectedOption('focus');
-                  setSelectedExercise(null);
-                }}
-                className={`w-full py-3 lg:py-4 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-all group ${
-                  selectedOption === 'focus' ? 'bg-black' : 'bg-gray-100'
-                }`}
-              >
-                <div className="flex-1 text-left pl-4">
-                  <h2 className={`text-xl lg:text-2xl font-semibold mb-1 ${
-                    selectedOption === 'focus' ? 'text-white' : 'text-gray-400'
-                  }`}>Focus</h2>
-                  <p className={`text-sm lg:text-base ${
-                    selectedOption === 'focus' ? 'text-gray-300' : 'text-gray-400'
-                  }`}>Enhance concentration</p>
-                </div>
-                <svg className={`w-8 h-8 lg:w-9 lg:h-9 transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4 ${
-                  selectedOption === 'focus' ? 'text-white' : 'text-gray-400'
-                }`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
-                </svg>
-              </button>
-
-              {/* Calm Option */}
-              <button
-                onClick={() => {
-                  setSelectedOption('calm');
-                  setSelectedExercise(null);
-                }}
-                className={`w-full py-3 lg:py-4 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-all group ${
-                  selectedOption === 'calm' ? 'bg-black' : 'bg-gray-100'
-                }`}
-              >
-                <div className="flex-1 text-left pl-4">
-                  <h2 className={`text-xl lg:text-2xl font-semibold mb-1 ${
-                    selectedOption === 'calm' ? 'text-white' : 'text-gray-400'
-                  }`}>Calm</h2>
-                  <p className={`text-sm lg:text-base ${
-                    selectedOption === 'calm' ? 'text-gray-300' : 'text-gray-400'
-                  }`}>Relax and rejuvenate</p>
-                </div>
-                <svg className={`w-8 h-8 lg:w-9 lg:h-9 transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4 ${
-                  selectedOption === 'calm' ? 'text-white' : 'text-gray-400'
-                }`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
-                </svg>
-              </button>
-
-              {/* Breathe Option */}
-              <button
-                onClick={() => {
-                  setSelectedOption('breathe');
-                  setSelectedExercise(null);
-                }}
-                className={`w-full py-3 lg:py-4 flex items-center justify-between border-b border-gray-300 hover:scale-105 transition-all group ${
-                  selectedOption === 'breathe' ? 'bg-black' : ''
-                }`}
-              >
-                <div className="flex-1 text-left pl-4">
-                  <h2 className={`text-xl lg:text-2xl font-semibold mb-1 ${
-                    selectedOption === 'breathe' ? 'text-white' : 'text-black'
-                  }`}>Breathe</h2>
-                  <p className={`text-sm lg:text-base ${
-                    selectedOption === 'breathe' ? 'text-gray-300' : 'text-gray-700'
-                  }`}>Reset your rhythm</p>
-                </div>
-                <svg className={`w-8 h-8 lg:w-9 lg:h-9 transition-transform group-hover:translate-x-2 flex-shrink-0 pr-4 ${
-                  selectedOption === 'breathe' ? 'text-white' : 'text-black'
-                }`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
-                </svg>
-              </button>
-            </div>
-
+          {/* Centered Container - Music Player */}
+          <div className="flex items-center justify-center max-w-7xl">
             {/* Music Player - iPhone 17 Pro Max dimensions on desktop */}
             <div className="music-player-desktop bg-white border-2 border-gray-300 rounded-2xl p-6 flex flex-col w-full lg:flex-shrink-0 relative overflow-hidden">
               {/* Album Art & Info - Hide when breathing exercise is selected */}
@@ -1007,11 +923,7 @@ export default function Home() {
 
               {/* Track List or Exercise Detail View */}
               <div className={`flex-1 ${selectedOption === 'breathe' && selectedExercise ? 'flex' : 'space-y-0 mb-6'}`}>
-                {!selectedOption ? (
-                  <div className="flex items-center justify-center py-12 text-center">
-                    <p className="text-gray-400 text-sm">Select Focus, Calm, or Breathe to see tracks</p>
-                  </div>
-                ) : selectedOption === 'breathe' && selectedExercise && showingInfo ? (
+                {selectedOption === 'breathe' && selectedExercise && showingInfo ? (
                   /* Breathing Exercise Info Screen */
                   <div className="flex flex-col h-full w-full">
                     {/* Header */}
