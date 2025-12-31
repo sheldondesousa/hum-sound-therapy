@@ -217,8 +217,8 @@ export default function Home() {
       // Coherent: INHALE=5s (50 counts, 100ms), EXHALE=5s (50 counts, 100ms) for smooth animation
       intervalDuration = 100; // 100ms for smooth transitions
     } else if (isPhysiological) {
-      // Physiological Sigh: INHALE=5s (0-4, 1000ms), HOLD=300ms, EXHALE=8s (8-0, 1000ms)
-      if (breathingPhase === 'hold1') intervalDuration = 300; // 300ms gap
+      // Physiological Sigh: INHALE=5s (0-4, 1000ms), HOLD=200ms, EXHALE=8s (8-0, 1000ms)
+      if (breathingPhase === 'hold1') intervalDuration = 200; // 200ms gap
       else intervalDuration = 1000; // 1000ms (1 second) intervals
     } else {
       // Box breathing: all phases use same interval pattern
@@ -1698,7 +1698,7 @@ export default function Home() {
                                         #6EE7B7 87.5%,
                                         #A7F3D0 100%
                                       )`,
-                                      transition: `height ${breathingPhase === 'exhale' && timer === 8 ? '0ms' : (timer === 0 ? '0ms' : '950ms')} linear`,
+                                      transition: `height ${breathingPhase === 'exhale' && timer === 8 ? '0ms' : (timer === 0 ? '0ms' : '900ms')} linear`,
                                       borderRadius: '20px'
                                     }}
                                   />
