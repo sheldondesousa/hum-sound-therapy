@@ -1574,7 +1574,7 @@ export default function Home() {
                                 >
                                   {/* Green gradient fill bar (4th second, top layer - instant flash) */}
                                   <div
-                                    className="w-full"
+                                    className="w-full flex items-center justify-center"
                                     style={{
                                       height: breathingPhase === 'inhale' ? `${getPhysiologicalGreenHeight()}%` : '0%',
                                       background: `linear-gradient(to top,
@@ -1588,10 +1588,14 @@ export default function Home() {
                                       borderBottomLeftRadius: '0',
                                       borderBottomRightRadius: '0'
                                     }}
-                                  />
+                                  >
+                                    {breathingPhase === 'inhale' && timer === 4 && (
+                                      <span className="text-white font-bold text-lg uppercase tracking-wider">Short</span>
+                                    )}
+                                  </div>
                                   {/* Blue gradient fill bar (0-3 seconds, bottom layer) */}
                                   <div
-                                    className="w-full"
+                                    className="w-full flex items-center justify-center"
                                     style={{
                                       height: breathingPhase === 'inhale' ? `${getPhysiologicalBlueHeight()}%` : '0%',
                                       background: `linear-gradient(to top,
@@ -1610,7 +1614,11 @@ export default function Home() {
                                       borderBottomLeftRadius: '20px',
                                       borderBottomRightRadius: '20px'
                                     }}
-                                  />
+                                  >
+                                    {breathingPhase === 'inhale' && (
+                                      <span className="text-white font-bold text-lg uppercase tracking-wider">Long</span>
+                                    )}
+                                  </div>
                                 </div>
                                 {/* INHALE Label */}
                                 <div className="text-center mt-4">
