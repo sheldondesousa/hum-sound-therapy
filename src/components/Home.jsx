@@ -217,7 +217,7 @@ export default function Home() {
       // Coherent: INHALE=5s (50 counts, 100ms), EXHALE=5s (50 counts, 100ms) for smooth animation
       intervalDuration = 100; // 100ms for smooth transitions
     } else if (isPhysiological) {
-      // Physiological Sigh: INHALE=4s (1-4, 1000ms), HOLD1=200ms, EXHALE=8s (8-1, 1000ms), HOLD2=100ms
+      // Physiological Sigh: INHALE=4s (1-4, 1000ms), HOLD1=200ms, EXHALE=8s (7-0, 1000ms), HOLD2=100ms
       if (breathingPhase === 'hold1') intervalDuration = 200; // 200ms gap after INHALE
       else if (breathingPhase === 'hold2') intervalDuration = 100; // 100ms gap after EXHALE
       else intervalDuration = 1000; // 1000ms (1 second) intervals
@@ -317,14 +317,14 @@ export default function Home() {
           } else if (breathingPhase === 'hold1') {
             // HOLD1: 200ms gap after INHALE
             setBreathingPhase('exhale');
-            return 8; // Start EXHALE at 8
+            return 7; // Start EXHALE at 7
           } else if (breathingPhase === 'exhale') {
-            // EXHALE: 8-1 (8 seconds, 1s per count, showing timer value)
-            // Slow decrease from 100% to 12.5%
-            if (prevTimer > 1) {
+            // EXHALE: 7-0 (8 seconds, 1s per count, showing timer value)
+            // Slow decrease from 100% to 0%
+            if (prevTimer > 0) {
               return prevTimer - 1;
             } else {
-              // EXHALE complete at 1, transition to hold2
+              // EXHALE complete at 0, transition to hold2
               setBreathingPhase('hold2');
               return 0;
             }
@@ -607,31 +607,26 @@ export default function Home() {
     }
   };
 
-  // Get green gradient height for Physiological Sigh EXHALE (timer 8-1)
+  // Get green gradient height for Physiological Sigh EXHALE (timer 7-0)
   const getPhysiologicalExhaleGreenHeight = () => {
     if (!isExercising || breathingPhase !== 'exhale') return 0;
 
-    if (timer > 6) {
-      // Timer 8,7: Green decrements at 12.5% per second
-      // Timer 8: 25%, Timer 7: 12.5%
-      return (timer - 6) * 12.5;
+    if (timer > 5) {
+      // Timer 7,6: Green decrements from 25% to 0%
+      // Timer 7: 25%, Timer 6: 12.5%, Timer 5: 0%
+      return (timer - 5) * 12.5;
     } else {
-      return 0; // Green gone by timer 6
+      return 0; // Green gone by timer 5
     }
   };
 
-  // Get blue gradient height for Physiological Sigh EXHALE (timer 8-1)
+  // Get blue gradient height for Physiological Sigh EXHALE (timer 7-0)
   const getPhysiologicalExhaleBlueHeight = () => {
     if (!isExercising || breathingPhase !== 'exhale') return 0;
 
-    if (timer > 6) {
-      // Timer 8,7: Blue stays at 75% while green decrements
-      return 75;
-    } else {
-      // Timer 6-1: Blue decrements at 12.5% per second
-      // Timer 6: 75%, Timer 5: 62.5%, ..., Timer 1: 12.5%
-      return timer * 12.5;
-    }
+    // Blue decrements from 75% to 0% over full duration (timer 7→0)
+    // Smooth linear decrement: timer * (75/7) ≈ timer * 10.714%
+    return timer * (75 / 7);
   };
 
   // Generate 4-7-8 wave path: rise → plateau → decline
@@ -1635,7 +1630,7 @@ export default function Home() {
                                         #6EE7B7 0%,
                                         #A7F3D0 100%
                                       )`,
-                                      transition: `height ${timer === 8 || timer === 1 ? '0ms' : '1000ms'} linear`,
+                                      transition: `height ${timer === 7 || timer === 0 ? '0ms' : '1000ms'} linear`,
                                       borderTopLeftRadius: '20px',
                                       borderTopRightRadius: '20px',
                                       borderBottomLeftRadius: '0',
@@ -1656,7 +1651,7 @@ export default function Home() {
                                         #6EC1E4 83.33%,
                                         #6EC1E4 100%
                                       )`,
-                                      transition: `height ${timer === 8 || timer === 1 ? '0ms' : '1000ms'} linear`,
+                                      transition: `height ${timer === 7 || timer === 0 ? '0ms' : '1000ms'} linear`,
                                       borderTopLeftRadius: '0',
                                       borderTopRightRadius: '0',
                                       borderBottomLeftRadius: '20px',
