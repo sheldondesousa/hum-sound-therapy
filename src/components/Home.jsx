@@ -602,6 +602,31 @@ export default function Home() {
     }
   };
 
+  // Get green gradient height for Physiological Sigh EXHALE (decrements first, timer 8,7)
+  const getPhysiologicalExhaleGreenHeight = () => {
+    if (!isExercising || breathingPhase !== 'exhale') return 0;
+
+    if (timer >= 7) {
+      // Timer 8,7: Green decrements from 25% to 0%
+      return ((timer - 6) / 2) * 25;
+    } else {
+      return 0; // Green gone by timer 6
+    }
+  };
+
+  // Get blue gradient height for Physiological Sigh EXHALE (decrements second, timer 6-0)
+  const getPhysiologicalExhaleBlueHeight = () => {
+    if (!isExercising || breathingPhase !== 'exhale') return 0;
+
+    if (timer > 6) {
+      // Timer 8,7: Blue stays at 75% while green decrements
+      return 75;
+    } else {
+      // Timer 6,5,4,3,2,1,0: Blue decrements from 75% to 0%
+      return (timer / 6) * 75;
+    }
+  };
+
   // Generate 4-7-8 wave path: rise → plateau → decline
   const generateWavePath478 = () => {
     const width = 700; // Width for one cycle
@@ -1682,24 +1707,41 @@ export default function Home() {
                                   className="border-4 border-gray-300 rounded-3xl flex flex-col justify-end overflow-hidden"
                                   style={{ width: '175px', height: '360px', padding: '2px' }}
                                 >
-                                  {/* Vertical gradient fill bar */}
+                                  {/* Green gradient fill bar (decrements first, top layer) */}
                                   <div
                                     className="w-full"
                                     style={{
-                                      height: `${breathingPhase === 'exhale' ? getPhysiologicalFillWidth() : 0}%`,
+                                      height: `${getPhysiologicalExhaleGreenHeight()}%`,
                                       background: `linear-gradient(to top,
-                                        #045a91 0%,
-                                        #0568A6 12.5%,
-                                        #067AC3 25%,
-                                        #0892D0 37.5%,
-                                        #3AA8DB 50%,
-                                        #6EC1E4 62.5%,
-                                        #6EC1E4 75%,
-                                        #6EE7B7 87.5%,
+                                        #6EE7B7 0%,
                                         #A7F3D0 100%
                                       )`,
-                                      transition: `height ${breathingPhase === 'exhale' && timer === 8 ? '0ms' : (timer === 0 ? '0ms' : '900ms')} linear`,
-                                      borderRadius: '20px'
+                                      transition: `height ${timer === 8 ? '0ms' : '900ms'} linear`,
+                                      borderTopLeftRadius: '20px',
+                                      borderTopRightRadius: '20px',
+                                      borderBottomLeftRadius: '0',
+                                      borderBottomRightRadius: '0'
+                                    }}
+                                  />
+                                  {/* Blue gradient fill bar (decrements second, bottom layer) */}
+                                  <div
+                                    className="w-full"
+                                    style={{
+                                      height: `${getPhysiologicalExhaleBlueHeight()}%`,
+                                      background: `linear-gradient(to top,
+                                        #045a91 0%,
+                                        #0568A6 16.67%,
+                                        #067AC3 33.33%,
+                                        #0892D0 50%,
+                                        #3AA8DB 66.67%,
+                                        #6EC1E4 83.33%,
+                                        #6EC1E4 100%
+                                      )`,
+                                      transition: `height ${timer === 8 ? '0ms' : (timer === 0 ? '0ms' : '900ms')} linear`,
+                                      borderTopLeftRadius: '0',
+                                      borderTopRightRadius: '0',
+                                      borderBottomLeftRadius: '20px',
+                                      borderBottomRightRadius: '20px'
                                     }}
                                   />
                                 </div>
