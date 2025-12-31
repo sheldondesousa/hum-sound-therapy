@@ -1718,7 +1718,7 @@ export default function Home() {
                                         #6EE7B7 0%,
                                         #A7F3D0 100%
                                       )`,
-                                      transition: `height ${timer === 8 ? '0ms' : '980ms'} linear`,
+                                      transition: `height ${timer === 8 || timer === 0 ? '0ms' : '1000ms'} linear`,
                                       borderTopLeftRadius: '20px',
                                       borderTopRightRadius: '20px',
                                       borderBottomLeftRadius: '0',
@@ -1739,7 +1739,7 @@ export default function Home() {
                                         #6EC1E4 83.33%,
                                         #6EC1E4 100%
                                       )`,
-                                      transition: `height ${timer === 8 ? '0ms' : '980ms'} linear`,
+                                      transition: `height ${timer === 8 || timer === 0 ? '0ms' : '1000ms'} linear`,
                                       borderTopLeftRadius: '0',
                                       borderTopRightRadius: '0',
                                       borderBottomLeftRadius: '20px',
