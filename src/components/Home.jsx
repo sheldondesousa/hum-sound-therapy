@@ -1572,7 +1572,7 @@ export default function Home() {
                                   className="border-4 border-gray-300 rounded-3xl flex flex-col justify-end overflow-hidden"
                                   style={{ width: '175px', height: '360px', padding: '2px' }}
                                 >
-                                  {/* Green gradient fill bar (4th second, top layer - quick flash) */}
+                                  {/* Green gradient fill bar (4th second, top layer - instant flash) */}
                                   <div
                                     className="w-full"
                                     style={{
@@ -1581,7 +1581,7 @@ export default function Home() {
                                         #6EE7B7 0%,
                                         #A7F3D0 100%
                                       )`,
-                                      transition: breathingPhase === 'inhale' ? 'height 200ms ease-in' : 'opacity 400ms ease-out',
+                                      transition: breathingPhase === 'inhale' ? 'height 0ms' : 'opacity 400ms ease-out',
                                       opacity: breathingPhase === 'inhale' ? 1 : 0,
                                       borderTopLeftRadius: '20px',
                                       borderTopRightRadius: '20px',
