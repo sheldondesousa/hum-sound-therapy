@@ -10,6 +10,21 @@ export default function Home() {
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [currentView, setCurrentView] = useState('interactive'); // 'interactive', 'about', 'support', 'faqs', 'terms'
 
+  // Random visual for album art placeholder
+  const visuals = ['Visual1.jpeg', 'Visual2.jpeg', 'Visual3.jpeg', 'Visual4.jpeg'];
+  const [currentVisual, setCurrentVisual] = useState(() => {
+    const randomIndex = Math.floor(Math.random() * visuals.length);
+    return visuals[randomIndex];
+  });
+
+  // Change visual when returning to listing page (when selectedExercise becomes null)
+  useEffect(() => {
+    if (!selectedExercise) {
+      const randomIndex = Math.floor(Math.random() * visuals.length);
+      setCurrentVisual(visuals[randomIndex]);
+    }
+  }, [selectedExercise]);
+
   // Exercise content data
   const exerciseContent = {
     'Box Breathing (4-4-4-4)': {
@@ -1059,10 +1074,12 @@ export default function Home() {
               {/* Album Art & Info - Hide when breathing exercise is selected */}
               {!(selectedOption === 'breathe' && selectedExercise) && (
                 <div className="mb-6">
-                  <div className="w-full aspect-square bg-gray-200 rounded-lg mb-4 flex items-center justify-center">
-                    <svg className="w-20 h-20 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                    </svg>
+                  <div className="w-full aspect-square bg-gray-200 rounded-lg mb-4 overflow-hidden">
+                    <img
+                      src={`/${currentVisual}`}
+                      alt="Album art"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <h3 className="font-semibold text-xl text-black mb-1 capitalize">
                     {selectedOption === 'breathe' ? 'Breathing exercises' : selectedOption ? `${selectedOption} Collection` : 'Select Your Path'}
