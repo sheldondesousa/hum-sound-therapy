@@ -1592,7 +1592,14 @@ export default function Home() {
                     </div>
 
                     {/* Breathing Circles Area - 40% */}
-                    <div className="flex-[0.4] bg-white rounded-lg flex flex-col items-center justify-center p-4">
+                    <div
+                      className="flex-[0.4] rounded-lg flex flex-col items-center justify-center p-4"
+                      style={
+                        selectedExercise?.name === 'Box Breathing (4-4-4-4)'
+                          ? { background: 'linear-gradient(to bottom, #DAF5FE, #FFF6D6)' }
+                          : { backgroundColor: 'white' }
+                      }
+                    >
                       {/* Show completion screen when exercise is completed */}
                       {exerciseCompleted ? (
                         <div className="flex flex-col items-center justify-center text-center gap-6">
