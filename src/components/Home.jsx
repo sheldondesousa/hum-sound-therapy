@@ -783,13 +783,19 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <style>{`
         @media (min-width: 1024px) {
           .music-player-desktop {
             width: 430px !important;
             height: 932px !important;
           }
+        }
+        .music-player-frame {
+          box-shadow:
+            0 0 0 8px white,
+            0 10px 40px rgba(0, 0, 0, 0.12),
+            0 4px 12px rgba(0, 0, 0, 0.08);
         }
         @keyframes subtlePulse {
           0%, 100% {
@@ -957,7 +963,7 @@ export default function Home() {
           <div className="flex items-center justify-center max-w-7xl">
             {currentView === 'about' ? (
               /* About Hum Page */
-              <div className="music-player-desktop bg-white border-2 border-gray-300 rounded-2xl p-8 flex flex-col w-full lg:flex-shrink-0 relative overflow-y-auto" style={{ maxHeight: '90vh' }}>
+              <div className="music-player-desktop music-player-frame bg-white border-2 border-white rounded-3xl p-8 flex flex-col w-full lg:flex-shrink-0 relative overflow-y-auto" style={{ maxHeight: '90vh' }}>
                 {/* Header with Back Button */}
                 <div className="flex items-center mb-6 pb-4 border-b border-gray-300">
                   <button
@@ -1049,7 +1055,7 @@ export default function Home() {
               </div>
             ) : currentView === 'interactive' ? (
               /* Music Player - iPhone 17 Pro Max dimensions on desktop */
-              <div className="music-player-desktop bg-white border-2 border-gray-300 rounded-2xl p-6 flex flex-col w-full lg:flex-shrink-0 relative overflow-hidden">
+              <div className="music-player-desktop music-player-frame bg-white border-2 border-white rounded-3xl p-6 flex flex-col w-full lg:flex-shrink-0 relative overflow-hidden">
               {/* Album Art & Info - Hide when breathing exercise is selected */}
               {!(selectedOption === 'breathe' && selectedExercise) && (
                 <div className="mb-6">
@@ -2052,7 +2058,7 @@ export default function Home() {
             </div>
             ) : (
               /* Placeholder pages for other menu options */
-              <div className="music-player-desktop bg-white border-2 border-gray-300 rounded-2xl p-8 flex flex-col w-full lg:flex-shrink-0 relative overflow-y-auto" style={{ maxHeight: '90vh' }}>
+              <div className="music-player-desktop music-player-frame bg-white border-2 border-white rounded-3xl p-8 flex flex-col w-full lg:flex-shrink-0 relative overflow-y-auto" style={{ maxHeight: '90vh' }}>
                 {/* Header with Back Button */}
                 <div className="flex items-center mb-6 pb-4 border-b border-gray-300">
                   <button
