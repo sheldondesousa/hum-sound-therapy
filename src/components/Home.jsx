@@ -877,8 +877,8 @@ export default function Home() {
         .music-player-frame {
           box-shadow:
             0 0 0 8px white,
-            0 10px 40px rgba(0, 0, 0, 0.12),
-            0 4px 12px rgba(0, 0, 0, 0.08);
+            0 4px 20px rgba(0, 0, 0, 0.08),
+            0 2px 8px rgba(0, 0, 0, 0.06);
         }
         @keyframes subtlePulse {
           0%, 100% {
@@ -1210,7 +1210,7 @@ export default function Home() {
                       {/* Tips Tile */}
                       <button
                         onClick={() => setShowTipsSheet(true)}
-                        className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
+                        className="w-full flex items-center justify-between p-4 border-2 border-white rounded-xl mb-5 hover:bg-gray-50 transition-colors"
                       >
                         <div className="flex items-center gap-3">
                           <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -1225,7 +1225,7 @@ export default function Home() {
                       {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
                         <button
                           onClick={() => setShowPreparationSheet(true)}
-                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
+                          className="w-full flex items-center justify-between p-4 border-2 border-white rounded-xl mb-5 hover:bg-gray-50 transition-colors"
                         >
                           <div className="flex items-center gap-3">
                             <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -1241,7 +1241,7 @@ export default function Home() {
                       {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
                         <button
                           onClick={() => setShowWhenToUseSheet(true)}
-                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
+                          className="w-full flex items-center justify-between p-4 border-2 border-white rounded-xl mb-5 hover:bg-gray-50 transition-colors"
                         >
                           <div className="flex items-center gap-3">
                             <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -1257,7 +1257,7 @@ export default function Home() {
                       {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
                         <button
                           onClick={() => setShowSafetySheet(true)}
-                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
+                          className="w-full flex items-center justify-between p-4 border-2 border-white rounded-xl mb-5 hover:bg-gray-50 transition-colors"
                         >
                           <div className="flex items-center gap-3">
                             <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -1291,7 +1291,7 @@ export default function Home() {
                                   className={`px-4 h-12 rounded-full text-base font-bold transition-all whitespace-nowrap ${
                                     selectedCycles === option.cycles
                                       ? 'bg-black text-white shadow-lg'
-                                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                      : 'bg-white text-gray-700 border-2 border-white hover:bg-gray-50'
                                   }`}
                                 >
                                   {option.time}
@@ -1306,7 +1306,7 @@ export default function Home() {
                                   className={`w-12 h-12 rounded-full text-base font-bold transition-all ${
                                     selectedCycles === cycles
                                       ? 'bg-black text-white shadow-lg'
-                                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                      : 'bg-white text-gray-700 border-2 border-white hover:bg-gray-50'
                                   }`}
                                 >
                                   {cycles}
@@ -1833,7 +1833,7 @@ export default function Home() {
                               {/* First Container - INHALE (fills bottom to top) */}
                               <div className="flex flex-col">
                                 <div
-                                  className="border-4 border-gray-300 rounded-3xl flex flex-col justify-end overflow-hidden"
+                                  className="border-4 border-white rounded-3xl flex flex-col justify-end overflow-hidden"
                                   style={{ width: '175px', height: '360px', padding: '2px' }}
                                 >
                                   {/* Green gradient fill bar (4th second, top layer - instant flash) */}
@@ -1896,7 +1896,7 @@ export default function Home() {
                               {/* Second Container - EXHALE (empties top to bottom) */}
                               <div className="flex flex-col">
                                 <div
-                                  className="border-4 border-gray-300 rounded-3xl flex flex-col justify-end overflow-hidden"
+                                  className="border-4 border-white rounded-3xl flex flex-col justify-end overflow-hidden"
                                   style={{ width: '175px', height: '360px', padding: '2px' }}
                                 >
                                   {/* Green gradient fill bar (decrements first, top layer) */}
