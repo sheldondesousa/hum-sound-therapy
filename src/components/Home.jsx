@@ -153,6 +153,72 @@ export default function Home() {
         { label: 'Avoid Focus Tasks:', text: 'Do not practice this while driving or performing any task that requires your full, alert attention.' },
         { label: 'Listen to Your Body:', text: 'Stop immediately if you feel short of breath or distressed; your comfort dictates the correct pace.' }
       ]
+    },
+    'Alternate Nostril': {
+      description: 'Alternate nostril breathing (Nadi Shodhana) is an ancient yogic practice that involves breathing through one nostril at a time while blocking the other. This technique balances the left and right hemispheres of the brain, calms the nervous system, and enhances mental clarity and focus.',
+      sectionTitle: 'Tips',
+      sectionContent: [
+        { label: 'Hand Position:', text: 'Use your right thumb to close your right nostril and your right ring finger to close your left nostril. Keep your index and middle fingers folded or resting on your forehead.' },
+        { label: 'Gentle Pressure:', text: 'Apply gentle pressure when closing each nostril—just enough to block airflow without discomfort.' },
+        { label: 'Equal Duration:', text: 'Try to keep your inhales and exhales roughly equal in length for optimal balance.' },
+        { label: 'Smooth Transitions:', text: 'Switch nostrils smoothly without pausing between breaths to maintain a continuous flow.' },
+        { label: 'Start Slow:', text: 'Begin with 3-5 rounds and gradually increase as you become more comfortable with the pattern.' }
+      ],
+      preparationTitle: 'Preparation',
+      preparationContent: [
+        { label: 'Find a Quiet Space:', text: 'Choose a peaceful environment where you can sit undisturbed for several minutes.' },
+        { label: 'Sit Comfortably:', text: 'Sit in a cross-legged position on the floor or upright in a chair with your spine straight and shoulders relaxed.' },
+        { label: 'Clear Your Nostrils:', text: 'Gently blow your nose before starting to ensure both nostrils are clear.' },
+        { label: 'Relax Your Body:', text: 'Take a few natural breaths to settle in and release any tension in your shoulders, jaw, and face.' }
+      ],
+      whenToUseTitle: 'Try this when',
+      whenToUseContent: [
+        { label: 'Mental Clarity:', text: 'Practice when you need to enhance focus and concentration before important tasks or study sessions.' },
+        { label: 'Stress Relief:', text: 'Use it to calm anxiety and reduce stress during overwhelming moments.' },
+        { label: 'Before Meditation:', text: 'Perform a few rounds as a preparatory practice to center yourself before meditation.' },
+        { label: 'Better Sleep:', text: 'Practice before bedtime to calm a busy mind and prepare for restful sleep.' },
+        { label: 'Energy Balance:', text: 'Use it when feeling mentally foggy or unbalanced to restore equilibrium.' }
+      ],
+      safetyTitle: 'Safety First',
+      safetyContent: [
+        { label: 'Nasal Congestion:', text: 'If your nose is congested, postpone this practice until your nasal passages are clear.' },
+        { label: 'Consult Professionals:', text: 'If you have respiratory conditions, sinus issues, or cardiovascular concerns, consult a healthcare provider before practicing.' },
+        { label: 'Avoid Force:', text: 'Never force the breath—keep it gentle and natural. Stop if you feel dizzy or uncomfortable.' },
+        { label: 'Listen to Your Body:', text: 'If you experience discomfort or lightheadedness, pause the practice and return to normal breathing.' }
+      ]
+    },
+    'Humming Bee': {
+      description: 'Humming Bee Breath (Bhramari Pranayama) is a calming breathing technique that involves making a gentle humming sound while exhaling. The vibration created by humming stimulates the vagus nerve, reduces stress, and promotes deep relaxation and mental stillness.',
+      sectionTitle: 'Tips',
+      sectionContent: [
+        { label: 'Humming Sound:', text: 'Create a low, steady humming sound like a bee. Focus on feeling the vibration in your head and chest.' },
+        { label: 'Cover Your Ears:', text: 'Gently place your index fingers over your ears (or use your thumbs) to amplify the internal vibration and deepen the meditative effect.' },
+        { label: 'Slow Exhale:', text: 'Make the humming exhale long and smooth—aim for at least 5-10 seconds per exhale.' },
+        { label: 'Natural Inhale:', text: 'Inhale quietly through your nose without rushing. The focus is on the humming exhale.' },
+        { label: 'Volume Control:', text: 'Keep the hum soft and comfortable—not too loud. The goal is vibration, not volume.' }
+      ],
+      preparationTitle: 'Preparation',
+      preparationContent: [
+        { label: 'Find a Quiet Space:', text: 'Choose a calm environment where you won\'t be disturbed and can focus on the sound of your humming.' },
+        { label: 'Sit Upright:', text: 'Sit comfortably with your spine straight, either in a chair or cross-legged on the floor.' },
+        { label: 'Close Your Eyes:', text: 'Closing your eyes helps you turn inward and enhances the meditative quality of the practice.' },
+        { label: 'Relax Your Face:', text: 'Keep your jaw, tongue, and facial muscles soft and relaxed to allow the humming to resonate freely.' }
+      ],
+      whenToUseTitle: 'Try this when',
+      whenToUseContent: [
+        { label: 'Anxiety Relief:', text: 'Use it when feeling anxious or overwhelmed to quickly calm the nervous system.' },
+        { label: 'Anger Management:', text: 'Practice when experiencing frustration or anger to cool down and regain composure.' },
+        { label: 'Before Sleep:', text: 'Perform a few rounds before bed to quiet a racing mind and promote restful sleep.' },
+        { label: 'Meditation Preparation:', text: 'Use it as a gateway practice to deepen meditation and enhance mental stillness.' },
+        { label: 'Headache Relief:', text: 'The gentle vibration may help relieve tension headaches and sinus pressure.' }
+      ],
+      safetyTitle: 'Safety First',
+      safetyContent: [
+        { label: 'Ear Sensitivity:', text: 'If you have ear infections or are sensitive to sound, skip covering your ears or avoid this practice entirely.' },
+        { label: 'Consult Professionals:', text: 'If you have respiratory issues, sinus infections, or cardiovascular conditions, consult a doctor before practicing.' },
+        { label: 'Avoid Strain:', text: 'Keep the humming gentle and comfortable. Never strain your voice or breath.' },
+        { label: 'Listen to Your Body:', text: 'Stop immediately if you feel dizzy, short of breath, or experience any discomfort.' }
+      ]
     }
   };
   const [showingInfo, setShowingInfo] = useState(false); // Track if showing info screen
@@ -433,7 +499,9 @@ export default function Home() {
       { id: 7, name: 'Box Breathing (4-4-4-4)', duration: '5:00' },
       { id: 8, name: '4-7-8 Breathing', duration: '4:30' },
       { id: 9, name: 'Coherent breathing (5-5)', duration: '6:00' },
-      { id: 10, name: 'Physiological Sigh', duration: '3:45' }
+      { id: 10, name: 'Physiological Sigh', duration: '3:45' },
+      { id: 11, name: 'Alternate Nostril', duration: '5:30' },
+      { id: 12, name: 'Humming Bee', duration: '4:00' }
     ]
   };
 
@@ -1152,7 +1220,7 @@ export default function Home() {
                       </button>
 
                       {/* Preparation Tile - For all breathing exercises */}
-                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh') && (
+                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
                         <button
                           onClick={() => setShowPreparationSheet(true)}
                           className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
@@ -1168,7 +1236,7 @@ export default function Home() {
                       )}
 
                       {/* Try this when Tile - For all breathing exercises */}
-                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh') && (
+                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
                         <button
                           onClick={() => setShowWhenToUseSheet(true)}
                           className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
@@ -1184,7 +1252,7 @@ export default function Home() {
                       )}
 
                       {/* Precautions Tile - For all breathing exercises */}
-                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh') && (
+                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
                         <button
                           onClick={() => setShowSafetySheet(true)}
                           className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
