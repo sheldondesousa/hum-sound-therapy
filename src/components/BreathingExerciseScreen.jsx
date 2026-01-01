@@ -84,12 +84,12 @@ export default function BreathingExerciseScreen() {
       scale = timer <= 2 ? 1 : 0.6;
     }
 
-    // Gradient colors from darkest to lightest
+    // Linear gradient from #86EDD2 to #15122C (3 circles evenly distributed)
     // Outermost (largest) circle is darkest, innermost (smallest) is lightest
     return [
-      { key: 'circle3', size: 363 * scale, color: '#15122C', blur: 30 }, // Darkest (outermost)
-      { key: 'circle2', size: 286 * scale, color: '#68379D', blur: 25 }, // Purple (middle)
-      { key: 'circle1', size: 209 * scale, color: '#86EDD2', blur: 20 }  // Lightest (innermost)
+      { key: 'circle3', size: 363 * scale, color: '#15122C', blur: 30 }, // Darkest (outermost) - 100%
+      { key: 'circle2', size: 286 * scale, color: '#4E807F', blur: 25 }, // 50% gradient (middle)
+      { key: 'circle1', size: 209 * scale, color: '#86EDD2', blur: 20 }  // Lightest (innermost) - 0%
     ];
   };
 
@@ -154,7 +154,7 @@ export default function BreathingExerciseScreen() {
                   cy="181.5"
                   r="175"
                   fill="none"
-                  stroke="#68379D"
+                  stroke="#3B5B63"
                   strokeWidth="4"
                   strokeDasharray="1100"
                   strokeDashoffset={1100 - (1100 * (5 - timer) / 4)}

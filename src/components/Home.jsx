@@ -789,11 +789,12 @@ export default function Home() {
     const circleCount = getVisibleCircleCount();
     // Only 4 circles for timer values 1-4 (no circle for 0)
     const sizes = [160, 220, 280, 340];  // Timer 1-4: 4 circles with 60px increments
+    // Linear gradient from #86EDD2 to #15122C
     const colors = [
-      '#86EDD2',   // Lightest cyan (innermost) - timer 1
-      '#6EAEB5',   // Light teal - timer 2
-      '#68379D',   // Purple - timer 3
-      '#15122C'    // Darkest navy (outermost) - timer 4
+      '#86EDD2',   // Lightest cyan (innermost) - timer 1 (0%)
+      '#60A49B',   // 33% gradient between start and end - timer 2
+      '#3B5B63',   // 67% gradient between start and end - timer 3
+      '#15122C'    // Darkest navy (outermost) - timer 4 (100%)
     ];
     const blurs = [20, 22, 24, 26];  // Progressive blur increase
 
@@ -1342,7 +1343,7 @@ export default function Home() {
                                     {selectedExercise?.name === 'Box Breathing (4-4-4-4)' && (
                                       <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
                                         {/* Blue circle */}
-                                        <circle cx="12" cy="12" r="9" stroke="#68379D" strokeWidth="2" fill="none" />
+                                        <circle cx="12" cy="12" r="9" stroke="#3B5B63" strokeWidth="2" fill="none" />
                                         {/* Black checkmark */}
                                         <path d="M9 12l2 2 4-4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                       </svg>
@@ -1394,7 +1395,7 @@ export default function Home() {
                                   {/* Checkbox with tick mark */}
                                   <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
                                     {/* Blue circle */}
-                                    <circle cx="12" cy="12" r="9" stroke="#68379D" strokeWidth="2" fill="none" />
+                                    <circle cx="12" cy="12" r="9" stroke="#3B5B63" strokeWidth="2" fill="none" />
                                     {/* Black checkmark */}
                                     <path d="M9 12l2 2 4-4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                   </svg>
@@ -1443,7 +1444,7 @@ export default function Home() {
                                   {/* Checkbox with tick mark */}
                                   <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
                                     {/* Blue circle */}
-                                    <circle cx="12" cy="12" r="9" stroke="#68379D" strokeWidth="2" fill="none" />
+                                    <circle cx="12" cy="12" r="9" stroke="#3B5B63" strokeWidth="2" fill="none" />
                                     {/* Black checkmark */}
                                     <path d="M9 12l2 2 4-4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                   </svg>
@@ -1493,7 +1494,7 @@ export default function Home() {
                                     {/* Checkbox with tick mark */}
                                     <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
                                       {/* Blue circle */}
-                                      <circle cx="12" cy="12" r="9" stroke="#68379D" strokeWidth="2" fill="none" />
+                                      <circle cx="12" cy="12" r="9" stroke="#3B5B63" strokeWidth="2" fill="none" />
                                       {/* Black checkmark */}
                                       <path d="M9 12l2 2 4-4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
@@ -1638,7 +1639,7 @@ export default function Home() {
                                   cy="181.5"
                                   r="175"
                                   fill="none"
-                                  stroke="#68379D"
+                                  stroke="#3B5B63"
                                   strokeWidth="4"
                                   strokeDasharray="1100"
                                   strokeDashoffset={1100 - (1100 * timer / 4)}
