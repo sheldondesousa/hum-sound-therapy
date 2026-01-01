@@ -507,32 +507,6 @@ export default function Home() {
 
   const currentTracks = selectedOption ? tracksByOption[selectedOption] : [];
 
-  // Get circle color based on breathing phase and timer
-  const getCircleColor = () => {
-    // Base color: #067AC3 with transparency changes
-    // Timer 0-4: 5 values with enhanced gradient (15% larger differences)
-    // Timer 0: 100% opacity (darkest)
-    // Timer 1: 75% opacity
-    // Timer 2: 50% opacity
-    // Timer 3: 25% opacity
-    // Timer 4: 10% opacity (lightest)
-    const colors = {
-      0: 'rgba(6, 122, 195, 1.0)',
-      1: 'rgba(6, 122, 195, 0.75)',
-      2: 'rgba(6, 122, 195, 0.5)',
-      3: 'rgba(6, 122, 195, 0.25)',
-      4: 'rgba(6, 122, 195, 0.1)'
-    };
-
-    if (breathingPhase === 'inhale' || breathingPhase === 'exhale') {
-      // Increment: gets lighter
-      return colors[timer];
-    } else {
-      // HOLD: Decrement - reverse to become darker
-      return colors[4 - timer];
-    }
-  };
-
   // Get circle size based on breathing phase and timer
   const getCircleSize = () => {
     // Timer 0-4: 5 size values
@@ -816,10 +790,10 @@ export default function Home() {
     // Only 4 circles for timer values 1-4 (no circle for 0)
     const sizes = [160, 220, 280, 340];  // Timer 1-4: 4 circles with 60px increments
     const colors = [
-      'rgba(6, 122, 195, 1.0)',   // 100% opacity (darkest - innermost) - timer 1
-      'rgba(6, 122, 195, 0.75)',  // 75% opacity - timer 2
-      'rgba(6, 122, 195, 0.5)',   // 50% opacity - timer 3
-      'rgba(6, 122, 195, 0.25)'   // 25% opacity (lightest - outermost) - timer 4
+      '#86EDD2',   // Lightest cyan (innermost) - timer 1
+      '#6EAEB5',   // Light teal - timer 2
+      '#68379D',   // Purple - timer 3
+      '#15122C'    // Darkest navy (outermost) - timer 4
     ];
     const blurs = [20, 22, 24, 26];  // Progressive blur increase
 
@@ -1368,7 +1342,7 @@ export default function Home() {
                                     {selectedExercise?.name === 'Box Breathing (4-4-4-4)' && (
                                       <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
                                         {/* Blue circle */}
-                                        <circle cx="12" cy="12" r="9" stroke="#067AC3" strokeWidth="2" fill="none" />
+                                        <circle cx="12" cy="12" r="9" stroke="#68379D" strokeWidth="2" fill="none" />
                                         {/* Black checkmark */}
                                         <path d="M9 12l2 2 4-4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                       </svg>
@@ -1420,7 +1394,7 @@ export default function Home() {
                                   {/* Checkbox with tick mark */}
                                   <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
                                     {/* Blue circle */}
-                                    <circle cx="12" cy="12" r="9" stroke="#067AC3" strokeWidth="2" fill="none" />
+                                    <circle cx="12" cy="12" r="9" stroke="#68379D" strokeWidth="2" fill="none" />
                                     {/* Black checkmark */}
                                     <path d="M9 12l2 2 4-4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                   </svg>
@@ -1469,7 +1443,7 @@ export default function Home() {
                                   {/* Checkbox with tick mark */}
                                   <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
                                     {/* Blue circle */}
-                                    <circle cx="12" cy="12" r="9" stroke="#067AC3" strokeWidth="2" fill="none" />
+                                    <circle cx="12" cy="12" r="9" stroke="#68379D" strokeWidth="2" fill="none" />
                                     {/* Black checkmark */}
                                     <path d="M9 12l2 2 4-4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                   </svg>
@@ -1519,7 +1493,7 @@ export default function Home() {
                                     {/* Checkbox with tick mark */}
                                     <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
                                       {/* Blue circle */}
-                                      <circle cx="12" cy="12" r="9" stroke="#067AC3" strokeWidth="2" fill="none" />
+                                      <circle cx="12" cy="12" r="9" stroke="#68379D" strokeWidth="2" fill="none" />
                                       {/* Black checkmark */}
                                       <path d="M9 12l2 2 4-4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
@@ -1664,7 +1638,7 @@ export default function Home() {
                                   cy="181.5"
                                   r="175"
                                   fill="none"
-                                  stroke="#067AC3"
+                                  stroke="#68379D"
                                   strokeWidth="4"
                                   strokeDasharray="1100"
                                   strokeDashoffset={1100 - (1100 * timer / 4)}
