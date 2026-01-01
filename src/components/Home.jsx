@@ -852,8 +852,8 @@ export default function Home() {
         .music-player-frame {
           box-shadow:
             0 0 0 8px white,
-            0 4px 20px rgba(0, 0, 0, 0.08),
-            0 2px 8px rgba(0, 0, 0, 0.06);
+            0 10px 40px rgba(0, 0, 0, 0.12),
+            0 4px 16px rgba(0, 0, 0, 0.08);
         }
         @keyframes subtlePulse {
           0%, 100% {
