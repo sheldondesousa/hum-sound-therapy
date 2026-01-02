@@ -727,19 +727,23 @@ export default function Home() {
   // Get data for Physiological Sigh circles (4 circles: 3 blue, 1 green)
   const getPhysiologicalCirclesData = () => {
     let circleCount;
-    let opacity = 1;
-    let scale = 1;
+    let partialCircleOpacity = 1; // For the outermost partial circle
 
     if (breathingPhase === 'inhale') {
       // INHALE: Show 1 circle per second (timer 0-4 = 0,1,2,3,4 circles)
       circleCount = timer;
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: All 4 circles visible, but dissolving linearly over 8 seconds
-      circleCount = 4;
-      // Linear reduction from 100% to 0% over 8 seconds
-      // timer goes from 8 to 0, so opacity should go from 1 to 0
-      opacity = timer / 8; // 8/8=1.0, 7/8=0.875, ..., 1/8=0.125, 0/8=0
-      scale = timer / 8; // Also scale down for visual effect
+      // EXHALE: 8 decrements over 8 seconds (treating each circle as 2 units)
+      // Timer 8: 4 circles, Timer 7: 3.5 circles, Timer 6: 3 circles, etc.
+      const totalUnits = timer; // 8 units total
+      circleCount = Math.floor(totalUnits / 2); // Full circles: 8/2=4, 7/2=3, 6/2=3, etc.
+
+      // If we have a half unit remaining, show partial circle
+      const hasPartialCircle = totalUnits % 2 === 1; // Odd numbers have 0.5 remaining
+      if (hasPartialCircle) {
+        circleCount += 1; // Add the partial circle to count
+        partialCircleOpacity = 0.5; // The outermost circle will be at 50% opacity
+      }
     } else {
       circleCount = breathingPhase === 'hold1' ? 4 : 0;
     }
@@ -755,22 +759,24 @@ export default function Home() {
 
     const circles = [];
     for (let i = 0; i < circleCount; i++) {
-      // Apply exhale opacity to the color
+      // For exhale, apply partial opacity to the outermost (last) circle
       let finalColor = baseColors[i];
-      if (breathingPhase === 'exhale') {
-        // Parse rgba and apply opacity multiplier
+      const isOutermostCircle = (i === circleCount - 1);
+
+      if (breathingPhase === 'exhale' && isOutermostCircle && partialCircleOpacity < 1) {
+        // Apply 50% opacity to the outermost circle during partial decrements
         const matches = baseColors[i].match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d.]+)?\)/);
         if (matches) {
           const r = matches[1];
           const g = matches[2];
           const b = matches[3];
           const originalOpacity = matches[4] ? parseFloat(matches[4]) : 1;
-          finalColor = `rgba(${r}, ${g}, ${b}, ${originalOpacity * opacity})`;
+          finalColor = `rgba(${r}, ${g}, ${b}, ${originalOpacity * partialCircleOpacity})`;
         }
       }
 
       circles.push({
-        size: sizes[i] * (breathingPhase === 'exhale' ? scale : 1),
+        size: sizes[i],
         color: finalColor,
         blur: blurs[i],
         key: i
