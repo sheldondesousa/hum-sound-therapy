@@ -90,8 +90,8 @@ export default function Home() {
         { label: 'Listen to Your Body:', text: 'Stop immediately if you feel short of breath or distressed; your comfort dictates the correct pace.' }
       ]
     },
-    'Coherent breathing (5-5)': {
-      description: 'Coherent breathing (or resonance breathing) is a slow, rhythmic breathing technique, typically inhaling for 6 seconds and exhaling for 6 seconds (5-6 breaths per minute), designed to sync your heart rate with your breath for optimal nervous system balance, reducing stress and anxiety while promoting calm and focus.',
+    'Coherent Breathing': {
+      description: 'Coherent breathing (or resonance breathing) is a slow, rhythmic breathing technique, typically inhaling for 5-6 seconds and exhaling for 5-6 seconds (5-6 breaths per minute), designed to sync your heart rate with your breath for optimal nervous system balance, reducing stress and anxiety while promoting calm and focus.',
       sectionTitle: 'Tips',
       sectionContent: [
         { label: 'Focus on the Transition:', text: 'Avoid holding your breath at the top or bottom; make the switch between inhaling and exhaling smooth and continuous.' },
@@ -247,7 +247,7 @@ export default function Home() {
 
   // Set default cycles for Coherent Breathing (6 cycles default)
   useEffect(() => {
-    if (selectedExercise?.name === 'Coherent breathing (5-5)' && selectedCycles === 4) {
+    if (selectedExercise?.name === 'Coherent Breathing' && selectedCycles === 4) {
       setSelectedCycles(6);
     }
   }, [selectedExercise, selectedCycles]);
@@ -287,7 +287,7 @@ export default function Home() {
 
     // Exercise-specific timing configurations
     const is478 = selectedExercise?.name === '4-7-8 Breathing';
-    const isCoherent = selectedExercise?.name === 'Coherent breathing (5-5)';
+    const isCoherent = selectedExercise?.name === 'Coherent Breathing';
     const isPhysiological = selectedExercise?.name === 'Physiological Sigh';
 
     // Dynamic interval based on breathing phase and exercise type
@@ -503,7 +503,7 @@ export default function Home() {
     breathe: [
       { id: 7, name: 'Box Breathing (4-4-4-4)', duration: '5:00' },
       { id: 8, name: '4-7-8 Breathing', duration: '4:30' },
-      { id: 9, name: 'Coherent breathing (5-5)', duration: '6:00' },
+      { id: 9, name: 'Coherent Breathing', duration: '6:00' },
       { id: 10, name: 'Physiological Sigh', duration: '3:45' },
       { id: 11, name: 'Alternate Nostril', duration: '5:30' },
       { id: 12, name: 'Humming Bee', duration: '4:00' }
@@ -1167,7 +1167,7 @@ export default function Home() {
                       </button>
 
                       {/* Preparation Tile - For all breathing exercises */}
-                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
+                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
                         <button
                           onClick={() => setShowPreparationSheet(true)}
                           className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
@@ -1183,7 +1183,7 @@ export default function Home() {
                       )}
 
                       {/* Try this when Tile - For all breathing exercises */}
-                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
+                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
                         <button
                           onClick={() => setShowWhenToUseSheet(true)}
                           className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
@@ -1199,7 +1199,7 @@ export default function Home() {
                       )}
 
                       {/* Precautions Tile - For all breathing exercises */}
-                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent breathing (5-5)' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
+                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
                         <button
                           onClick={() => setShowSafetySheet(true)}
                           className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
@@ -1221,7 +1221,7 @@ export default function Home() {
                         <div className="flex flex-col items-center gap-2">
                           <span className="text-sm text-gray-600 font-medium">Select Cycles</span>
                           <div className="flex gap-3">
-                            {selectedExercise?.name === 'Coherent breathing (5-5)' ? (
+                            {selectedExercise?.name === 'Coherent Breathing' ? (
                               // Cycle options for Coherent Breathing + Personalize button
                               <>
                                 {[3, 6, 9].map((cycles) => (
@@ -1496,7 +1496,7 @@ export default function Home() {
                     )}
 
                     {/* Customization Bottom Sheet - Only for Coherent Breathing */}
-                    {showCustomizationSheet && selectedExercise?.name === 'Coherent breathing (5-5)' && (
+                    {showCustomizationSheet && selectedExercise?.name === 'Coherent Breathing' && (
                       <div
                         className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-end"
                         onClick={() => setShowCustomizationSheet(false)}
@@ -1606,8 +1606,10 @@ export default function Home() {
                       {!exerciseCompleted && isExercising && (breathingPhase === 'inhale' || breathingPhase === 'exhale') && (
                         <div className="text-center">
                           <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
-                            {selectedExercise?.name === 'Coherent breathing (5-5)'
-                              ? Math.floor(timer / 10) // Convert timer to seconds for display
+                            {selectedExercise?.name === 'Coherent Breathing'
+                              ? (breathingPhase === 'inhale'
+                                  ? Math.floor(timer / 10)  // INHALE: 0 to coherentBreathTime (e.g., 0-6)
+                                  : Math.ceil(timer / 10))  // EXHALE: coherentBreathTime to 0 (e.g., 6-0)
                               : selectedExercise?.name === 'Physiological Sigh'
                                 ? (breathingPhase === 'inhale'
                                     ? Math.ceil((timer + 1) / 10)  // INHALE: 0-39 → 1-4 seconds
@@ -1809,7 +1811,7 @@ export default function Home() {
                             </div>
                           </div>
                         </>
-                      ) : selectedExercise?.name === 'Coherent breathing (5-5)' ? (
+                      ) : selectedExercise?.name === 'Coherent Breathing' ? (
                         /* Coherent Breathing Animation */
                         <>
                           {/* Breathing Circle Illustration - Coherent */}
