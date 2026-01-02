@@ -437,8 +437,8 @@ export default function Home() {
               return 0; // Start HOLD1 at 0
             }
           } else if (breathingPhase === 'hold1') {
-            // HOLD1: 0-1-2-3 (4 counts over 4s)
-            if (prevTimer < 3) {
+            // HOLD1: 0-1-2-3-4 (5 counts over 4s)
+            if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
               setBreathingPhase('exhale');
@@ -453,8 +453,8 @@ export default function Home() {
               return 0; // Start HOLD2 at 0
             }
           } else if (breathingPhase === 'hold2') {
-            // HOLD2: 0-1-2-3 (4 counts over 4s)
-            if (prevTimer < 3) {
+            // HOLD2: 0-1-2-3-4 (5 counts over 4s)
+            if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
               // Cycle completed, check if we should continue
@@ -1587,6 +1587,7 @@ export default function Home() {
                                 y="4"
                                 width="355"
                                 height="355"
+                                rx="15"
                                 fill="none"
                                 stroke="#E5E7EB"
                                 strokeWidth="4"
@@ -1605,11 +1606,12 @@ export default function Home() {
                                   y="4"
                                   width="355"
                                   height="355"
+                                  rx="15"
                                   fill="none"
                                   stroke="#067AC3"
                                   strokeWidth="4"
                                   strokeDasharray="1420"
-                                  strokeDashoffset={1420 - (1420 * (timer + 1) / 4)}
+                                  strokeDashoffset={1420 - (1420 * timer / 4)}
                                   className="transition-all duration-1000"
                                   strokeLinecap="square"
                                 />
@@ -1624,6 +1626,7 @@ export default function Home() {
                                   width: `${circle.size}px`,
                                   height: `${circle.size}px`,
                                   border: `20px solid ${circle.color}`,
+                                  borderRadius: '15px',
                                   backgroundColor: 'transparent',
                                   boxShadow: `0 0 ${circle.blur}px ${circle.color}`
                                 }}
