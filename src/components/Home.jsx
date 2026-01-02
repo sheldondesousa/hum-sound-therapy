@@ -724,51 +724,40 @@ export default function Home() {
     return circles.reverse();
   };
 
-  // Get data for Physiological Sigh circles (4 circles: 3 blue, 1 green)
+  // Get data for Physiological Sigh circles (8 circles: 6 blue, 2 green)
   const getPhysiologicalCirclesData = () => {
-    let circleCount;
-    let partialCircleScale = 1; // For the outermost partial circle size
+    let circleCount = 0;
 
     if (breathingPhase === 'inhale') {
-      // INHALE: Show 1 circle per second (timer 0-4 = 0,1,2,3,4 circles)
-      circleCount = timer;
+      // INHALE: Show 2 circles per second over 4 seconds (timer 0-4)
+      // Timer 0: 0 circles, Timer 1: 2, Timer 2: 4, Timer 3: 6, Timer 4: 8
+      circleCount = timer * 2;
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: 8 decrements over 8 seconds (treating each circle as 2 units)
-      // Timer 8: 4 circles, Timer 7: 3.5 circles, Timer 6: 3 circles, etc.
-      const totalUnits = timer; // 8 units total
-      circleCount = Math.floor(totalUnits / 2); // Full circles: 8/2=4, 7/2=3, 6/2=3, etc.
-
-      // If we have a half unit remaining, show partial circle
-      const hasPartialCircle = totalUnits % 2 === 1; // Odd numbers have 0.5 remaining
-      if (hasPartialCircle) {
-        circleCount += 1; // Add the partial circle to count
-        partialCircleScale = 0.5; // The outermost circle will be at 50% size
-      }
+      // EXHALE: Remove 1 circle per second over 8 seconds (timer 8-0)
+      // Timer 8: 8 circles, Timer 7: 7, ..., Timer 1: 1, Timer 0: 0
+      circleCount = timer;
     } else {
-      circleCount = breathingPhase === 'hold1' ? 4 : 0;
+      circleCount = breathingPhase === 'hold1' ? 8 : 0;
     }
 
-    const sizes = [160, 220, 280, 340];  // 4 circles with 60px increments
+    // 8 circles total with smaller increments to fit all
+    const sizes = [100, 130, 160, 190, 220, 250, 280, 310];  // 8 circles with ~30px increments
     const baseColors = [
-      'rgba(6, 122, 195, 1.0)',   // Blue - circle 1
-      'rgba(6, 122, 195, 0.75)',  // Blue - circle 2
-      'rgba(6, 122, 195, 0.5)',   // Blue - circle 3
-      'rgba(110, 231, 183, 1.0)'  // Green - circle 4 (#6EE7B7)
+      'rgba(6, 122, 195, 1.0)',    // Blue - circle 1
+      'rgba(6, 122, 195, 0.9)',    // Blue - circle 2
+      'rgba(6, 122, 195, 0.8)',    // Blue - circle 3
+      'rgba(6, 122, 195, 0.7)',    // Blue - circle 4
+      'rgba(6, 122, 195, 0.6)',    // Blue - circle 5
+      'rgba(6, 122, 195, 0.5)',    // Blue - circle 6
+      'rgba(110, 231, 183, 1.0)',  // Green - circle 7 (#6EE7B7)
+      'rgba(110, 231, 183, 0.8)'   // Green - circle 8 (#6EE7B7)
     ];
-    const blurs = [20, 22, 24, 26];
+    const blurs = [15, 17, 19, 21, 23, 25, 27, 29];
 
     const circles = [];
     for (let i = 0; i < circleCount; i++) {
-      const isOutermostCircle = (i === circleCount - 1);
-
-      // Calculate circle size - apply 50% scale to outermost circle during partial decrements
-      let circleSize = sizes[i];
-      if (breathingPhase === 'exhale' && isOutermostCircle && partialCircleScale < 1) {
-        circleSize = sizes[i] * partialCircleScale; // Reduce size by 50%
-      }
-
       circles.push({
-        size: circleSize,
+        size: sizes[i],
         color: baseColors[i],
         blur: blurs[i],
         key: i
@@ -1793,20 +1782,6 @@ export default function Home() {
                               </div>
                             </div>
                           </div>
-
-                          {/* Legends - Show during INHALE */}
-                          {breathingPhase === 'inhale' && (
-                            <div className="flex gap-6 justify-center mt-6">
-                              <div className="flex items-center gap-2">
-                                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'rgba(6, 122, 195, 1.0)' }}></div>
-                                <span className="text-sm font-medium text-gray-700">Long Breath</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'rgba(110, 231, 183, 1.0)' }}></div>
-                                <span className="text-sm font-medium text-gray-700">Short Breath</span>
-                              </div>
-                            </div>
-                          )}
                         </>
                       ) : (
                         /* Placeholder for other breathing exercises */
@@ -1844,6 +1819,20 @@ export default function Home() {
                                 />
                               ))}
                             </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Legends - Show during INHALE for Physiological Sigh (after countdown ends) */}
+                      {isExercising && selectedExercise?.name === 'Physiological Sigh' && breathingPhase === 'inhale' && (
+                        <div className="flex gap-6 justify-center">
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'rgba(6, 122, 195, 1.0)' }}></div>
+                            <span className="text-sm font-medium text-gray-700">Long Breath</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'rgba(110, 231, 183, 1.0)' }}></div>
+                            <span className="text-sm font-medium text-gray-700">Short Breath</span>
                           </div>
                         </div>
                       )}
