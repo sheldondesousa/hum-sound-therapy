@@ -727,7 +727,7 @@ export default function Home() {
   // Get data for Physiological Sigh circles (4 circles: 3 blue, 1 green)
   const getPhysiologicalCirclesData = () => {
     let circleCount;
-    let partialCircleOpacity = 1; // For the outermost partial circle
+    let partialCircleScale = 1; // For the outermost partial circle size
 
     if (breathingPhase === 'inhale') {
       // INHALE: Show 1 circle per second (timer 0-4 = 0,1,2,3,4 circles)
@@ -742,7 +742,7 @@ export default function Home() {
       const hasPartialCircle = totalUnits % 2 === 1; // Odd numbers have 0.5 remaining
       if (hasPartialCircle) {
         circleCount += 1; // Add the partial circle to count
-        partialCircleOpacity = 0.5; // The outermost circle will be at 50% opacity
+        partialCircleScale = 0.5; // The outermost circle will be at 50% size
       }
     } else {
       circleCount = breathingPhase === 'hold1' ? 4 : 0;
@@ -759,25 +759,17 @@ export default function Home() {
 
     const circles = [];
     for (let i = 0; i < circleCount; i++) {
-      // For exhale, apply partial opacity to the outermost (last) circle
-      let finalColor = baseColors[i];
       const isOutermostCircle = (i === circleCount - 1);
 
-      if (breathingPhase === 'exhale' && isOutermostCircle && partialCircleOpacity < 1) {
-        // Apply 50% opacity to the outermost circle during partial decrements
-        const matches = baseColors[i].match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d.]+)?\)/);
-        if (matches) {
-          const r = matches[1];
-          const g = matches[2];
-          const b = matches[3];
-          const originalOpacity = matches[4] ? parseFloat(matches[4]) : 1;
-          finalColor = `rgba(${r}, ${g}, ${b}, ${originalOpacity * partialCircleOpacity})`;
-        }
+      // Calculate circle size - apply 50% scale to outermost circle during partial decrements
+      let circleSize = sizes[i];
+      if (breathingPhase === 'exhale' && isOutermostCircle && partialCircleScale < 1) {
+        circleSize = sizes[i] * partialCircleScale; // Reduce size by 50%
       }
 
       circles.push({
-        size: sizes[i],
-        color: finalColor,
+        size: circleSize,
+        color: baseColors[i],
         blur: blurs[i],
         key: i
       });
@@ -1793,18 +1785,28 @@ export default function Home() {
                               />
                             ))}
 
-                            {/* Timer Display - Inside Circles */}
+                            {/* Phase Label - Inside Circles */}
                             <div className="absolute text-center">
-                              <div className="text-lg font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                              <div className="text-lg font-semibold text-gray-700 uppercase tracking-wider">
                                 {breathingPhase === 'inhale' && 'INHALE'}
                                 {breathingPhase === 'exhale' && 'EXHALE'}
                               </div>
-                              {/* Show timer during inhale and exhale */}
-                              <div className="text-5xl font-bold text-gray-900">
-                                {timer}
-                              </div>
                             </div>
                           </div>
+
+                          {/* Legends - Show during INHALE */}
+                          {breathingPhase === 'inhale' && (
+                            <div className="flex gap-6 justify-center mt-6">
+                              <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'rgba(6, 122, 195, 1.0)' }}></div>
+                                <span className="text-sm font-medium text-gray-700">Long Breath</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'rgba(110, 231, 183, 1.0)' }}></div>
+                                <span className="text-sm font-medium text-gray-700">Short Breath</span>
+                              </div>
+                            </div>
+                          )}
                         </>
                       ) : (
                         /* Placeholder for other breathing exercises */
