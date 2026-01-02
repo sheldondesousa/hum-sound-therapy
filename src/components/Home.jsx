@@ -1518,7 +1518,11 @@ export default function Home() {
                           <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
                             {selectedExercise?.name === 'Coherent breathing (5-5)'
                               ? Math.floor(timer / 10) // Convert 0-50 to 0-5 for display
-                              : timer
+                              : selectedExercise?.name === 'Physiological Sigh'
+                                ? (breathingPhase === 'inhale'
+                                    ? Math.ceil((timer + 1) / 10)  // INHALE: 0-39 → 1-4 seconds
+                                    : Math.ceil(timer / 10))       // EXHALE: 79-0 → 8-0 seconds
+                                : timer
                             }
                           </div>
                         </div>
