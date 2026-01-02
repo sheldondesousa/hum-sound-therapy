@@ -758,15 +758,22 @@ export default function Home() {
     const maxSize = 340;
 
     if (breathingPhase === 'inhale') {
-      // INHALE: timer goes from 0-39 (4 seconds)
-      const progress = timer / 39; // 0 to 1
+      // INHALE: timer goes from 0-39 (4 seconds total)
+      // First 3 seconds (0-29): Blue expands (long breath)
+      // Last 1 second (30-39): Blue stays at max, green flash (quick short breath)
+      if (timer <= 29) {
+        const progress = timer / 29; // 0 to 1 over 3 seconds
 
-      // Calculate current size with smooth easing
-      const easeProgress = progress < 0.5
-        ? 2 * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        // Calculate current size with smooth easing
+        const easeProgress = progress < 0.5
+          ? 2 * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
 
-      return minSize + (maxSize - minSize) * easeProgress;
+        return minSize + (maxSize - minSize) * easeProgress;
+      } else {
+        // Last second (30-39): Stay at max for quick short breath
+        return maxSize;
+      }
     } else if (breathingPhase === 'hold1') {
       // HOLD1: Stay at max size after INHALE completes
       return maxSize;
