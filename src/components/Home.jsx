@@ -1597,20 +1597,8 @@ export default function Home() {
 
                       <h3 className="text-base font-semibold text-black text-center flex-1 px-4">{selectedExercise.name}</h3>
 
-                      {/* Customization Icon - Only for Coherent Breathing */}
-                      {selectedExercise?.name === 'Coherent breathing (5-5)' ? (
-                        <button
-                          onClick={() => setShowCustomizationSheet(true)}
-                          className="w-14 flex items-center justify-end text-gray-700 hover:text-black transition-colors"
-                        >
-                          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                        </button>
-                      ) : (
-                        <div className="w-14"></div>
-                      )}
+                      {/* Spacer to balance layout */}
+                      <div className="w-14"></div>
                       </div>
                     </div>
 
@@ -1962,29 +1950,21 @@ export default function Home() {
                     {!exerciseCompleted && (
                     <div className="flex-[0.15] flex flex-col items-center justify-end pb-8">
                       <div className="flex items-center justify-between px-4 w-full max-w-md">
-                      <button
-                        onClick={() => {
-                          // Navigate to previous exercise and show info screen
-                          const currentIndex = currentTracks.findIndex(t => t.id === selectedExercise.id);
-                          const prevIndex = currentIndex > 0 ? currentIndex - 1 : currentTracks.length - 1;
-                          const prevExercise = currentTracks[prevIndex];
-                          setSelectedExercise(prevExercise);
-                          setShowingInfo(true);
-                          // Reset all exercise state
-                          setIsExercising(false);
-                          setCountdown(null);
-                          setIsPaused(false);
-                          setBreathingPhase('inhale');
-                          setTimer(prevExercise.name === 'Physiological Sigh' ? 1 : 0);
-                          setCurrentCycle(0);
-                        }}
-                        className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity"
-                      >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                        <span className="text-xs text-gray-700 font-medium">Previous</span>
-                      </button>
+                      {/* Customize Button - Only for Coherent Breathing */}
+                      {selectedExercise?.name === 'Coherent breathing (5-5)' ? (
+                        <button
+                          onClick={() => setShowCustomizationSheet(true)}
+                          className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity"
+                        >
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <span className="text-xs text-gray-700 font-medium">Customize</span>
+                        </button>
+                      ) : (
+                        <div></div>
+                      )}
 
                       {/* Start/Pause Button */}
                       <button
@@ -2017,29 +1997,8 @@ export default function Home() {
                         {exerciseCompleted || isPaused ? 'Start' : 'Pause'}
                       </button>
 
-                      <button
-                        onClick={() => {
-                          // Navigate to next exercise and show info screen
-                          const currentIndex = currentTracks.findIndex(t => t.id === selectedExercise.id);
-                          const nextIndex = currentIndex < currentTracks.length - 1 ? currentIndex + 1 : 0;
-                          const nextExercise = currentTracks[nextIndex];
-                          setSelectedExercise(nextExercise);
-                          setShowingInfo(true);
-                          // Reset all exercise state
-                          setIsExercising(false);
-                          setCountdown(null);
-                          setIsPaused(false);
-                          setBreathingPhase('inhale');
-                          setTimer(nextExercise.name === 'Physiological Sigh' ? 1 : 0);
-                          setCurrentCycle(0);
-                        }}
-                        className="flex flex-col items-center gap-1 hover:opacity-70 transition-opacity"
-                      >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/>
-                        </svg>
-                        <span className="text-xs text-gray-700 font-medium">Next</span>
-                      </button>
+                      {/* Empty spacer to balance layout */}
+                      <div></div>
                       </div>
                     </div>
                     )}
