@@ -299,10 +299,10 @@ export default function Home() {
       // Coherent: INHALE=5s (50 counts, 100ms), EXHALE=5s (50 counts, 100ms) for smooth animation
       intervalDuration = 100; // 100ms for smooth transitions
     } else if (isPhysiological) {
-      // Physiological Sigh: INHALE=4s (1-4, 1000ms), HOLD1=200ms, EXHALE=8s (8-0, 1000ms), HOLD2=100ms
+      // Physiological Sigh: INHALE=4s (40 counts, 100ms), HOLD1=200ms, EXHALE=8s (80 counts, 100ms), HOLD2=100ms
       if (breathingPhase === 'hold1') intervalDuration = 200; // 200ms gap after INHALE
       else if (breathingPhase === 'hold2') intervalDuration = 100; // 100ms gap after EXHALE
-      else intervalDuration = 1000; // 1000ms (1 second) intervals
+      else intervalDuration = 100; // 100ms for smooth transitions
     } else {
       // Box breathing: all phases use same interval pattern
       // INHALE and EXHALE: 5 counts (0-4) over 4 seconds = 800ms per count
@@ -388,8 +388,8 @@ export default function Home() {
         } else if (isPhysiological) {
           // Physiological Sigh pattern
           if (breathingPhase === 'inhale') {
-            // INHALE: 0-1-2-3-4 (5 counts over 4s, 1s per count)
-            if (prevTimer < 4) {
+            // INHALE: 0-40 (41 counts over 4s)
+            if (prevTimer < 40) {
               return prevTimer + 1;
             } else {
               // Transition to 200ms hold
@@ -399,9 +399,9 @@ export default function Home() {
           } else if (breathingPhase === 'hold1') {
             // HOLD1: 200ms gap after INHALE
             setBreathingPhase('exhale');
-            return 8; // Start EXHALE at 8
+            return 80; // Start EXHALE at 80
           } else if (breathingPhase === 'exhale') {
-            // EXHALE: 8-7-6-5-4-3-2-1-0 (9 values over 8 seconds, 1s per count)
+            // EXHALE: 80-0 (81 counts over 8s, descending)
             if (prevTimer > 0) {
               return prevTimer - 1;
             } else {
@@ -724,50 +724,6 @@ export default function Home() {
     return circles.reverse();
   };
 
-  // Get data for Physiological Sigh circles (8 circles: 6 blue, 2 green)
-  const getPhysiologicalCirclesData = () => {
-    let circleCount = 0;
-
-    if (breathingPhase === 'inhale') {
-      // INHALE: Show 2 circles per second over 4 seconds (timer 0-4)
-      // Timer 0: 0 circles, Timer 1: 2, Timer 2: 4, Timer 3: 6, Timer 4: 8
-      circleCount = timer * 2;
-    } else if (breathingPhase === 'exhale') {
-      // EXHALE: Remove 1 circle per second over 8 seconds (timer 8-0)
-      // Timer 8: 8 circles, Timer 7: 7, ..., Timer 1: 1, Timer 0: 0
-      circleCount = timer;
-    } else {
-      circleCount = breathingPhase === 'hold1' ? 8 : 0;
-    }
-
-    // 8 circles total with smaller increments to fit all
-    const sizes = [100, 130, 160, 190, 220, 250, 280, 310];  // 8 circles with ~30px increments
-    const baseColors = [
-      'rgba(6, 122, 195, 1.0)',    // Blue - circle 1
-      'rgba(6, 122, 195, 0.9)',    // Blue - circle 2
-      'rgba(6, 122, 195, 0.8)',    // Blue - circle 3
-      'rgba(6, 122, 195, 0.7)',    // Blue - circle 4
-      'rgba(6, 122, 195, 0.6)',    // Blue - circle 5
-      'rgba(6, 122, 195, 0.5)',    // Blue - circle 6
-      'rgba(110, 231, 183, 1.0)',  // Green - circle 7 (#6EE7B7)
-      'rgba(110, 231, 183, 0.8)'   // Green - circle 8 (#6EE7B7)
-    ];
-    const blurs = [15, 17, 19, 21, 23, 25, 27, 29];
-
-    const circles = [];
-    for (let i = 0; i < circleCount; i++) {
-      circles.push({
-        size: sizes[i],
-        color: baseColors[i],
-        blur: blurs[i],
-        key: i
-      });
-    }
-
-    // Render from largest to smallest so all rings are visible
-    return circles.reverse();
-  };
-
   // Get smooth circle data for Coherent Breathing (5-5)
   const getCoherentCircleSize = () => {
     if (!isExercising) return 100;
@@ -785,6 +741,38 @@ export default function Home() {
     const currentSize = minSize + (maxSize - minSize) * easeProgress;
 
     return currentSize;
+  };
+
+  // Get smooth circle data for Physiological Sigh
+  const getPhysiologicalCircleSize = () => {
+    if (!isExercising) return 100;
+
+    const minSize = 100;
+    const maxSize = 340;
+
+    if (breathingPhase === 'inhale') {
+      // INHALE: timer goes from 0-40 (4 seconds)
+      const progress = timer / 40; // 0 to 1
+
+      // Calculate current size with smooth easing
+      const easeProgress = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+      return minSize + (maxSize - minSize) * easeProgress;
+    } else if (breathingPhase === 'exhale') {
+      // EXHALE: timer goes from 80-0 (8 seconds)
+      const progress = timer / 80; // 1 to 0
+
+      // Calculate current size with smooth easing
+      const easeProgress = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+      return minSize + (maxSize - minSize) * easeProgress;
+    }
+
+    return minSize;
   };
 
   const handleLogout = async () => {
@@ -843,6 +831,19 @@ export default function Home() {
         }
         .blink-purple {
           animation: purpleBlink 400ms ease-in-out;
+        }
+        @keyframes greenFlash {
+          0% {
+            stroke: #E5E7EB;
+            stroke-width: 4;
+          }
+          100% {
+            stroke: #6EE7B7;
+            stroke-width: 8;
+          }
+        }
+        .flash-green {
+          animation: greenFlash 1000ms ease-in-out forwards;
         }
       `}</style>
       <div className="flex min-h-screen flex-col lg:flex-row">
@@ -1755,28 +1756,46 @@ export default function Home() {
                           </div>
                         </>
                       ) : selectedExercise?.name === 'Physiological Sigh' ? (
-                        /* Physiological Sigh Circle Animation */
+                        /* Physiological Sigh Animation - Coherent Style */
                         <>
                           {/* Breathing Circle Illustration - Physiological Sigh */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Breathing Circles */}
-                            {getPhysiologicalCirclesData().map((circle) => (
-                              <div
-                                key={circle.key}
-                                className="rounded-full transition-all duration-1000 ease-in-out absolute"
-                                style={{
-                                  width: `${circle.size}px`,
-                                  height: `${circle.size}px`,
-                                  border: `20px solid ${circle.color}`,
-                                  backgroundColor: 'transparent',
-                                  boxShadow: `0 0 ${circle.blur}px ${circle.color}`
-                                }}
+                            {/* Gray Background Circle - Flashes green during last 1 second of INHALE */}
+                            <svg
+                              className="absolute"
+                              width="363"
+                              height="363"
+                              style={{ transform: 'rotate(-90deg)' }}
+                            >
+                              <circle
+                                cx="181.5"
+                                cy="181.5"
+                                r="175"
+                                fill="none"
+                                stroke="#E5E7EB"
+                                strokeWidth="4"
+                                className={breathingPhase === 'inhale' && timer >= 30 ? 'flash-green' : ''}
+                                key={breathingPhase === 'inhale' && timer >= 30 ? 'green' : 'gray'}
                               />
-                            ))}
+                            </svg>
 
-                            {/* Phase Label - Inside Circles */}
+                            {/* Single Expanding/Compressing Circle with Radial Gradient */}
+                            <div
+                              className="rounded-full absolute"
+                              style={{
+                                width: `${getPhysiologicalCircleSize()}px`,
+                                height: `${getPhysiologicalCircleSize()}px`,
+                                background: 'radial-gradient(circle, rgba(6, 122, 195, 1) 0%, rgba(6, 122, 195, 0.6) 50%, rgba(6, 122, 195, 0.2) 100%)',
+                                boxShadow: '0 0 30px rgba(6, 122, 195, 0.5)',
+                                transition: 'all 100ms linear'
+                              }}
+                            />
+
+                            {/* Phase Text - At Center of Circle */}
                             <div className="absolute text-center">
-                              <div className="text-lg font-semibold text-gray-700 uppercase tracking-wider">
+                              <div
+                                className={`text-lg font-semibold text-white uppercase tracking-wider`}
+                              >
                                 {breathingPhase === 'inhale' && 'INHALE'}
                                 {breathingPhase === 'exhale' && 'EXHALE'}
                               </div>
@@ -1823,19 +1842,6 @@ export default function Home() {
                         </div>
                       )}
 
-                      {/* Legends - Show during INHALE for Physiological Sigh (after countdown ends) */}
-                      {isExercising && selectedExercise?.name === 'Physiological Sigh' && breathingPhase === 'inhale' && (
-                        <div className="flex gap-6 justify-center">
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'rgba(6, 122, 195, 1.0)' }}></div>
-                            <span className="text-sm font-medium text-gray-700">Long Breath</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'rgba(110, 231, 183, 1.0)' }}></div>
-                            <span className="text-sm font-medium text-gray-700">Short Breath</span>
-                          </div>
-                        </div>
-                      )}
                     </div>
 
                     {/* Navigation Section - 15% (hide when completed) */}
