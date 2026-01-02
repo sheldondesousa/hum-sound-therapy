@@ -238,6 +238,8 @@ export default function Home() {
   const [coherentCycles, setCoherentCycles] = useState(6); // Total cycles (default 6)
   const [coherentBreathTime, setCoherentBreathTime] = useState(5); // Inhale-Exhale time in seconds (default 5s)
   const [showLegend, setShowLegend] = useState(false); // Track legend visibility with delay
+  const [alternateNostrilCycles, setAlternateNostrilCycles] = useState(6); // Total cycles for Alternate Nostril (default 6)
+  const [alternateNostrilBreathTime, setAlternateNostrilBreathTime] = useState(4); // Breath time for Alternate Nostril (default 4s)
 
   // Auto-start countdown when exercise view loads
   useEffect(() => {
@@ -302,6 +304,7 @@ export default function Home() {
     const is478 = selectedExercise?.name === '4-7-8 Breathing';
     const isCoherent = selectedExercise?.name === 'Coherent Breathing';
     const isPhysiological = selectedExercise?.name === 'Physiological Sigh';
+    const isAlternateNostril = selectedExercise?.name === 'Alternate Nostril';
 
     // Dynamic interval based on breathing phase and exercise type
     let intervalDuration;
@@ -319,6 +322,9 @@ export default function Home() {
       if (breathingPhase === 'hold1') intervalDuration = 200; // 200ms gap after INHALE
       else if (breathingPhase === 'hold2') intervalDuration = 100; // 100ms gap after EXHALE
       else intervalDuration = 100; // 100ms for smooth transitions
+    } else if (isAlternateNostril) {
+      // Alternate Nostril: INHALE=4s (40 counts, 100ms), EXHALE=4s (40 counts, 100ms) customizable
+      intervalDuration = 100; // 100ms for smooth gradient animation
     } else {
       // Box breathing: all phases use same interval pattern
       // INHALE and EXHALE: 5 counts (0-4) over 4 seconds = 800ms per count
@@ -445,6 +451,40 @@ export default function Home() {
               return 0; // Start next INHALE at 0
             }
           }
+        } else if (isAlternateNostril) {
+          // Alternate Nostril pattern (customizable)
+          const maxTimer = alternateNostrilBreathTime * 10; // Convert seconds to 100ms intervals
+          if (breathingPhase === 'inhale') {
+            // INHALE: 0 to maxTimer (e.g., 0-40 for 4s)
+            if (prevTimer < maxTimer) {
+              return prevTimer + 1;
+            } else {
+              setBreathingPhase('exhale');
+              return maxTimer; // Start EXHALE at maxTimer
+            }
+          } else if (breathingPhase === 'exhale') {
+            // EXHALE: maxTimer to 0 (descending)
+            if (prevTimer > 0) {
+              return prevTimer - 1;
+            } else {
+              // Cycle completed, check if we should continue
+              const nextCycle = currentCycle + 1;
+              const totalCycles = alternateNostrilCycles;
+              if (nextCycle >= totalCycles) {
+                // Reached target cycles, show completion screen
+                setIsExercising(false);
+                setExerciseCompleted(true);
+                setCurrentCycle(0);
+                setBreathingPhase('inhale');
+                return 0;
+              } else {
+                // Continue to next cycle
+                setCurrentCycle(nextCycle);
+                setBreathingPhase('inhale');
+                return 0;
+              }
+            }
+          }
         } else {
           // Box Breathing pattern (4-4-4-4)
           if (breathingPhase === 'inhale') {
@@ -499,7 +539,7 @@ export default function Home() {
     }, intervalDuration);
 
     return () => clearInterval(interval);
-  }, [isExercising, isPaused, breathingPhase, currentCycle, selectedCycles, selectedExercise, exerciseCompleted]);
+  }, [isExercising, isPaused, breathingPhase, currentCycle, selectedCycles, selectedExercise, exerciseCompleted, coherentCycles, coherentBreathTime, alternateNostrilCycles, alternateNostrilBreathTime]);
 
   // Track data for each option
   const tracksByOption = {
@@ -1267,6 +1307,32 @@ export default function Home() {
                                   </svg>
                                 </button>
                               </>
+                            ) : selectedExercise?.name === 'Alternate Nostril' ? (
+                              // Cycle options for Alternate Nostril + Personalize button
+                              <>
+                                {[3, 6, 9].map((cycles) => (
+                                  <button
+                                    key={cycles}
+                                    onClick={() => setSelectedCycles(cycles)}
+                                    className={`w-12 h-12 rounded-full text-base font-bold transition-all ${
+                                      selectedCycles === cycles
+                                        ? 'bg-black text-white shadow-lg'
+                                        : 'bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50'
+                                    }`}
+                                  >
+                                    {cycles}
+                                  </button>
+                                ))}
+                                {/* Personalize button - icon only */}
+                                <button
+                                  onClick={() => setShowCustomizationSheet(true)}
+                                  className="w-12 h-12 rounded-full flex items-center justify-center transition-all bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50"
+                                >
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                  </svg>
+                                </button>
+                              </>
                             ) : (
                               // Cycle options for other exercises
                               [4, 8, 12].map((cycles) => (
@@ -1583,6 +1649,75 @@ export default function Home() {
                         </div>
                       </div>
                     )}
+
+                    {/* Customization Bottom Sheet - Only for Alternate Nostril */}
+                    {showCustomizationSheet && selectedExercise?.name === 'Alternate Nostril' && (
+                      <div
+                        className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-end"
+                        onClick={() => setShowCustomizationSheet(false)}
+                      >
+                        <div
+                          className="bg-white rounded-t-3xl w-full max-h-[70vh] overflow-y-auto animate-slide-up"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="p-6">
+                            {/* Sheet Handle */}
+                            <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div>
+
+                            {/* Section Title */}
+                            <h2 className="text-2xl font-bold mb-6 text-black">Personalize</h2>
+
+                            {/* Cycles Selector */}
+                            <div className="mb-6">
+                              <label className="text-base font-semibold text-black mb-3 block">Cycles</label>
+                              <div className="grid grid-cols-4 gap-2">
+                                {[12, 18, 24, 30].map((cycles) => (
+                                  <button
+                                    key={cycles}
+                                    onClick={() => setAlternateNostrilCycles(cycles)}
+                                    className={`py-2 px-4 rounded-lg text-sm font-semibold transition-all ${
+                                      alternateNostrilCycles === cycles
+                                        ? 'bg-black text-white'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    }`}
+                                  >
+                                    {cycles}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Inhale-Exhale Timer Selector */}
+                            <div className="mb-6">
+                              <label className="text-base font-semibold text-black mb-3 block">Inhale-Exhale Timer</label>
+                              <div className="grid grid-cols-2 gap-2">
+                                {[4, 6].map((seconds) => (
+                                  <button
+                                    key={seconds}
+                                    onClick={() => setAlternateNostrilBreathTime(seconds)}
+                                    className={`py-2 px-4 rounded-lg text-sm font-semibold transition-all ${
+                                      alternateNostrilBreathTime === seconds
+                                        ? 'bg-black text-white'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    }`}
+                                  >
+                                    {seconds}s
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Close Button */}
+                            <button
+                              onClick={() => setShowCustomizationSheet(false)}
+                              className="w-full py-3 bg-gray-100 text-black text-base font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                            >
+                              Done
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : selectedOption === 'breathe' && selectedExercise ? (
                   /* Breathing Exercise Detail View */
@@ -1604,6 +1739,9 @@ export default function Home() {
                           // Reset Coherent breathing customization to defaults
                           setCoherentCycles(6);
                           setCoherentBreathTime(5);
+                          // Reset Alternate Nostril customization to defaults
+                          setAlternateNostrilCycles(6);
+                          setAlternateNostrilBreathTime(4);
                         }}
                         className="flex items-center gap-2 text-sm text-gray-700 hover:text-black transition-colors"
                       >
@@ -1630,11 +1768,15 @@ export default function Home() {
                               ? (breathingPhase === 'inhale'
                                   ? Math.floor(timer / 10)  // INHALE: 0 to coherentBreathTime (e.g., 0-6)
                                   : Math.ceil(timer / 10))  // EXHALE: coherentBreathTime to 0 (e.g., 6-0)
-                              : selectedExercise?.name === 'Physiological Sigh'
+                              : selectedExercise?.name === 'Alternate Nostril'
                                 ? (breathingPhase === 'inhale'
-                                    ? Math.ceil((timer + 1) / 10)  // INHALE: 0-39 → 1-4 seconds
-                                    : Math.ceil(timer / 10))       // EXHALE: 79-0 → 8-0 seconds
-                                : timer
+                                    ? Math.floor(timer / 10)  // INHALE: 0 to alternateNostrilBreathTime (e.g., 0-4)
+                                    : Math.ceil(timer / 10))  // EXHALE: alternateNostrilBreathTime to 0 (e.g., 4-0)
+                                : selectedExercise?.name === 'Physiological Sigh'
+                                  ? (breathingPhase === 'inhale'
+                                      ? Math.ceil((timer + 1) / 10)  // INHALE: 0-39 → 1-4 seconds
+                                      : Math.ceil(timer / 10))       // EXHALE: 79-0 → 8-0 seconds
+                                  : timer
                             }
                           </div>
                         </div>
@@ -1659,6 +1801,9 @@ export default function Home() {
                                 // Reset Coherent breathing customization to defaults
                                 setCoherentCycles(6);
                                 setCoherentBreathTime(5);
+                                // Reset Alternate Nostril customization to defaults
+                                setAlternateNostrilCycles(6);
+                                setAlternateNostrilBreathTime(4);
                               }}
                               className="bg-black text-white py-3 px-6 rounded-lg font-semibold hover:opacity-90 transition-opacity"
                             >
@@ -1920,6 +2065,74 @@ export default function Home() {
                               >
                                 {breathingPhase === 'inhale' && 'INHALE'}
                                 {breathingPhase === 'exhale' && 'EXHALE'}
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : selectedExercise?.name === 'Alternate Nostril' ? (
+                        /* Alternate Nostril Animation */
+                        <>
+                          {/* Breathing Container Illustration - Alternate Nostril */}
+                          <div className="flex-1 flex items-center justify-center w-full relative px-4">
+                            {/* Split square markers (50:50 left/right) */}
+                            <div className="relative flex gap-4">
+                              {/* Left Container */}
+                              <div className="relative" style={{ width: '181.5px', height: '363px' }}>
+                                {/* Gray outline */}
+                                <svg width="181.5" height="363">
+                                  <rect x="4" y="4" width="173.5" height="355" rx="15"
+                                    fill="none" stroke="#E5E7EB" strokeWidth="4" />
+                                </svg>
+
+                                {/* Blue gradient fill - only visible on odd cycles (1, 3, 5...) */}
+                                {currentCycle % 2 === 0 && (
+                                  <div className="absolute" style={{
+                                    bottom: '4px',
+                                    left: '4px',
+                                    width: '173.5px',
+                                    height: breathingPhase === 'inhale'
+                                      ? `${(timer / (alternateNostrilBreathTime * 10)) * 355}px`
+                                      : `${(timer / (alternateNostrilBreathTime * 10)) * 355}px`,
+                                    background: 'linear-gradient(to top, rgba(6, 122, 195, 1) 0%, rgba(6, 122, 195, 0.6) 50%, rgba(6, 122, 195, 0.2) 100%)',
+                                    borderRadius: '15px',
+                                    transition: 'height 100ms linear'
+                                  }} />
+                                )}
+                              </div>
+
+                              {/* Right Container */}
+                              <div className="relative" style={{ width: '181.5px', height: '363px' }}>
+                                {/* Gray outline */}
+                                <svg width="181.5" height="363">
+                                  <rect x="4" y="4" width="173.5" height="355" rx="15"
+                                    fill="none" stroke="#E5E7EB" strokeWidth="4" />
+                                </svg>
+
+                                {/* Blue gradient fill - only visible on even cycles (2, 4, 6...) */}
+                                {currentCycle % 2 === 1 && (
+                                  <div className="absolute" style={{
+                                    bottom: '4px',
+                                    left: '4px',
+                                    width: '173.5px',
+                                    height: breathingPhase === 'inhale'
+                                      ? `${(timer / (alternateNostrilBreathTime * 10)) * 355}px`
+                                      : `${(timer / (alternateNostrilBreathTime * 10)) * 355}px`,
+                                    background: 'linear-gradient(to top, rgba(6, 122, 195, 1) 0%, rgba(6, 122, 195, 0.6) 50%, rgba(6, 122, 195, 0.2) 100%)',
+                                    borderRadius: '15px',
+                                    transition: 'height 100ms linear'
+                                  }} />
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Phase Text - Centered */}
+                            <div className="absolute text-center">
+                              <div className="text-lg font-semibold text-gray-800 uppercase tracking-wider">
+                                {breathingPhase === 'inhale' && 'INHALE'}
+                                {breathingPhase === 'exhale' && 'EXHALE'}
+                              </div>
+                              <div className="text-sm text-gray-600 mt-1">
+                                {currentCycle % 2 === 0 ? 'Left Nostril' : 'Right Nostril'}
                               </div>
                             </div>
                           </div>
