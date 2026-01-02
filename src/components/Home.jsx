@@ -237,6 +237,7 @@ export default function Home() {
   const [showCustomizationSheet, setShowCustomizationSheet] = useState(false); // Track customization bottom sheet visibility
   const [coherentCycles, setCoherentCycles] = useState(6); // Total cycles (default 6)
   const [coherentBreathTime, setCoherentBreathTime] = useState(5); // Inhale-Exhale time in seconds (default 5s)
+  const [showLegend, setShowLegend] = useState(false); // Track legend visibility with delay
 
   // Auto-start countdown when exercise view loads
   useEffect(() => {
@@ -280,6 +281,18 @@ export default function Home() {
 
     return () => clearTimeout(timer);
   }, [countdown, isPaused]);
+
+  // Show legend with 150ms delay after countdown completes
+  useEffect(() => {
+    if (isExercising && countdown === null && !exerciseCompleted) {
+      const timer = setTimeout(() => {
+        setShowLegend(true);
+      }, 150);
+      return () => clearTimeout(timer);
+    } else {
+      setShowLegend(false);
+    }
+  }, [isExercising, countdown, exerciseCompleted]);
 
   // Breathing animation cycle effect
   useEffect(() => {
@@ -1951,8 +1964,8 @@ export default function Home() {
                         </div>
                       )}
 
-                      {/* Legend for Physiological Sigh - Show after countdown completes */}
-                      {selectedExercise?.name === 'Physiological Sigh' && isExercising && !exerciseCompleted && countdown === null && (
+                      {/* Legend for Physiological Sigh - Show after countdown completes with 150ms delay */}
+                      {selectedExercise?.name === 'Physiological Sigh' && showLegend && (
                         <div className="flex items-center justify-center gap-6">
                           {/* Blue Legend */}
                           <div className="flex items-center gap-2">
