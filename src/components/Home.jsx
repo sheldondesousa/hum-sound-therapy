@@ -2094,9 +2094,7 @@ export default function Home() {
                                 {/* Blue gradient fill - Left Nostril (even cycles: 0, 2, 4...) */}
                                 {currentCycle % 2 === 0 && (
                                   <div className="absolute" style={{
-                                    ...(breathingPhase === 'inhale'
-                                      ? { bottom: '4px' }
-                                      : { top: '4px' }),
+                                    bottom: '4px',
                                     left: '4px',
                                     width: '173.5px',
                                     height: `${(timer / (alternateNostrilBreathTime * 10)) * 355}px`,
@@ -2133,9 +2131,7 @@ export default function Home() {
                                 {/* Blue gradient fill - Right Nostril (odd cycles: 1, 3, 5...) */}
                                 {currentCycle % 2 === 1 && (
                                   <div className="absolute" style={{
-                                    ...(breathingPhase === 'inhale'
-                                      ? { bottom: '4px' }
-                                      : { top: '4px' }),
+                                    bottom: '4px',
                                     left: '4px',
                                     width: '173.5px',
                                     height: `${(timer / (alternateNostrilBreathTime * 10)) * 355}px`,
