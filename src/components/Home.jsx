@@ -434,11 +434,11 @@ export default function Home() {
               return prevTimer + 1;
             } else {
               setBreathingPhase('hold1');
-              return 1; // Start HOLD1 at 1
+              return 0; // Start HOLD1 at 0
             }
           } else if (breathingPhase === 'hold1') {
-            // HOLD1: 1-2-3-4 (4 counts over 4s)
-            if (prevTimer < 4) {
+            // HOLD1: 0-1-2-3 (4 counts over 4s)
+            if (prevTimer < 3) {
               return prevTimer + 1;
             } else {
               setBreathingPhase('exhale');
@@ -450,11 +450,11 @@ export default function Home() {
               return prevTimer - 1;
             } else {
               setBreathingPhase('hold2');
-              return 1; // Start HOLD2 at 1
+              return 0; // Start HOLD2 at 0
             }
           } else if (breathingPhase === 'hold2') {
-            // HOLD2: 1-2-3-4 (4 counts over 4s)
-            if (prevTimer < 4) {
+            // HOLD2: 0-1-2-3 (4 counts over 4s)
+            if (prevTimer < 3) {
               return prevTimer + 1;
             } else {
               // Cycle completed, check if we should continue
@@ -1609,7 +1609,7 @@ export default function Home() {
                                   stroke="#067AC3"
                                   strokeWidth="4"
                                   strokeDasharray="1420"
-                                  strokeDashoffset={1420 - (1420 * timer / 4)}
+                                  strokeDashoffset={1420 - (1420 * (timer + 1) / 4)}
                                   className="transition-all duration-1000"
                                   strokeLinecap="square"
                                 />
