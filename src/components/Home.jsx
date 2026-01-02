@@ -760,6 +760,9 @@ export default function Home() {
         : 1 - Math.pow(-2 * progress + 2, 2) / 2;
 
       return minSize + (maxSize - minSize) * easeProgress;
+    } else if (breathingPhase === 'hold1') {
+      // HOLD1: Stay at max size after INHALE completes
+      return maxSize;
     } else if (breathingPhase === 'exhale') {
       // EXHALE: timer goes from 79-0 (8 seconds)
       const progress = timer / 79; // 1 to 0
@@ -770,6 +773,9 @@ export default function Home() {
         : 1 - Math.pow(-2 * progress + 2, 2) / 2;
 
       return minSize + (maxSize - minSize) * easeProgress;
+    } else if (breathingPhase === 'hold2') {
+      // HOLD2: Stay at min size after EXHALE completes
+      return minSize;
     }
 
     return minSize;
