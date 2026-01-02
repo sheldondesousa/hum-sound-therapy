@@ -235,8 +235,8 @@ export default function Home() {
   const [showSafetySheet, setShowSafetySheet] = useState(false); // Track safety bottom sheet visibility
   const [exerciseCompleted, setExerciseCompleted] = useState(false); // Track if exercise completed
   const [showCustomizationSheet, setShowCustomizationSheet] = useState(false); // Track customization bottom sheet visibility
-  const [coherentDuration, setCoherentDuration] = useState(60); // Duration in seconds (default 1 min)
-  const [coherentBreathTime, setCoherentBreathTime] = useState(5); // Breath time in seconds (default 5s)
+  const [coherentCycles, setCoherentCycles] = useState(6); // Total cycles (default 6)
+  const [coherentBreathTime, setCoherentBreathTime] = useState(5); // Inhale-Exhale time in seconds (default 5s)
 
   // Auto-start countdown when exercise view loads
   useEffect(() => {
@@ -245,7 +245,7 @@ export default function Home() {
     }
   }, [showingInfo, selectedExercise, selectedOption, countdown, isExercising]);
 
-  // Set default time for Coherent Breathing (6 cycles = 1 min)
+  // Set default cycles for Coherent Breathing (6 cycles default)
   useEffect(() => {
     if (selectedExercise?.name === 'Coherent breathing (5-5)' && selectedCycles === 4) {
       setSelectedCycles(6);
@@ -334,8 +334,8 @@ export default function Home() {
             } else {
               // Cycle completed, check if we should continue
               const nextCycle = currentCycle + 1;
-              // Calculate cycles based on duration and breath time
-              const totalCycles = Math.floor(coherentDuration / (coherentBreathTime * 2));
+              // Use configured cycle count
+              const totalCycles = coherentCycles;
               if (nextCycle >= totalCycles) {
                 // Reached target cycles, show completion screen
                 setIsExercising(false);
@@ -1219,28 +1219,22 @@ export default function Home() {
                     {selectedExercise?.name !== 'Physiological Sigh' && (
                       <div className="px-2 mb-[50px]">
                         <div className="flex flex-col items-center gap-2">
-                          <span className="text-sm text-gray-600 font-medium">
-                            {selectedExercise?.name === 'Coherent breathing (5-5)' ? 'Select Time' : 'Select Cycles'}
-                          </span>
+                          <span className="text-sm text-gray-600 font-medium">Select Cycles</span>
                           <div className="flex gap-3">
                             {selectedExercise?.name === 'Coherent breathing (5-5)' ? (
-                              // Time options for Coherent Breathing + Personalize button
+                              // Cycle options for Coherent Breathing + Personalize button
                               <>
-                                {[
-                                  { time: '1 min', cycles: 6 },
-                                  { time: '2 min', cycles: 12 },
-                                  { time: '3 min', cycles: 18 }
-                                ].map((option) => (
+                                {[3, 6, 9].map((cycles) => (
                                   <button
-                                    key={option.cycles}
-                                    onClick={() => setSelectedCycles(option.cycles)}
-                                    className={`px-4 h-12 rounded-full text-base font-bold transition-all whitespace-nowrap ${
-                                      selectedCycles === option.cycles
+                                    key={cycles}
+                                    onClick={() => setSelectedCycles(cycles)}
+                                    className={`w-12 h-12 rounded-full text-base font-bold transition-all ${
+                                      selectedCycles === cycles
                                         ? 'bg-black text-white shadow-lg'
                                         : 'bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50'
                                     }`}
                                   >
-                                    {option.time}
+                                    {cycles}
                                   </button>
                                 ))}
                                 {/* Personalize button - icon only */}
@@ -1518,28 +1512,21 @@ export default function Home() {
                             {/* Section Title */}
                             <h2 className="text-2xl font-bold mb-6 text-black">Personalize</h2>
 
-                            {/* Duration Selector */}
+                            {/* Cycles Selector */}
                             <div className="mb-6">
-                              <label className="text-base font-semibold text-black mb-3 block">Duration</label>
-                              <div className="grid grid-cols-3 gap-2">
-                                {[
-                                  { label: '30s', value: 30 },
-                                  { label: '1 min', value: 60 },
-                                  { label: '2 min', value: 120 },
-                                  { label: '3 min', value: 180 },
-                                  { label: '4 min', value: 240 },
-                                  { label: '5 min', value: 300 }
-                                ].map((option) => (
+                              <label className="text-base font-semibold text-black mb-3 block">Cycles</label>
+                              <div className="grid grid-cols-4 gap-2">
+                                {[12, 18, 24, 30].map((cycles) => (
                                   <button
-                                    key={option.value}
-                                    onClick={() => setCoherentDuration(option.value)}
+                                    key={cycles}
+                                    onClick={() => setCoherentCycles(cycles)}
                                     className={`py-2 px-4 rounded-lg text-sm font-semibold transition-all ${
-                                      coherentDuration === option.value
+                                      coherentCycles === cycles
                                         ? 'bg-black text-white'
                                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                     }`}
                                   >
-                                    {option.label}
+                                    {cycles}
                                   </button>
                                 ))}
                               </div>
@@ -1548,8 +1535,8 @@ export default function Home() {
                             {/* Inhale-Exhale Timer Selector */}
                             <div className="mb-6">
                               <label className="text-base font-semibold text-black mb-3 block">Inhale-Exhale Timer</label>
-                              <div className="grid grid-cols-5 gap-2">
-                                {[3, 4, 5, 6, 7].map((seconds) => (
+                              <div className="grid grid-cols-2 gap-2">
+                                {[4, 6].map((seconds) => (
                                   <button
                                     key={seconds}
                                     onClick={() => setCoherentBreathTime(seconds)}
@@ -1595,7 +1582,7 @@ export default function Home() {
                           setTimer(0);
                           setCurrentCycle(0);
                           // Reset Coherent breathing customization to defaults
-                          setCoherentDuration(60);
+                          setCoherentCycles(6);
                           setCoherentBreathTime(5);
                         }}
                         className="flex items-center gap-2 text-sm text-gray-700 hover:text-black transition-colors"
@@ -1648,7 +1635,7 @@ export default function Home() {
                                 setCurrentCycle(0);
                                 setBreathingPhase('inhale');
                                 // Reset Coherent breathing customization to defaults
-                                setCoherentDuration(60);
+                                setCoherentCycles(6);
                                 setCoherentBreathTime(5);
                               }}
                               className="bg-black text-white py-3 px-6 rounded-lg font-semibold hover:opacity-90 transition-opacity"
