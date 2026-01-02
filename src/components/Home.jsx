@@ -361,10 +361,10 @@ export default function Home() {
               return prevTimer + 1;
             } else {
               setBreathingPhase('exhale');
-              return 7; // Start EXHALE at 7
+              return 8; // Start EXHALE at 8
             }
           } else if (breathingPhase === 'exhale') {
-            // EXHALE: 7-6-5-4-3-2-1-0 (8 counts over 8s, descending)
+            // EXHALE: 8-7-6-5-4-3-2-1-0 (9 counts over 8s, descending)
             if (prevTimer > 0) {
               return prevTimer - 1;
             } else {
@@ -559,8 +559,8 @@ export default function Home() {
       // HOLD: Keep all 8 circles visible
       return 8;
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: Remove 1 circle per second (timer 7→0 shows 8,7,6,5,4,3,2,1 circles)
-      return Math.max(timer, 1);
+      // EXHALE: Remove 1 circle per second (timer 8→0 shows 8,7,6,5,4,3,2,1,0 circles)
+      return timer;
     }
 
     return 0;
