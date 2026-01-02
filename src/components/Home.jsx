@@ -2105,6 +2105,19 @@ export default function Home() {
                                     transition: 'height 100ms linear'
                                   }} />
                                 )}
+
+                                {/* Phase Text - Left Nostril */}
+                                {currentCycle % 2 === 0 && (
+                                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                    <div className="text-lg font-semibold text-white uppercase tracking-wider">
+                                      {breathingPhase === 'inhale' && 'INHALE'}
+                                      {breathingPhase === 'exhale' && 'EXHALE'}
+                                    </div>
+                                    <div className="text-sm text-white mt-1">
+                                      Left Nostril
+                                    </div>
+                                  </div>
+                                )}
                               </div>
 
                               {/* Right Container */}
@@ -2129,17 +2142,19 @@ export default function Home() {
                                     transition: 'height 100ms linear'
                                   }} />
                                 )}
-                              </div>
-                            </div>
 
-                            {/* Phase Text - Centered */}
-                            <div className="absolute text-center">
-                              <div className="text-lg font-semibold text-gray-800 uppercase tracking-wider">
-                                {breathingPhase === 'inhale' && 'INHALE'}
-                                {breathingPhase === 'exhale' && 'EXHALE'}
-                              </div>
-                              <div className="text-sm text-gray-600 mt-1">
-                                {currentCycle % 2 === 0 ? 'Left Nostril' : 'Right Nostril'}
+                                {/* Phase Text - Right Nostril */}
+                                {currentCycle % 2 === 1 && (
+                                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                    <div className="text-lg font-semibold text-white uppercase tracking-wider">
+                                      {breathingPhase === 'inhale' && 'INHALE'}
+                                      {breathingPhase === 'exhale' && 'EXHALE'}
+                                    </div>
+                                    <div className="text-sm text-white mt-1">
+                                      Right Nostril
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
