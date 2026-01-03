@@ -324,6 +324,7 @@ export default function Home() {
     const isCoherent = selectedExercise?.name === 'Coherent Breathing';
     const isPhysiological = selectedExercise?.name === 'Physiological Sigh';
     const isAlternateNostril = selectedExercise?.name === 'Alternate Nostril';
+    const isHummingBee = selectedExercise?.name === 'Humming Bee';
 
     // Dynamic interval based on breathing phase and exercise type
     let intervalDuration;
@@ -342,6 +343,9 @@ export default function Home() {
     } else if (isAlternateNostril) {
       // Alternate Nostril: INHALE=4s (40 counts, 100ms), EXHALE=4s (40 counts, 100ms) customizable
       intervalDuration = 100; // 100ms for smooth gradient animation
+    } else if (isHummingBee) {
+      // Humming Bee: INHALE=5s (50 counts, 100ms), EXHALE=5s (50 counts, 100ms)
+      intervalDuration = 100; // 100ms for smooth transitions
     } else {
       // Box breathing: all phases use same interval pattern
       // INHALE and EXHALE: 5 counts (0-4) over 4 seconds = 800ms per count
@@ -488,6 +492,41 @@ export default function Home() {
               const nextCycle = currentCycle + 1;
               const totalCycles = alternateNostrilCycles;
               if (nextCycle >= totalCycles) {
+                // Reached target cycles, show completion screen
+                setIsExercising(false);
+                setExerciseCompleted(true);
+                setCurrentCycle(0);
+                setBreathingPhase('inhale');
+                return 0;
+              } else {
+                // Continue to next cycle
+                setCurrentCycle(nextCycle);
+                setBreathingPhase('inhale');
+                return 0;
+              }
+            }
+          }
+        } else if (isHummingBee) {
+          // Humming Bee pattern (simple INHALE/EXHALE like Coherent)
+          const breathTime = 5; // 5 seconds each phase
+          const maxTimer = breathTime * 10; // Convert seconds to 100ms intervals
+
+          if (breathingPhase === 'inhale') {
+            // INHALE: 0 to maxTimer (0-50 for 5s)
+            if (prevTimer < maxTimer) {
+              return prevTimer + 1;
+            } else {
+              setBreathingPhase('exhale');
+              return maxTimer; // Start EXHALE at maxTimer
+            }
+          } else if (breathingPhase === 'exhale') {
+            // EXHALE: maxTimer to 0 (descending)
+            if (prevTimer > 0) {
+              return prevTimer - 1;
+            } else {
+              // Cycle completed, check if we should continue
+              const nextCycle = currentCycle + 1;
+              if (nextCycle >= selectedCycles) {
                 // Reached target cycles, show completion screen
                 setIsExercising(false);
                 setExerciseCompleted(true);
@@ -843,6 +882,23 @@ export default function Home() {
     }
 
     return minSize;
+  };
+
+  // Get smooth circle size for Humming Bee
+  const getHummingBeeCircleSize = () => {
+    if (!isExercising) return 100;
+
+    // Simple INHALE/EXHALE pattern (5s each, similar to Coherent Breathing)
+    const breathTime = 5; // 5 seconds default
+    const maxTimer = breathTime * 10; // Convert seconds to 100ms intervals
+    const progress = timer / maxTimer; // 0 to 1
+    const minSize = 100;
+    const maxSize = 340;
+
+    // Linear progression for smooth breathing
+    const currentSize = minSize + (maxSize - minSize) * progress;
+
+    return currentSize;
   };
 
   // Get smooth circle data for Physiological Sigh
@@ -1828,7 +1884,11 @@ export default function Home() {
                                     ? (breathingPhase === 'inhale'
                                         ? Math.floor(timer / 10)  // INHALE: 0-40 → 0-4 seconds
                                         : Math.ceil(timer / 10))  // EXHALE: 80-0 → 8-0 seconds
-                                    : timer
+                                    : selectedExercise?.name === 'Humming Bee'
+                                      ? (breathingPhase === 'inhale'
+                                          ? Math.floor(timer / 10)  // INHALE: 0-50 → 0-5 seconds
+                                          : Math.ceil(timer / 10))  // EXHALE: 50-0 → 5-0 seconds
+                                      : timer
                             }
                           </div>
                         </div>
@@ -2204,6 +2264,59 @@ export default function Home() {
                                   </div>
                                 )}
                               </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : selectedExercise?.name === 'Humming Bee' ? (
+                        /* Humming Bee Animation - Similar to Coherent Breathing */
+                        <>
+                          {/* Breathing Circle Illustration - Humming Bee */}
+                          <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Gray Background Circle */}
+                            <svg
+                              className="absolute"
+                              width="363"
+                              height="363"
+                              style={{ transform: 'rotate(-90deg)' }}
+                            >
+                              <circle
+                                cx="181.5"
+                                cy="181.5"
+                                r="175"
+                                fill="none"
+                                stroke="#E5E7EB"
+                                strokeWidth="4"
+                              />
+                            </svg>
+
+                            {/* Single Expanding/Compressing Circle with Radial Gradient */}
+                            <div
+                              className="rounded-full absolute"
+                              style={{
+                                width: `${getHummingBeeCircleSize()}px`,
+                                height: `${getHummingBeeCircleSize()}px`,
+                                background: 'radial-gradient(circle, rgba(6, 122, 195, 1) 0%, rgba(6, 122, 195, 0.6) 50%, rgba(6, 122, 195, 0.2) 100%)',
+                                boxShadow: '0 0 30px rgba(6, 122, 195, 0.5)',
+                                transition: 'all 100ms linear'
+                              }}
+                            />
+
+                            {/* Phase Text - At Center of Circle */}
+                            <div className="absolute text-center">
+                              {breathingPhase === 'inhale' ? (
+                                <div className="text-lg font-semibold text-white uppercase tracking-wider">
+                                  INHALE
+                                </div>
+                              ) : (
+                                <div>
+                                  <div className="text-lg font-semibold text-white uppercase tracking-wider">
+                                    EXHALE
+                                  </div>
+                                  <div className="text-sm text-white mt-1">
+                                    With Hum
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </>
