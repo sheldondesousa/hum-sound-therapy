@@ -238,7 +238,7 @@ export default function Home() {
   const [coherentCycles, setCoherentCycles] = useState(6); // Total cycles (default 6)
   const [coherentBreathTime, setCoherentBreathTime] = useState(5); // Inhale-Exhale time in seconds (default 5s)
   const [showLegend, setShowLegend] = useState(false); // Track legend visibility with delay
-  const [alternateNostrilCycles, setAlternateNostrilCycles] = useState(3); // Total cycles for Alternate Nostril (default 3)
+  const [alternateNostrilCycles, setAlternateNostrilCycles] = useState(6); // Total cycles for Alternate Nostril (default 6)
   const [alternateNostrilBreathTime, setAlternateNostrilBreathTime] = useState(5); // Breath time for Alternate Nostril (default 5s)
 
   // Auto-start countdown when exercise view loads
@@ -262,10 +262,10 @@ export default function Home() {
     }
   }, [selectedExercise, selectedCycles]);
 
-  // Set default cycles for Alternate Nostril (3 cycles default)
+  // Set default cycles for Alternate Nostril (6 cycles default)
   useEffect(() => {
     if (selectedExercise?.name === 'Alternate Nostril' && selectedCycles === 4) {
-      setSelectedCycles(3);
+      setSelectedCycles(6);
     }
   }, [selectedExercise, selectedCycles]);
 
