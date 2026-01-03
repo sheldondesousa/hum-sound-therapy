@@ -2418,7 +2418,7 @@ export default function Home() {
                     </div>
 
                     {/* Pattern Info Section - 5% */}
-                    <div className="flex-[0.05] flex items-center justify-center">
+                    <div className="flex-[0.05] flex items-center justify-center pt-[5px]">
                       {/* Box Breathing Pattern Tabs */}
                       {selectedExercise?.name === 'Box Breathing (4-4-4-4)' && !exerciseCompleted && isExercising && (
                         <div className="flex items-center gap-3 text-sm text-gray-600">
