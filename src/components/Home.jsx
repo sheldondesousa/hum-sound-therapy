@@ -1903,6 +1903,9 @@ export default function Home() {
                                       : timer
                             }
                           </div>
+                          <div className="text-sm text-gray-600 mt-1">
+                            seconds
+                          </div>
                         </div>
                       )}
                     </div>
@@ -2346,8 +2349,18 @@ export default function Home() {
                       )}
                     </div>
 
-                    {/* Exercise Starting Section - 15% */}
-                    <div className="flex-[0.15] flex items-center justify-center">
+                    {/* Pattern Info Section - 5% */}
+                    <div className="flex-[0.05] flex items-center justify-center">
+                      {/* Box Breathing Pattern Info */}
+                      {selectedExercise?.name === 'Box Breathing (4-4-4-4)' && !exerciseCompleted && isExercising && (
+                        <div className="text-center text-sm text-gray-600">
+                          In 4s <span className="text-gray-400 mx-1">|</span> Hold 4s <span className="text-gray-400 mx-1">|</span> Out 4s <span className="text-gray-400 mx-1">|</span> Hold 4s
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Exercise Starting Section - 10% */}
+                    <div className="flex-[0.1] flex items-center justify-center">
                       {/* Countdown Progress Bar - Show during countdown (only on first start, not after completion) */}
                       {countdown !== null && countdown > 0 && !exerciseCompleted && (
                         <div className="w-full max-w-xs px-4">
