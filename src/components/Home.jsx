@@ -328,7 +328,8 @@ export default function Home() {
     // Dynamic interval based on breathing phase and exercise type
     let intervalDuration;
     if (is478) {
-      // 4-7-8: INHALE=4s (40 counts, 100ms), HOLD=7s (70 counts, 100ms), EXHALE=8s (80 counts, 100ms)
+      // 4-7-8: 100ms intervals for smooth animation (timer/10 = seconds)
+      // INHALE=4s, HOLD=7s, EXHALE=8s
       intervalDuration = 100; // 100ms for smooth transitions
     } else if (isCoherent) {
       // Coherent: INHALE=5s (50 counts, 100ms), EXHALE=5s (50 counts, 100ms) for smooth animation
@@ -387,9 +388,9 @@ export default function Home() {
             }
           }
         } else if (is478) {
-          // 4-7-8 Breathing pattern (smooth)
+          // 4-7-8 Breathing pattern (4s-7s-8s, smooth)
           if (breathingPhase === 'inhale') {
-            // INHALE: 0-40 (40 counts over 4s)
+            // INHALE: 0-40 (4 seconds with 100ms updates)
             if (prevTimer < 40) {
               return prevTimer + 1;
             } else {
@@ -397,7 +398,7 @@ export default function Home() {
               return 0; // Start HOLD1 at 0
             }
           } else if (breathingPhase === 'hold1') {
-            // HOLD: 0-70 (70 counts over 7s)
+            // HOLD: 0-70 (7 seconds with 100ms updates)
             if (prevTimer < 70) {
               return prevTimer + 1;
             } else {
@@ -405,7 +406,7 @@ export default function Home() {
               return 80; // Start EXHALE at 80
             }
           } else if (breathingPhase === 'exhale') {
-            // EXHALE: 80-0 (80 counts over 8s, descending)
+            // EXHALE: 80-0 (8 seconds with 100ms updates, descending)
             if (prevTimer > 0) {
               return prevTimer - 1;
             } else {
@@ -827,15 +828,17 @@ export default function Home() {
     const maxSize = 340;
 
     if (breathingPhase === 'inhale') {
-      // INHALE: timer goes from 0-40 (4 seconds), linear expansion
-      const progress = timer / 40; // 0 to 1
+      // INHALE: 4 seconds (0-4), linear expansion
+      const seconds = timer / 10; // Convert 100ms intervals to seconds
+      const progress = seconds / 4; // 0 to 1
       return minSize + (maxSize - minSize) * progress;
     } else if (breathingPhase === 'hold1') {
       // HOLD: stay at max size for 7 seconds
       return maxSize;
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: timer goes from 80-0 (8 seconds), linear compression
-      const progress = timer / 80; // 1 to 0
+      // EXHALE: 8 seconds (8-0), linear compression
+      const seconds = timer / 10; // Convert 100ms intervals to seconds
+      const progress = seconds / 8; // 1 to 0
       return minSize + (maxSize - minSize) * progress;
     }
 
@@ -1985,7 +1988,7 @@ export default function Home() {
                                   stroke="#067AC3"
                                   strokeWidth="4"
                                   strokeDasharray="1131"
-                                  strokeDashoffset={1131 - (1131 * timer / 70)}
+                                  strokeDashoffset={1131 - (1131 * (timer / 10) / 7)}
                                   style={{ transition: 'stroke-dashoffset 100ms linear' }}
                                   strokeLinecap="round"
                                 />
