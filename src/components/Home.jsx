@@ -341,7 +341,7 @@ export default function Home() {
       else if (breathingPhase === 'hold2') intervalDuration = 100; // 100ms gap after EXHALE
       else intervalDuration = 100; // 100ms for smooth transitions
     } else if (isAlternateNostril) {
-      // Alternate Nostril: INHALE=4s (40 counts, 100ms), HOLD=1s (10 counts, 100ms), EXHALE=4s (40 counts, 100ms) customizable
+      // Alternate Nostril: INHALE=4s (40 counts, 100ms), EXHALE=4s (40 counts, 100ms), HOLD2=1s (10 counts, 100ms) nostril switch delay
       intervalDuration = 100; // 100ms for smooth gradient animation
     } else if (isHummingBee) {
       // Humming Bee: INHALE=4s (40 counts, 100ms), HOLD1=200ms, EXHALE=8s (80 counts, 100ms), HOLD2=200ms
@@ -474,19 +474,11 @@ export default function Home() {
             }
           }
         } else if (isAlternateNostril) {
-          // Alternate Nostril pattern (customizable with 1s hold)
+          // Alternate Nostril pattern (customizable with 1s nostril switch delay)
           const maxTimer = alternateNostrilBreathTime * 10; // Convert seconds to 100ms intervals
           if (breathingPhase === 'inhale') {
             // INHALE: 0 to maxTimer (e.g., 0-40 for 4s)
             if (prevTimer < maxTimer) {
-              return prevTimer + 1;
-            } else {
-              setBreathingPhase('hold1');
-              return 0; // Start HOLD1 at 0
-            }
-          } else if (breathingPhase === 'hold1') {
-            // HOLD1: 1 second (10 counts at 100ms intervals)
-            if (prevTimer < 10) {
               return prevTimer + 1;
             } else {
               setBreathingPhase('exhale');
@@ -497,7 +489,16 @@ export default function Home() {
             if (prevTimer > 0) {
               return prevTimer - 1;
             } else {
-              // Cycle completed, check if we should continue
+              // EXHALE complete, transition to hold2 for nostril switch
+              setBreathingPhase('hold2');
+              return 0; // Start HOLD2 at 0
+            }
+          } else if (breathingPhase === 'hold2') {
+            // HOLD2: 1 second delay before switching nostrils (10 counts at 100ms intervals)
+            if (prevTimer < 10) {
+              return prevTimer + 1;
+            } else {
+              // Hold complete, check if we should continue to next cycle
               const nextCycle = currentCycle + 1;
               const totalCycles = alternateNostrilCycles;
               if (nextCycle >= totalCycles) {
@@ -508,7 +509,7 @@ export default function Home() {
                 setBreathingPhase('inhale');
                 return 0;
               } else {
-                // Continue to next cycle
+                // Continue to next cycle (switch nostril)
                 setCurrentCycle(nextCycle);
                 setBreathingPhase('inhale');
                 return 0;
@@ -2289,11 +2290,10 @@ export default function Home() {
                                   let heightPercent;
                                   if (breathingPhase === 'inhale') {
                                     heightPercent = timer / (alternateNostrilBreathTime * 10);
-                                  } else if (breathingPhase === 'hold1') {
-                                    heightPercent = 1; // Stay at full during hold
                                   } else if (breathingPhase === 'exhale') {
                                     heightPercent = timer / (alternateNostrilBreathTime * 10);
                                   } else {
+                                    // hold2 or other phases: empty
                                     heightPercent = 0;
                                   }
                                   const heightPx = heightPercent * 355;
@@ -2316,7 +2316,6 @@ export default function Home() {
                                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                                     <div className="text-lg font-semibold text-gray-900 uppercase tracking-wider">
                                       {breathingPhase === 'inhale' && 'Breathe In'}
-                                      {breathingPhase === 'hold1' && 'HOLD'}
                                       {breathingPhase === 'exhale' && 'Breathe Out'}
                                     </div>
                                     <div className="text-sm text-gray-700 mt-1">
@@ -2339,11 +2338,10 @@ export default function Home() {
                                   let heightPercent;
                                   if (breathingPhase === 'inhale') {
                                     heightPercent = timer / (alternateNostrilBreathTime * 10);
-                                  } else if (breathingPhase === 'hold1') {
-                                    heightPercent = 1; // Stay at full during hold
                                   } else if (breathingPhase === 'exhale') {
                                     heightPercent = timer / (alternateNostrilBreathTime * 10);
                                   } else {
+                                    // hold2 or other phases: empty
                                     heightPercent = 0;
                                   }
                                   const heightPx = heightPercent * 355;
@@ -2366,7 +2364,6 @@ export default function Home() {
                                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                                     <div className="text-lg font-semibold text-gray-900 uppercase tracking-wider">
                                       {breathingPhase === 'inhale' && 'Breathe In'}
-                                      {breathingPhase === 'hold1' && 'HOLD'}
                                       {breathingPhase === 'exhale' && 'Breathe Out'}
                                     </div>
                                     <div className="text-sm text-gray-700 mt-1">
