@@ -2081,8 +2081,8 @@ export default function Home() {
                         <>
                           {/* Breathing Container Illustration - Alternate Nostril */}
                           <div className="flex-1 flex items-center justify-center w-full relative px-4">
-                            {/* Split square markers (50:50 left/right) */}
-                            <div className="relative flex gap-4">
+                            {/* Split square markers (50:50 left/right) with 16px gap */}
+                            <div className="relative flex" style={{ gap: '16px' }}>
                               {/* Left Container */}
                               <div className="relative" style={{ width: '181.5px', height: '363px' }}>
                                 {/* Gray outline */}
