@@ -2046,29 +2046,29 @@ export default function Home() {
                               />
                             </svg>
 
-                            {/* Green Circle Indicator - Only visible during HOLD phases on gray marker */}
-                            {isExercising && (breathingPhase === 'hold1' || breathingPhase === 'hold2') && (() => {
-                              const indicatorPos = getBoxBreathingIndicatorPosition();
-                              return (
-                                <svg
-                                  className="absolute"
-                                  width="363"
-                                  height="363"
-                                  style={{ pointerEvents: 'none' }}
-                                >
-                                  <circle
-                                    cx={indicatorPos.x}
-                                    cy={indicatorPos.y}
-                                    r="6"
-                                    fill="#10B981"
-                                    className="transition-all ease-linear"
-                                    style={{
-                                      transitionDuration: '1000ms'
-                                    }}
-                                  />
-                                </svg>
-                              );
-                            })()}
+                            {/* Blue Progress Line - Shows during HOLD phases, starts from top-left */}
+                            {(breathingPhase === 'hold1' || breathingPhase === 'hold2') && (
+                              <svg
+                                className="absolute"
+                                width="363"
+                                height="363"
+                              >
+                                <rect
+                                  x="4"
+                                  y="4"
+                                  width="355"
+                                  height="355"
+                                  rx="15"
+                                  fill="none"
+                                  stroke="#067AC3"
+                                  strokeWidth="4"
+                                  strokeDasharray="1420"
+                                  strokeDashoffset={1420 - (1420 * timer / 4)}
+                                  className="transition-all duration-1000"
+                                  strokeLinecap="square"
+                                />
+                              </svg>
+                            )}
 
                             {/* Single Expanding/Compressing Square with Radial Gradient */}
                             <div
@@ -2076,8 +2076,8 @@ export default function Home() {
                               style={{
                                 width: `${getBoxBreathingSquareSize()}px`,
                                 height: `${getBoxBreathingSquareSize()}px`,
-                                background: 'radial-gradient(circle, rgba(6, 122, 195, 1) 0%, rgba(6, 122, 195, 0.6) 50%, rgba(6, 122, 195, 0.2) 100%)',
-                                boxShadow: '0 0 30px rgba(6, 122, 195, 0.5)',
+                                background: 'radial-gradient(circle, #BEEAEC 0%, #1761A6 50%, #050C12 100%)',
+                                boxShadow: '0 0 30px rgba(23, 97, 166, 0.5)',
                                 borderRadius: '15px',
                                 transition: 'all 100ms linear'
                               }}
