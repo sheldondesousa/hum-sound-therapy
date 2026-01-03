@@ -1878,7 +1878,7 @@ export default function Home() {
                     <div className="flex-[0.15] flex items-center justify-center">
                       {/* Timer Display - Show during INHALE and EXHALE (hide when completed) */}
                       {!exerciseCompleted && isExercising && (breathingPhase === 'inhale' || breathingPhase === 'exhale') && (
-                        <div className="text-center">
+                        <div className="text-center flex items-baseline gap-2">
                           <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
                             {selectedExercise?.name === 'Coherent Breathing'
                               ? (breathingPhase === 'inhale'
@@ -1903,7 +1903,7 @@ export default function Home() {
                                       : timer
                             }
                           </div>
-                          <div className="text-sm text-gray-600 mt-1">
+                          <div className="text-base text-gray-600 pb-2">
                             seconds
                           </div>
                         </div>
@@ -2351,10 +2351,21 @@ export default function Home() {
 
                     {/* Pattern Info Section - 5% */}
                     <div className="flex-[0.05] flex items-center justify-center">
-                      {/* Box Breathing Pattern Info */}
+                      {/* Box Breathing Pattern Tabs */}
                       {selectedExercise?.name === 'Box Breathing (4-4-4-4)' && !exerciseCompleted && isExercising && (
-                        <div className="text-center text-sm text-gray-600">
-                          In 4s <span className="text-gray-400 mx-1">|</span> Hold 4s <span className="text-gray-400 mx-1">|</span> Out 4s <span className="text-gray-400 mx-1">|</span> Hold 4s
+                        <div className="flex items-center gap-6 text-sm text-gray-600">
+                          <div className={`pb-1 transition-all ${breathingPhase === 'inhale' ? 'border-b-2 border-gray-900 font-medium' : ''}`}>
+                            In 4s
+                          </div>
+                          <div className={`pb-1 transition-all ${breathingPhase === 'hold1' ? 'border-b-2 border-gray-900 font-medium' : ''}`}>
+                            Hold 4s
+                          </div>
+                          <div className={`pb-1 transition-all ${breathingPhase === 'exhale' ? 'border-b-2 border-gray-900 font-medium' : ''}`}>
+                            Out 4s
+                          </div>
+                          <div className={`pb-1 transition-all ${breathingPhase === 'hold2' ? 'border-b-2 border-gray-900 font-medium' : ''}`}>
+                            Hold 4s
+                          </div>
                         </div>
                       )}
                     </div>
