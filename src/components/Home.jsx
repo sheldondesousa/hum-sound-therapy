@@ -917,7 +917,7 @@ export default function Home() {
     if (!isExercising) return 0;
 
     const minSize = 0; // Start from nothing (empty)
-    const maxSize = 355;
+    const maxSize = 349; // 355 - 4 (stroke width) - 2 (1px padding each side)
 
     if (breathingPhase === 'inhale') {
       // INHALE: 0→4 seconds, linear expansion from 0 to max
