@@ -328,11 +328,8 @@ export default function Home() {
     // Dynamic interval based on breathing phase and exercise type
     let intervalDuration;
     if (is478) {
-      // 4-7-8: INHALE=4s, HOLD=7s, EXHALE=8s (all phases use 1000ms intervals)
-      if (breathingPhase === 'inhale') intervalDuration = 1000; // 0→1→2→3→4 (4 transitions = 4s)
-      else if (breathingPhase === 'hold1') intervalDuration = 1000; // 0→1→2→3→4→5→6→7 (7 transitions = 7s)
-      else if (breathingPhase === 'exhale') intervalDuration = 1000; // 8→7→6→5→4→3→2→1→0 (8 transitions = 8s)
-      else intervalDuration = 1000;
+      // 4-7-8: INHALE=4s (40 counts, 100ms), HOLD=7s (70 counts, 100ms), EXHALE=8s (80 counts, 100ms)
+      intervalDuration = 100; // 100ms for smooth transitions
     } else if (isCoherent) {
       // Coherent: INHALE=5s (50 counts, 100ms), EXHALE=5s (50 counts, 100ms) for smooth animation
       intervalDuration = 100; // 100ms for smooth transitions
@@ -390,25 +387,25 @@ export default function Home() {
             }
           }
         } else if (is478) {
-          // 4-7-8 Breathing pattern
+          // 4-7-8 Breathing pattern (smooth)
           if (breathingPhase === 'inhale') {
-            // INHALE: 0-1-2-3-4 (5 counts over 4s, 4 transitions)
-            if (prevTimer < 4) {
+            // INHALE: 0-40 (40 counts over 4s)
+            if (prevTimer < 40) {
               return prevTimer + 1;
             } else {
               setBreathingPhase('hold1');
               return 0; // Start HOLD1 at 0
             }
           } else if (breathingPhase === 'hold1') {
-            // HOLD: 0-1-2-3-4-5-6-7 (8 counts over 7s, 7 transitions)
-            if (prevTimer < 7) {
+            // HOLD: 0-70 (70 counts over 7s)
+            if (prevTimer < 70) {
               return prevTimer + 1;
             } else {
               setBreathingPhase('exhale');
-              return 8; // Start EXHALE at 8
+              return 80; // Start EXHALE at 80
             }
           } else if (breathingPhase === 'exhale') {
-            // EXHALE: 8-7-6-5-4-3-2-1-0 (9 counts over 8s, 8 transitions, descending)
+            // EXHALE: 80-0 (80 counts over 8s, descending)
             if (prevTimer > 0) {
               return prevTimer - 1;
             } else {
@@ -820,6 +817,29 @@ export default function Home() {
     const currentSize = minSize + (maxSize - minSize) * easeProgress;
 
     return currentSize;
+  };
+
+  // Get smooth circle size for 4-7-8 Breathing
+  const get478CircleSize = () => {
+    if (!isExercising) return 100;
+
+    const minSize = 100;
+    const maxSize = 340;
+
+    if (breathingPhase === 'inhale') {
+      // INHALE: timer goes from 0-40 (4 seconds), linear expansion
+      const progress = timer / 40; // 0 to 1
+      return minSize + (maxSize - minSize) * progress;
+    } else if (breathingPhase === 'hold1') {
+      // HOLD: stay at max size for 7 seconds
+      return maxSize;
+    } else if (breathingPhase === 'exhale') {
+      // EXHALE: timer goes from 80-0 (8 seconds), linear compression
+      const progress = timer / 80; // 1 to 0
+      return minSize + (maxSize - minSize) * progress;
+    }
+
+    return minSize;
   };
 
   // Get smooth circle data for Physiological Sigh
@@ -1965,32 +1985,24 @@ export default function Home() {
                                   stroke="#067AC3"
                                   strokeWidth="4"
                                   strokeDasharray="1131"
-                                  strokeDashoffset={1131 - (1131 * timer / 7)}
-                                  style={{ transition: 'stroke-dashoffset 1000ms linear' }}
+                                  strokeDashoffset={1131 - (1131 * timer / 70)}
+                                  style={{ transition: 'stroke-dashoffset 100ms linear' }}
                                   strokeLinecap="round"
                                 />
                               </svg>
                             )}
 
-                            {/* Colored Circles - 8 circles with gradients */}
-                            {getCirclesData478().map((circle) => (
-                              <div
-                                key={circle.key}
-                                className="rounded-full absolute"
-                                style={{
-                                  width: `${circle.size}px`,
-                                  height: `${circle.size}px`,
-                                  border: circle.size === 100 ? 'none' : `20px solid ${circle.color}`,
-                                  backgroundColor: circle.size === 100 ? circle.color : 'transparent',
-                                  boxShadow: `0 0 ${circle.blur}px ${circle.color}`,
-                                  transition: breathingPhase === 'inhale'
-                                    ? 'all 1000ms linear'
-                                    : breathingPhase === 'exhale'
-                                    ? 'all 1000ms linear'
-                                    : 'all 1000ms linear'
-                                }}
-                              />
-                            ))}
+                            {/* Single Expanding/Compressing Circle with Radial Gradient */}
+                            <div
+                              className="rounded-full absolute"
+                              style={{
+                                width: `${get478CircleSize()}px`,
+                                height: `${get478CircleSize()}px`,
+                                background: 'radial-gradient(circle, rgba(6, 122, 195, 1) 0%, rgba(6, 122, 195, 0.6) 50%, rgba(6, 122, 195, 0.2) 100%)',
+                                boxShadow: '0 0 30px rgba(6, 122, 195, 0.5)',
+                                transition: 'all 100ms linear'
+                              }}
+                            />
 
                             {/* Phase Text - At Center of Circles */}
                             <div className="absolute text-center">
