@@ -941,95 +941,45 @@ export default function Home() {
 
   // Get green circle indicator position for Box Breathing
   const getBoxBreathingIndicatorPosition = () => {
-    const size = getBoxBreathingSquareSize();
+    const size = 355; // Fixed size of gray outer square marker
     const radius = 15; // Border radius of the square
-    const circleRadius = 6; // Radius of the green circle itself
-
-    // Starting position (top-left, accounting for stroke width and border radius)
     const centerOffset = 181.5; // Center of the 363px container
     const halfSize = size / 2;
 
-    if (breathingPhase === 'inhale') {
-      // During INHALE: circle stays at bottom-left corner (start of square)
-      return {
-        x: centerOffset - halfSize + radius,
-        y: centerOffset + halfSize - radius
-      };
-    } else if (breathingPhase === 'hold1') {
-      // During HOLD1: circle moves clockwise around the perimeter
-      // Total perimeter = 4 sides
+    // Only visible during HOLD phases
+    if (breathingPhase === 'hold1' || breathingPhase === 'hold2') {
+      // Circle moves clockwise around the perimeter starting from top-left corner
       const progress = timer / 4; // 0 to 1
       const perimeter = (size - 2 * radius) * 4;
       const distance = progress * perimeter;
       const sideLength = size - 2 * radius;
 
       if (distance <= sideLength) {
-        // Bottom side: left to right
+        // Top side: left to right
         return {
           x: centerOffset - halfSize + radius + distance,
-          y: centerOffset + halfSize - radius
+          y: centerOffset - halfSize + radius
         };
       } else if (distance <= 2 * sideLength) {
-        // Right side: bottom to top
+        // Right side: top to bottom
         const sideProgress = distance - sideLength;
         return {
           x: centerOffset + halfSize - radius,
-          y: centerOffset + halfSize - radius - sideProgress
+          y: centerOffset - halfSize + radius + sideProgress
         };
       } else if (distance <= 3 * sideLength) {
-        // Top side: right to left
+        // Bottom side: right to left
         const sideProgress = distance - 2 * sideLength;
         return {
           x: centerOffset + halfSize - radius - sideProgress,
-          y: centerOffset - halfSize + radius
-        };
-      } else {
-        // Left side: top to bottom
-        const sideProgress = distance - 3 * sideLength;
-        return {
-          x: centerOffset - halfSize + radius,
-          y: centerOffset - halfSize + radius + sideProgress
-        };
-      }
-    } else if (breathingPhase === 'exhale') {
-      // During EXHALE: circle stays at top-left corner (end of square perimeter)
-      return {
-        x: centerOffset - halfSize + radius,
-        y: centerOffset - halfSize + radius
-      };
-    } else if (breathingPhase === 'hold2') {
-      // During HOLD2: circle moves clockwise around the smaller perimeter
-      const progress = timer / 4; // 0 to 1
-      const perimeter = (size - 2 * radius) * 4;
-      const distance = progress * perimeter;
-      const sideLength = size - 2 * radius;
-
-      if (distance <= sideLength) {
-        // Bottom side: left to right
-        return {
-          x: centerOffset - halfSize + radius + distance,
           y: centerOffset + halfSize - radius
         };
-      } else if (distance <= 2 * sideLength) {
-        // Right side: bottom to top
-        const sideProgress = distance - sideLength;
-        return {
-          x: centerOffset + halfSize - radius,
-          y: centerOffset + halfSize - radius - sideProgress
-        };
-      } else if (distance <= 3 * sideLength) {
-        // Top side: right to left
-        const sideProgress = distance - 2 * sideLength;
-        return {
-          x: centerOffset + halfSize - radius - sideProgress,
-          y: centerOffset - halfSize + radius
-        };
       } else {
-        // Left side: top to bottom
+        // Left side: bottom to top
         const sideProgress = distance - 3 * sideLength;
         return {
           x: centerOffset - halfSize + radius,
-          y: centerOffset - halfSize + radius + sideProgress
+          y: centerOffset + halfSize - radius - sideProgress
         };
       }
     }
@@ -2002,33 +1952,30 @@ export default function Home() {
                     <div className="flex-[0.15] flex items-center justify-center">
                       {/* Timer Display - Show during INHALE and EXHALE (hide when completed) */}
                       {!exerciseCompleted && isExercising && (breathingPhase === 'inhale' || breathingPhase === 'exhale') && (
-                        <div className="text-center flex items-baseline gap-2">
+                        <div className="text-center">
                           <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
                             {selectedExercise?.name === 'Coherent Breathing'
                               ? (breathingPhase === 'inhale'
-                                  ? Math.floor(timer / 10)  // INHALE: 0 to coherentBreathTime (e.g., 0-6)
-                                  : Math.ceil(timer / 10))  // EXHALE: coherentBreathTime to 0 (e.g., 6-0)
+                                  ? `${Math.floor(timer / 10)}s`  // INHALE: 0s to coherentBreathTime (e.g., 0s-6s)
+                                  : `${Math.ceil(timer / 10)}s`)  // EXHALE: coherentBreathTime to 0s (e.g., 6s-0s)
                               : selectedExercise?.name === 'Alternate Nostril'
                                 ? (breathingPhase === 'inhale'
-                                    ? Math.floor(timer / 10)  // INHALE: 0 to alternateNostrilBreathTime (e.g., 0-4)
-                                    : Math.ceil(timer / 10))  // EXHALE: alternateNostrilBreathTime to 0 (e.g., 4-0)
+                                    ? `${Math.floor(timer / 10)}s`  // INHALE: 0s to alternateNostrilBreathTime (e.g., 0s-4s)
+                                    : `${Math.ceil(timer / 10)}s`)  // EXHALE: alternateNostrilBreathTime to 0s (e.g., 4s-0s)
                                 : selectedExercise?.name === 'Physiological Sigh'
                                   ? (breathingPhase === 'inhale'
-                                      ? Math.ceil((timer + 1) / 10)  // INHALE: 0-39 → 1-4 seconds
-                                      : Math.ceil(timer / 10))       // EXHALE: 79-0 → 8-0 seconds
+                                      ? `${Math.ceil((timer + 1) / 10)}s`  // INHALE: 0-39 → 1s-4s
+                                      : `${Math.ceil(timer / 10)}s`)       // EXHALE: 79-0 → 8s-0s
                                   : selectedExercise?.name === '4-7-8 Breathing'
                                     ? (breathingPhase === 'inhale'
-                                        ? Math.floor(timer / 10)  // INHALE: 0-40 → 0-4 seconds
-                                        : Math.ceil(timer / 10))  // EXHALE: 80-0 → 8-0 seconds
+                                        ? `${Math.floor(timer / 10)}s`  // INHALE: 0-40 → 0s-4s
+                                        : `${Math.ceil(timer / 10)}s`)  // EXHALE: 80-0 → 8s-0s
                                     : selectedExercise?.name === 'Humming Bee'
                                       ? (breathingPhase === 'inhale'
-                                          ? Math.floor(timer / 10)  // INHALE: 0-40 → 0-4 seconds
-                                          : Math.ceil(timer / 10))  // EXHALE: 80-0 → 8-0 seconds
-                                      : timer
+                                          ? `${Math.floor(timer / 10)}s`  // INHALE: 0-40 → 0s-4s
+                                          : `${Math.ceil(timer / 10)}s`)  // EXHALE: 80-0 → 8s-0s
+                                      : `${timer}s`
                             }
-                          </div>
-                          <div className="text-base text-gray-900 font-bold pb-2">
-                            s
                           </div>
                         </div>
                       )}
@@ -2099,21 +2046,8 @@ export default function Home() {
                               />
                             </svg>
 
-                            {/* Animated Blue Square - Seamless expansion/compression */}
-                            <div
-                              className="absolute transition-all ease-linear"
-                              style={{
-                                width: `${getBoxBreathingSquareSize()}px`,
-                                height: `${getBoxBreathingSquareSize()}px`,
-                                border: '4px solid #067AC3',
-                                borderRadius: '15px',
-                                backgroundColor: 'transparent',
-                                transitionDuration: breathingPhase === 'inhale' || breathingPhase === 'exhale' ? '800ms' : '1000ms'
-                              }}
-                            />
-
-                            {/* Green Circle Indicator - Follows perimeter during animation */}
-                            {isExercising && (() => {
+                            {/* Green Circle Indicator - Only visible during HOLD phases on gray marker */}
+                            {isExercising && (breathingPhase === 'hold1' || breathingPhase === 'hold2') && (() => {
                               const indicatorPos = getBoxBreathingIndicatorPosition();
                               return (
                                 <svg
@@ -2129,12 +2063,25 @@ export default function Home() {
                                     fill="#10B981"
                                     className="transition-all ease-linear"
                                     style={{
-                                      transitionDuration: breathingPhase === 'inhale' || breathingPhase === 'exhale' ? '800ms' : '1000ms'
+                                      transitionDuration: '1000ms'
                                     }}
                                   />
                                 </svg>
                               );
                             })()}
+
+                            {/* Single Expanding/Compressing Square with Radial Gradient */}
+                            <div
+                              className="absolute"
+                              style={{
+                                width: `${getBoxBreathingSquareSize()}px`,
+                                height: `${getBoxBreathingSquareSize()}px`,
+                                background: 'radial-gradient(circle, rgba(6, 122, 195, 1) 0%, rgba(6, 122, 195, 0.6) 50%, rgba(6, 122, 195, 0.2) 100%)',
+                                boxShadow: '0 0 30px rgba(6, 122, 195, 0.5)',
+                                borderRadius: '15px',
+                                transition: 'all 100ms linear'
+                              }}
+                            />
 
                             {/* Phase Text - At Center of Square */}
                             <div className="absolute text-center">
