@@ -349,10 +349,9 @@ export default function Home() {
       else if (breathingPhase === 'hold2') intervalDuration = 200; // 200ms gap after EXHALE
       else intervalDuration = 100; // 100ms for smooth transitions
     } else {
-      // Box breathing: all phases use same interval pattern
-      // INHALE and EXHALE: 5 counts (0-4) over 4 seconds = 800ms per count
-      // HOLD1 and HOLD2: 4 counts (1-4) over 4 seconds = 1000ms per count
-      intervalDuration = (breathingPhase === 'inhale' || breathingPhase === 'exhale') ? 800 : 1000;
+      // Box breathing: 100ms intervals for smooth linear animation
+      // INHALE=4s (40 counts, 100ms), HOLD1=4s (40 counts, 100ms), EXHALE=4s (40 counts, 100ms), HOLD2=4s (40 counts, 100ms)
+      intervalDuration = 100; // 100ms for smooth transitions
     }
 
     const interval = setInterval(() => {
@@ -549,25 +548,25 @@ export default function Home() {
             }
           }
         } else {
-          // Box Breathing pattern (4-4-4-4)
+          // Box Breathing pattern (4-4-4-4) with 100ms intervals
           if (breathingPhase === 'inhale') {
-            // INHALE: 0-1-2-3-4 (5 counts over 4s)
-            if (prevTimer < 4) {
+            // INHALE: 0-40 (4 seconds with 100ms updates)
+            if (prevTimer < 40) {
               return prevTimer + 1;
             } else {
               setBreathingPhase('hold1');
               return 0; // Start HOLD1 at 0
             }
           } else if (breathingPhase === 'hold1') {
-            // HOLD1: 0-1-2-3-4 (5 counts over 4s)
-            if (prevTimer < 4) {
+            // HOLD1: 0-40 (4 seconds with 100ms updates)
+            if (prevTimer < 40) {
               return prevTimer + 1;
             } else {
               setBreathingPhase('exhale');
-              return 4; // Start EXHALE at 4
+              return 40; // Start EXHALE at 40
             }
           } else if (breathingPhase === 'exhale') {
-            // EXHALE: 4-3-2-1-0 (5 counts over 4s)
+            // EXHALE: 40-0 (4 seconds with 100ms updates, descending)
             if (prevTimer > 0) {
               return prevTimer - 1;
             } else {
@@ -575,8 +574,8 @@ export default function Home() {
               return 0; // Start HOLD2 at 0
             }
           } else if (breathingPhase === 'hold2') {
-            // HOLD2: 0-1-2-3-4 (5 counts over 4s)
-            if (prevTimer < 4) {
+            // HOLD2: 0-40 (4 seconds with 100ms updates)
+            if (prevTimer < 40) {
               return prevTimer + 1;
             } else {
               // Cycle completed, check if we should continue
@@ -921,18 +920,20 @@ export default function Home() {
     const maxSize = 355;
 
     if (breathingPhase === 'inhale') {
-      // INHALE: timer 0-4, linear expansion from min to max
-      const progress = timer / 4; // 0 to 1
+      // INHALE: 4 seconds (0-40), linear expansion
+      const seconds = timer / 10; // Convert 100ms intervals to seconds
+      const progress = seconds / 4; // 0 to 1
       return minSize + (maxSize - minSize) * progress;
     } else if (breathingPhase === 'hold1') {
-      // HOLD1: Stay at max size
+      // HOLD1: Stay at max size for 4 seconds
       return maxSize;
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: timer 4-0, linear compression from max to min
-      const progress = timer / 4; // 1 to 0
+      // EXHALE: 4 seconds (40-0), linear compression
+      const seconds = timer / 10; // Convert 100ms intervals to seconds
+      const progress = seconds / 4; // 1 to 0
       return minSize + (maxSize - minSize) * progress;
     } else if (breathingPhase === 'hold2') {
-      // HOLD2: Stay at min size
+      // HOLD2: Stay at min size for 4 seconds
       return minSize;
     }
 
@@ -2063,8 +2064,8 @@ export default function Home() {
                                   stroke="#067AC3"
                                   strokeWidth="4"
                                   strokeDasharray="1420"
-                                  strokeDashoffset={1420 - (1420 * timer / 4)}
-                                  className="transition-all duration-1000"
+                                  strokeDashoffset={1420 - (1420 * timer / 40)}
+                                  style={{ transition: 'stroke-dashoffset 100ms linear' }}
                                   strokeLinecap="square"
                                 />
                               </svg>
@@ -2076,8 +2077,8 @@ export default function Home() {
                               style={{
                                 width: `${getBoxBreathingSquareSize()}px`,
                                 height: `${getBoxBreathingSquareSize()}px`,
-                                background: 'radial-gradient(circle, #BEEAEC 0%, #1761A6 50%, #050C12 100%)',
-                                boxShadow: '0 0 30px rgba(23, 97, 166, 0.5)',
+                                background: 'radial-gradient(circle, rgba(6, 122, 195, 1) 0%, rgba(6, 122, 195, 0.6) 50%, rgba(6, 122, 195, 0.2) 100%)',
+                                boxShadow: '0 0 30px rgba(6, 122, 195, 0.5)',
                                 borderRadius: '15px',
                                 transition: 'all 100ms linear'
                               }}
