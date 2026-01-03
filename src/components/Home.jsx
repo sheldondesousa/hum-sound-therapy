@@ -188,7 +188,7 @@ export default function Home() {
       ]
     },
     'Humming Bee': {
-      description: 'Humming Bee Breath (Bhramari Pranayama) is a calming breathing technique that involves making a gentle humming sound while exhaling. The vibration created by humming stimulates the vagus nerve, reduces stress, and promotes deep relaxation and mental stillness.',
+      description: 'Humming Bee Breath is a calming breathing technique that involves making a gentle humming sound while exhaling. The vibration created by humming stimulates the vagus nerve, reduces stress, and promotes deep relaxation and mental stillness.',
       sectionTitle: 'Tips',
       sectionContent: [
         { label: 'Humming Sound:', text: 'Create a low, steady humming sound like a bee. Focus on feeling the vibration in your head and chest.' },
