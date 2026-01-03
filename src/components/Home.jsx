@@ -1966,7 +1966,7 @@ export default function Home() {
                                   strokeWidth="4"
                                   strokeDasharray="1131"
                                   strokeDashoffset={1131 - (1131 * timer / 6)}
-                                  className="transition-all duration-1000"
+                                  style={{ transition: 'stroke-dashoffset 1000ms linear' }}
                                   strokeLinecap="round"
                                 />
                               </svg>
@@ -1976,13 +1976,18 @@ export default function Home() {
                             {getCirclesData478().map((circle) => (
                               <div
                                 key={circle.key}
-                                className="rounded-full transition-all duration-1000 ease-in-out absolute"
+                                className="rounded-full absolute"
                                 style={{
                                   width: `${circle.size}px`,
                                   height: `${circle.size}px`,
                                   border: circle.size === 100 ? 'none' : `20px solid ${circle.color}`,
                                   backgroundColor: circle.size === 100 ? circle.color : 'transparent',
-                                  boxShadow: `0 0 ${circle.blur}px ${circle.color}`
+                                  boxShadow: `0 0 ${circle.blur}px ${circle.color}`,
+                                  transition: breathingPhase === 'inhale'
+                                    ? 'all 800ms linear'
+                                    : breathingPhase === 'exhale'
+                                    ? 'all 1000ms linear'
+                                    : 'all 1000ms linear'
                                 }}
                               />
                             ))}
