@@ -1370,12 +1370,12 @@ export default function Home() {
                   </div>
 
                   {/* Motivational Text */}
-                  <p className="text-2xl font-bold text-black mb-4" style={{ fontFamily: "'SF Pro Display', sans-serif" }}>
+                  <h1 className="text-4xl font-bold text-black mb-8" style={{ fontFamily: "'SF Pro Display', sans-serif" }}>
                     Take a deep breath and relax
-                  </p>
+                  </h1>
 
                   {/* Metric Cards Grid */}
-                  <div className="grid grid-cols-2 gap-3 mb-6">
+                  <div className="grid grid-cols-2 gap-3 mb-8">
                     {/* Active Days Card */}
                     <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-4 text-white">
                       <h3 className="text-xs font-medium mb-1 opacity-90">Active Days</h3>
@@ -1410,7 +1410,7 @@ export default function Home() {
                     Breathing exercises
                   </h3>
                   <p className="text-sm text-gray-600">
-                    {currentTracks.length} Exercise{currentTracks.length !== 1 ? 's' : ''}
+                    {currentTracks.length} technique{currentTracks.length !== 1 ? 's' : ''} to try
                   </p>
                 </div>
               )}
@@ -2626,17 +2626,18 @@ export default function Home() {
                   </div>
                 ) : (
                   /* Track List */
-                  currentTracks.map((track, index) => (
-                    <button
-                      key={track.id}
-                      onClick={() => {
-                        if (selectedOption === 'breathe') {
-                          // Show info screen for breathing exercises
-                          setSelectedExercise(track);
-                          setShowingInfo(true);
-                        }
-                      }}
-                      className="w-full flex items-center justify-between py-4 border-b border-gray-200 hover:bg-gray-50 hover:opacity-70 transition-all group"
+                  <div className={selectedOption === 'breathe' ? 'mt-6' : ''}>
+                    {currentTracks.map((track, index) => (
+                      <button
+                        key={track.id}
+                        onClick={() => {
+                          if (selectedOption === 'breathe') {
+                            // Show info screen for breathing exercises
+                            setSelectedExercise(track);
+                            setShowingInfo(true);
+                          }
+                        }}
+                        className="w-full flex items-center justify-between py-4 border-b border-gray-200 hover:bg-gray-50 hover:opacity-70 transition-all group"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-sm text-gray-500 w-6">{index + 1}</span>
@@ -2648,7 +2649,8 @@ export default function Home() {
                         <span className="text-sm text-gray-500">{track.duration}</span>
                       )}
                     </button>
-                  ))
+                    ))}
+                  </div>
                 )}
               </div>
 
