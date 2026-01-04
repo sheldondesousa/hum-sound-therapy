@@ -1376,29 +1376,29 @@ export default function Home() {
 
                   {/* Metric Cards Grid */}
                   <div className="grid grid-cols-2 gap-3 mb-8">
-                    {/* Active Days Card */}
-                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-4 text-white">
+                    {/* Active Days Card - Darkest */}
+                    <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #7469B6, #8978C0)' }}>
                       <h3 className="text-xs font-medium mb-1 opacity-90">Active Days</h3>
                       <p className="text-3xl font-bold">12</p>
                       <p className="text-xs mt-0.5 opacity-80">days this month</p>
                     </div>
 
-                    {/* Exercises Complete Card */}
-                    <div className="bg-gradient-to-br from-pink-400 to-pink-500 rounded-2xl p-4 text-white">
+                    {/* Exercises Complete Card - Mid-Dark (dark to mid) */}
+                    <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #7469B6, #AB8CC4)' }}>
                       <h3 className="text-xs font-medium mb-1 opacity-90">Exercises Complete</h3>
                       <p className="text-3xl font-bold">28</p>
                       <p className="text-xs mt-0.5 opacity-80">sessions</p>
                     </div>
 
-                    {/* Average Time Spent Card */}
-                    <div className="bg-gradient-to-br from-purple-400 to-pink-400 rounded-2xl p-4 text-white">
+                    {/* Average Time Spent Card - Mid-Light (mid to light) */}
+                    <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #AB8CC4, #E1AFD1)' }}>
                       <h3 className="text-xs font-medium mb-1 opacity-90">Average Time</h3>
                       <p className="text-3xl font-bold">15 min</p>
                       <p className="text-xs mt-0.5 opacity-80">per session</p>
                     </div>
 
-                    {/* Weekly Progress Card */}
-                    <div className="bg-gradient-to-br from-pink-300 to-pink-400 rounded-2xl p-4 text-white">
+                    {/* Weekly Progress Card - Lightest */}
+                    <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #C9A0CE, #E1AFD1)' }}>
                       <h3 className="text-xs font-medium mb-1 opacity-90">Weekly Progress</h3>
                       <p className="text-3xl font-bold">5</p>
                       <p className="text-xs mt-0.5 opacity-80">days active</p>
