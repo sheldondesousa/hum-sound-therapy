@@ -1365,7 +1365,6 @@ export default function Home() {
                       <h2 className="text-lg font-semibold text-black truncate">
                         Hello, {currentUser?.displayName || 'User'}
                       </h2>
-                      <p className="text-sm text-gray-600 truncate">{currentUser?.email}</p>
                     </div>
                   </div>
 
