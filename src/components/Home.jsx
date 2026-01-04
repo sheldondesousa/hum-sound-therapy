@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const { logout } = useAuth();
+  const { logout, currentUser } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('breathe');
@@ -1343,18 +1343,88 @@ export default function Home() {
                     : { backgroundColor: 'white' }
                 }
               >
-              {/* Album Art & Info - Hide when breathing exercise is selected */}
-              {!(selectedOption === 'breathe' && selectedExercise) && (
+              {/* Profile & Metrics Section - Show when on breathing exercises listing */}
+              {!(selectedOption === 'breathe' && selectedExercise) && selectedOption === 'breathe' && (
+                <div className="mb-6">
+                  {/* Profile Section */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                      {currentUser?.photoURL ? (
+                        <img
+                          src={currentUser.photoURL}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h2 className="text-lg font-semibold text-black truncate">
+                        Hello, {currentUser?.displayName || 'User'}
+                      </h2>
+                      <p className="text-sm text-gray-600 truncate">{currentUser?.email}</p>
+                    </div>
+                  </div>
+
+                  {/* Motivational Text */}
+                  <p className="text-2xl font-bold text-black mb-4" style={{ fontFamily: "'SF Pro Display', sans-serif" }}>
+                    Take a deep breath and relax
+                  </p>
+
+                  {/* Metric Cards Grid */}
+                  <div className="grid grid-cols-2 gap-3 mb-6">
+                    {/* Active Days Card */}
+                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-4 text-white">
+                      <h3 className="text-xs font-medium mb-1 opacity-90">Active Days</h3>
+                      <p className="text-3xl font-bold">12</p>
+                      <p className="text-xs mt-0.5 opacity-80">days this month</p>
+                    </div>
+
+                    {/* Exercises Complete Card */}
+                    <div className="bg-gradient-to-br from-pink-400 to-pink-500 rounded-2xl p-4 text-white">
+                      <h3 className="text-xs font-medium mb-1 opacity-90">Exercises Complete</h3>
+                      <p className="text-3xl font-bold">28</p>
+                      <p className="text-xs mt-0.5 opacity-80">sessions</p>
+                    </div>
+
+                    {/* Average Time Spent Card */}
+                    <div className="bg-gradient-to-br from-purple-400 to-pink-400 rounded-2xl p-4 text-white">
+                      <h3 className="text-xs font-medium mb-1 opacity-90">Average Time</h3>
+                      <p className="text-3xl font-bold">15 min</p>
+                      <p className="text-xs mt-0.5 opacity-80">per session</p>
+                    </div>
+
+                    {/* Weekly Progress Card */}
+                    <div className="bg-gradient-to-br from-pink-300 to-pink-400 rounded-2xl p-4 text-white">
+                      <h3 className="text-xs font-medium mb-1 opacity-90">Weekly Progress</h3>
+                      <p className="text-3xl font-bold">5</p>
+                      <p className="text-xs mt-0.5 opacity-80">days active</p>
+                    </div>
+                  </div>
+
+                  {/* Breathing Exercises Header */}
+                  <h3 className="font-semibold text-xl text-black mb-1">
+                    Breathing exercises
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {currentTracks.length} Exercise{currentTracks.length !== 1 ? 's' : ''}
+                  </p>
+                </div>
+              )}
+
+              {/* Album Art & Info - Show for other options (focus/calm) */}
+              {!(selectedOption === 'breathe' && selectedExercise) && selectedOption !== 'breathe' && (
                 <div className="mb-6">
                   <div className="w-full aspect-square bg-gray-200 rounded-lg mb-4 overflow-hidden">
                   </div>
                   <h3 className="font-semibold text-xl text-black mb-1 capitalize">
-                    {selectedOption === 'breathe' ? 'Breathing exercises' : selectedOption ? `${selectedOption} Collection` : 'Select Your Path'}
+                    {selectedOption ? `${selectedOption} Collection` : 'Select Your Path'}
                   </h3>
                   <p className="text-sm text-gray-600">
-                    {selectedOption === 'breathe'
-                      ? `${currentTracks.length} Exercise${currentTracks.length !== 1 ? 's' : ''}`
-                      : selectedOption
+                    {selectedOption
                       ? `${currentTracks.length} Track${currentTracks.length !== 1 ? 's' : ''}`
                       : 'Choose Focus, Calm, or Breathe'}
                   </p>
