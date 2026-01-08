@@ -17,8 +17,11 @@ export const useUserMetrics = (userId) => {
       return;
     }
 
+    let isMounted = true;
+
     const fetchMetrics = async () => {
       try {
+        if (!isMounted) return;
         // Query all events for this user
         const eventsRef = collection(db, 'analytics_events');
         const q = query(eventsRef, where('userId', '==', userId));
@@ -128,20 +131,28 @@ export const useUserMetrics = (userId) => {
         });
         const weeklyProgress = uniqueWeekDays.size;
 
-        setMetrics({
-          activeDays,
-          exercisesComplete,
-          averageTime,
-          weeklyProgress,
-          loading: false
-        });
+        if (isMounted) {
+          setMetrics({
+            activeDays,
+            exercisesComplete,
+            averageTime,
+            weeklyProgress,
+            loading: false
+          });
+        }
       } catch (error) {
-        console.error('Error fetching metrics:', error);
-        setMetrics({ activeDays: 0, exercisesComplete: 0, averageTime: 0, weeklyProgress: 0, loading: false });
+        console.error('❌ Error fetching metrics:', error);
+        if (isMounted) {
+          setMetrics({ activeDays: 0, exercisesComplete: 0, averageTime: 0, weeklyProgress: 0, loading: false });
+        }
       }
     };
 
     fetchMetrics();
+
+    return () => {
+      isMounted = false;
+    };
   }, [userId]);
 
   return metrics;

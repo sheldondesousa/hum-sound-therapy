@@ -1,6 +1,6 @@
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { trackPageView, trackSession, trackBreathingExercise, trackEvent } from '../services/analytics';
 import { useUserMetrics } from '../hooks/useUserMetrics';
 
@@ -12,6 +12,7 @@ export default function Home() {
   const [selectedOption, setSelectedOption] = useState('breathe');
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [currentView, setCurrentView] = useState('interactive'); // 'interactive', 'about', 'support', 'faqs', 'terms'
+  const completionTrackedRef = useRef(false);
 
   // Random visual for album art placeholder
   const visuals = ['Visual1.jpeg', 'Visual2.jpeg', 'Visual3.jpeg', 'Visual4.jpeg'];
@@ -43,9 +44,10 @@ export default function Home() {
     }
   }, [selectedExercise, currentUser]);
 
-  // Track exercise completion
+  // Track exercise completion (only once per completion)
   useEffect(() => {
-    if (exerciseCompleted && selectedExercise) {
+    if (exerciseCompleted && selectedExercise && !completionTrackedRef.current) {
+      completionTrackedRef.current = true;
       const userId = currentUser?.uid;
       const totalCycles = selectedExercise?.name === 'Coherent Breathing' ? coherentCycles :
                           selectedExercise?.name === 'Alternate Nostril' ? alternateNostrilCycles :
@@ -55,6 +57,10 @@ export default function Home() {
         totalCycles
       });
       console.log('🎉 Exercise completed tracked!', { exercise: selectedExercise?.name, cycles: totalCycles });
+    }
+    // Reset ref when exercise completes
+    if (!exerciseCompleted) {
+      completionTrackedRef.current = false;
     }
   }, [exerciseCompleted, selectedExercise, currentUser, coherentCycles, alternateNostrilCycles, selectedCycles]);
 
