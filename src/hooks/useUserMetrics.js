@@ -34,7 +34,17 @@ export const useUserMetrics = (userId) => {
         });
 
         console.log('📊 Fetched events:', events.length);
-        console.log('📊 Events:', events);
+        console.log('📊 Sample events:', events.slice(0, 5));
+
+        // Debug: Show all unique event types and actions
+        const eventTypes = new Set();
+        const eventActions = new Set();
+        events.forEach(e => {
+          eventTypes.add(e.eventType);
+          if (e.action) eventActions.add(`${e.eventType}:${e.action}`);
+        });
+        console.log('📋 Event types found:', Array.from(eventTypes));
+        console.log('📋 Event actions found:', Array.from(eventActions));
 
         // Calculate Active Days (successful logins THIS MONTH only)
         const now = new Date();
