@@ -2,10 +2,12 @@ import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { trackPageView, trackSession, trackBreathingExercise, trackEvent } from '../services/analytics';
+import { useUserMetrics } from '../hooks/useUserMetrics';
 
 export default function Home() {
   const { logout, currentUser } = useAuth();
   const navigate = useNavigate();
+  const metrics = useUserMetrics(currentUser?.uid);
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('breathe');
   const [selectedExercise, setSelectedExercise] = useState(null);
@@ -1396,29 +1398,34 @@ export default function Home() {
                     {/* Active Days Card - Darkest */}
                     <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #7469B6, #8978C0)' }}>
                       <h3 className="text-xs font-medium mb-1 opacity-90">Active Days</h3>
-                      <p className="text-3xl font-bold">12</p>
-                      <p className="text-xs mt-0.5 opacity-80">days this month</p>
+                      <p className="text-3xl font-bold">
+                        {metrics.loading ? '...' : `${metrics.activeDays} days this month`}
+                      </p>
                     </div>
 
                     {/* Exercises Complete Card - Mid-Dark (dark to mid) */}
                     <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #7469B6, #AB8CC4)' }}>
                       <h3 className="text-xs font-medium mb-1 opacity-90">Exercises Complete</h3>
-                      <p className="text-3xl font-bold">28</p>
-                      <p className="text-xs mt-0.5 opacity-80">sessions</p>
+                      <p className="text-3xl font-bold">
+                        {metrics.loading ? '...' : metrics.exercisesComplete}
+                      </p>
                     </div>
 
                     {/* Average Time Spent Card - Mid-Light (mid to light) */}
                     <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #AB8CC4, #E1AFD1)' }}>
                       <h3 className="text-xs font-medium mb-1 opacity-90">Average Time</h3>
-                      <p className="text-3xl font-bold">15 min</p>
-                      <p className="text-xs mt-0.5 opacity-80">per session</p>
+                      <p className="text-3xl font-bold">
+                        {metrics.loading ? '...' : `${metrics.averageTime} min`}
+                      </p>
+                      <p className="text-xs mt-0.5 opacity-80">Time per day</p>
                     </div>
 
                     {/* Weekly Progress Card - Lightest */}
                     <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #C9A0CE, #E1AFD1)' }}>
                       <h3 className="text-xs font-medium mb-1 opacity-90">Weekly Progress</h3>
-                      <p className="text-3xl font-bold">5</p>
-                      <p className="text-xs mt-0.5 opacity-80">days active</p>
+                      <p className="text-3xl font-bold">
+                        {metrics.loading ? '...' : `${metrics.weeklyProgress} days this week`}
+                      </p>
                     </div>
                   </div>
                 </div>

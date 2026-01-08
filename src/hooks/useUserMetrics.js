@@ -96,7 +96,6 @@ export const useUserMetrics = (userId) => {
         const averageTime = daysWithActivity > 0 ? Math.round(totalMinutes / daysWithActivity) : 0;
 
         // Calculate Weekly Progress (days active this week)
-        const now = new Date();
         const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, etc.
         const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Get to Monday
         const monday = new Date(now);
