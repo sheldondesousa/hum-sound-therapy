@@ -1090,33 +1090,58 @@ export default function Home() {
     }
   };
 
-  // Get difficulty level for each exercise (1-5)
+  // Get difficulty level for each exercise (1-5, supports decimals)
   const getDifficultyLevel = (exerciseName) => {
     const difficultyMap = {
-      'Box Breathing (4-4-4-4)': 3,
+      'Box Breathing (4-4-4-4)': 2,
       '4-7-8 Breathing': 3,
-      'Coherent Breathing': 2,
-      'Physiological Sigh': 4,
-      'Alternate Nostril': 2,
-      'Humming Bee': 4
+      'Coherent Breathing': 3,
+      'Physiological Sigh': 2.5,
+      'Alternate Nostril': 3,
+      'Humming Bee': 2
     };
     return difficultyMap[exerciseName] || 0;
   };
 
-  // Render difficulty indicator (1-5 circles)
+  // Get metadata for each exercise (Best For & Ideal Session)
+  const getExerciseMetadata = (exerciseName) => {
+    const metadataMap = {
+      'Box Breathing (4-4-4-4)': { bestFor: 'Stress & focus', idealSession: '3–10 min' },
+      '4-7-8 Breathing': { bestFor: 'Anxiety & sleep', idealSession: '2–5 min' },
+      'Coherent Breathing': { bestFor: 'HRV & relaxation', idealSession: '10–20 min' },
+      'Physiological Sigh': { bestFor: 'Acute stress relief', idealSession: '1–3 min' },
+      'Alternate Nostril': { bestFor: 'Nervous system balance', idealSession: '5–15 min' },
+      'Humming Bee': { bestFor: 'Relaxation & sleep', idealSession: '5–10 min' }
+    };
+    return metadataMap[exerciseName] || { bestFor: '', idealSession: '' };
+  };
+
+  // Render difficulty indicator (1-5 circles, supports half-filled for decimals)
   const DifficultyIndicator = ({ level }) => {
     return (
       <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((circle) => (
-          <div
-            key={circle}
-            className="w-2 h-2 rounded-full"
-            style={{
-              backgroundColor: circle <= level ? '#000000' : 'transparent',
-              border: circle <= level ? 'none' : '1px solid #D1D5DB'
-            }}
-          />
-        ))}
+        {[1, 2, 3, 4, 5].map((circle) => {
+          const isFilled = circle <= Math.floor(level);
+          const isHalf = circle === Math.ceil(level) && level % 1 !== 0;
+
+          return (
+            <div
+              key={circle}
+              className="w-2 h-2 rounded-full relative overflow-hidden"
+              style={{
+                backgroundColor: isFilled ? '#000000' : 'transparent',
+                border: !isFilled && !isHalf ? '1px solid #D1D5DB' : 'none'
+              }}
+            >
+              {isHalf && (
+                <>
+                  <div className="absolute inset-0 w-1/2 bg-black" />
+                  <div className="absolute inset-0 w-full h-full border border-gray-300 rounded-full" />
+                </>
+              )}
+            </div>
+          );
+        })}
       </div>
     );
   };
@@ -2805,9 +2830,9 @@ export default function Home() {
                   /* Track List */
                   <>
                     {selectedOption === 'breathe' && (
-                      <div className="mt-8 mb-4">
+                      <div className="mt-6 mb-4">
                         <h3 className="font-semibold text-xl text-black">
-                          Select from 6 proven breathing techniques
+                          Select from 6 proven techniques
                         </h3>
                       </div>
                     )}
@@ -2824,10 +2849,18 @@ export default function Home() {
                         }}
                         className="w-full flex items-center justify-between py-4 border-b border-gray-200 hover:bg-gray-50 hover:opacity-70 transition-all group"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 flex-1">
                         <span className="text-sm text-gray-500 w-6">{index + 1}</span>
-                        <div className="text-left">
+                        <div className="text-left flex-1">
                           <p className="text-sm font-medium text-black">{track.name}</p>
+                          {selectedOption === 'breathe' && (() => {
+                            const metadata = getExerciseMetadata(track.name);
+                            return (
+                              <p className="text-xs text-gray-500 mt-0.5">
+                                {metadata.bestFor} · {metadata.idealSession}
+                              </p>
+                            );
+                          })()}
                         </div>
                       </div>
                       {selectedOption === 'breathe' ? (
