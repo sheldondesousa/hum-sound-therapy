@@ -1419,7 +1419,7 @@ export default function Home() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h2 className="text-lg font-semibold text-black truncate">
-                        Hello, {currentUser?.displayName || 'User'}
+                        Hello {currentUser?.displayName?.split(' ')[0] || 'User'}!
                       </h2>
                     </div>
                   </div>
