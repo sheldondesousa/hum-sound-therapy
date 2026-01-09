@@ -64,54 +64,33 @@ export default function Dashboard() {
         </div>
 
         {/* Metric Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {/* Active Days Card */}
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-6 text-white shadow-lg">
-            <h3 className="text-sm font-medium mb-2 opacity-90">Active Days</h3>
-            {metrics.loading ? (
-              <p className="text-4xl font-bold">...</p>
-            ) : (
-              <>
+        <div className="space-y-6">
+          {/* First Row: Active Days & Exercises Complete */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Active Days Card */}
+            <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-6 text-white shadow-lg">
+              <h3 className="text-sm font-medium mb-2 opacity-90">Active Days</h3>
+              {metrics.loading ? (
+                <p className="text-4xl font-bold">...</p>
+              ) : (
                 <p className="text-4xl font-bold">{metrics.activeDays}</p>
-                <p className="text-sm mt-1 opacity-80">days this month</p>
-              </>
-            )}
+              )}
+            </div>
+
+            {/* Exercises Complete Card */}
+            <div className="bg-gradient-to-br from-pink-400 to-pink-500 rounded-3xl p-6 text-white shadow-lg">
+              <h3 className="text-sm font-medium mb-2 opacity-90">Exercises Complete</h3>
+              {metrics.loading ? (
+                <p className="text-4xl font-bold">...</p>
+              ) : (
+                <p className="text-4xl font-bold">{metrics.exercisesComplete}</p>
+              )}
+            </div>
           </div>
 
-          {/* Exercises Complete Card */}
-          <div className="bg-gradient-to-br from-pink-400 to-pink-500 rounded-3xl p-6 text-white shadow-lg">
-            <h3 className="text-sm font-medium mb-2 opacity-90">Exercises Complete</h3>
-            {metrics.loading ? (
-              <p className="text-4xl font-bold">...</p>
-            ) : (
-              <p className="text-4xl font-bold">{metrics.exercisesComplete}</p>
-            )}
-          </div>
-
-          {/* Average Time Spent Card */}
+          {/* Second Row: Why Breathing Helps - Full Width */}
           <div className="bg-gradient-to-br from-purple-400 to-pink-400 rounded-3xl p-6 text-white shadow-lg">
-            <h3 className="text-sm font-medium mb-2 opacity-90">Average Time</h3>
-            {metrics.loading ? (
-              <p className="text-4xl font-bold">...</p>
-            ) : (
-              <>
-                <p className="text-4xl font-bold">{metrics.averageTime} <span className="text-sm font-normal">min</span></p>
-                <p className="text-sm mt-1 opacity-80">Time per day</p>
-              </>
-            )}
-          </div>
-
-          {/* Weekly Progress Card */}
-          <div className="bg-gradient-to-br from-pink-300 to-pink-400 rounded-3xl p-6 text-white shadow-lg">
-            <h3 className="text-sm font-medium mb-2 opacity-90">Weekly Progress</h3>
-            {metrics.loading ? (
-              <p className="text-4xl font-bold">...</p>
-            ) : (
-              <>
-                <p className="text-4xl font-bold">{metrics.weeklyProgress}</p>
-                <p className="text-sm mt-1 opacity-80">days this week</p>
-              </>
-            )}
+            <h3 className="text-base font-bold">Why intentional breathing helps</h3>
           </div>
         </div>
       </main>

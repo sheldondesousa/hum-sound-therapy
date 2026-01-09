@@ -11,7 +11,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('breathe');
   const [selectedExercise, setSelectedExercise] = useState(null);
-  const [currentView, setCurrentView] = useState('interactive'); // 'interactive', 'about', 'support', 'faqs', 'privacy', 'terms'
+  const [currentView, setCurrentView] = useState('interactive'); // 'interactive', 'about', 'support', 'faqs', 'privacy', 'terms', 'breathing-info'
   const completionTrackedRef = useRef(false);
 
   // Random visual for album art placeholder
@@ -1430,55 +1430,38 @@ export default function Home() {
                   </h1>
 
                   {/* Metric Cards Grid */}
-                  <div className="grid grid-cols-2 gap-3 mb-8">
-                    {/* Active Days Card - Darkest */}
-                    <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #7469B6, #8978C0)' }}>
-                      <h3 className="text-xs font-medium mb-1 opacity-90">Active Days</h3>
-                      {metrics.loading ? (
-                        <p className="text-3xl font-bold">...</p>
-                      ) : (
-                        <>
+                  <div className="space-y-3 mb-8">
+                    {/* First Row: Active Days & Exercises Complete */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* Active Days Card */}
+                      <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #7469B6, #8978C0)' }}>
+                        <h3 className="text-xs font-medium mb-1 opacity-90">Active Days</h3>
+                        {metrics.loading ? (
+                          <p className="text-3xl font-bold">...</p>
+                        ) : (
                           <p className="text-3xl font-bold">{metrics.activeDays}</p>
-                          <p className="text-xs mt-0.5 opacity-80">days this month</p>
-                        </>
-                      )}
+                        )}
+                      </div>
+
+                      {/* Exercises Complete Card */}
+                      <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #7469B6, #AB8CC4)' }}>
+                        <h3 className="text-xs font-medium mb-1 opacity-90">Exercises Complete</h3>
+                        {metrics.loading ? (
+                          <p className="text-3xl font-bold">...</p>
+                        ) : (
+                          <p className="text-3xl font-bold">{metrics.exercisesComplete}</p>
+                        )}
+                      </div>
                     </div>
 
-                    {/* Exercises Complete Card - Mid-Dark (dark to mid) */}
-                    <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #7469B6, #AB8CC4)' }}>
-                      <h3 className="text-xs font-medium mb-1 opacity-90">Exercises Complete</h3>
-                      {metrics.loading ? (
-                        <p className="text-3xl font-bold">...</p>
-                      ) : (
-                        <p className="text-3xl font-bold">{metrics.exercisesComplete}</p>
-                      )}
-                    </div>
-
-                    {/* Average Time Spent Card - Mid-Light (mid to light) */}
-                    <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #AB8CC4, #E1AFD1)' }}>
-                      <h3 className="text-xs font-medium mb-1 opacity-90">Average Time</h3>
-                      {metrics.loading ? (
-                        <p className="text-3xl font-bold">...</p>
-                      ) : (
-                        <>
-                          <p className="text-3xl font-bold">{metrics.averageTime} <span className="text-xs font-normal">min</span></p>
-                          <p className="text-xs mt-0.5 opacity-80">Time per day</p>
-                        </>
-                      )}
-                    </div>
-
-                    {/* Weekly Progress Card - Lightest */}
-                    <div className="rounded-2xl p-4 text-white" style={{ background: 'linear-gradient(to bottom right, #C9A0CE, #E1AFD1)' }}>
-                      <h3 className="text-xs font-medium mb-1 opacity-90">Weekly Progress</h3>
-                      {metrics.loading ? (
-                        <p className="text-3xl font-bold">...</p>
-                      ) : (
-                        <>
-                          <p className="text-3xl font-bold">{metrics.weeklyProgress}</p>
-                          <p className="text-xs mt-0.5 opacity-80">days this week</p>
-                        </>
-                      )}
-                    </div>
+                    {/* Second Row: Why Breathing Helps - Full Width */}
+                    <button
+                      onClick={() => setCurrentView('breathing-info')}
+                      className="w-full rounded-2xl p-4 text-white text-left hover:opacity-90 transition-opacity"
+                      style={{ background: 'linear-gradient(to bottom right, #AB8CC4, #E1AFD1)' }}
+                    >
+                      <h3 className="text-base font-bold">Why intentional breathing helps</h3>
+                    </button>
                   </div>
                 </div>
               )}
@@ -2816,6 +2799,7 @@ export default function Home() {
                     {currentView === 'faqs' && 'FAQs'}
                     {currentView === 'privacy' && 'Privacy Policy'}
                     {currentView === 'terms' && 'Terms & Conditions'}
+                    {currentView === 'breathing-info' && 'Why Intentional Breathing Helps'}
                   </h2>
                 </div>
 
@@ -3255,6 +3239,100 @@ export default function Home() {
                       </p>
                       <p className="text-sm text-gray-700 leading-relaxed">
                         📧 <span className="font-semibold">myemail@email.com</span>
+                      </p>
+                    </section>
+                  </div>
+                ) : currentView === 'breathing-info' ? (
+                  <div className="flex flex-col py-6 text-left space-y-6 max-w-3xl mx-auto">
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      Our breath is the fastest way to change how you feel—anytime, anywhere.
+                    </p>
+
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      Most of us breathe all day without noticing it. But when you intentionally guide your breath, something powerful happens: your nervous system listens. Heart rate slows. The mind becomes clearer. Stress loosens its grip.
+                    </p>
+
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      That's the promise behind The Hush Initiative—a calm, science-backed space where breathing becomes a daily ally, not another task on your list.
+                    </p>
+
+                    {/* Why breathing works */}
+                    <section>
+                      <h3 className="text-base font-bold text-black mb-3">Why breathing works (and why you feel it so quickly)</h3>
+                      <p className="text-sm text-gray-700 leading-relaxed mb-3">
+                        Slow, rhythmic breathing gently activates your body's natural "rest and restore" response. This helps:
+                      </p>
+                      <ul className="list-disc list-inside text-sm text-gray-700 leading-relaxed ml-4 space-y-2">
+                        <li>Lower stress and anxiety by signalling safety to the brain</li>
+                        <li>Improve focus and decision-making during busy or high-pressure moments</li>
+                        <li>Support better sleep by easing your body out of fight-or-flight</li>
+                        <li>Build emotional resilience over time, so stress has less staying power</li>
+                      </ul>
+                      <p className="text-sm text-gray-700 leading-relaxed mt-3">
+                        Even short sessions—just five minutes—can create noticeable shifts. With consistency, those shifts become your new baseline.
+                      </p>
+                    </section>
+
+                    {/* Techniques */}
+                    <section>
+                      <h3 className="text-base font-bold text-black mb-3">Techniques you'll experience inside the app</h3>
+                      <p className="text-sm text-gray-700 leading-relaxed mb-4">
+                        The Hush Initiative blends proven breathing techniques with calming visual animations, so your body can follow along effortlessly:
+                      </p>
+
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="text-sm font-semibold text-black mb-1">Cyclic Sighing (for mood resets)</h4>
+                          <p className="text-sm text-gray-700 leading-relaxed">
+                            A double inhale followed by a long exhale helps release tension quickly—ideal when emotions feel heavy or overwhelming.
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="text-sm font-semibold text-black mb-1">Box Breathing (for focus)</h4>
+                          <p className="text-sm text-gray-700 leading-relaxed">
+                            Equal, steady counts guide you back to clarity before a meeting or challenging task.
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="text-sm font-semibold text-black mb-1">4-7-8 Breathing (for sleep)</h4>
+                          <p className="text-sm text-gray-700 leading-relaxed">
+                            Longer exhales cue deep relaxation, making it easier to fall—and stay—asleep.
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="text-sm font-semibold text-black mb-1">Alternate Nostril Breathing (for balance)</h4>
+                          <p className="text-sm text-gray-700 leading-relaxed">
+                            A gentle rhythm that supports calm, centered energy throughout the day.
+                          </p>
+                        </div>
+                      </div>
+
+                      <p className="text-sm text-gray-700 leading-relaxed mt-4">
+                        The visuals do the counting for you. You simply breathe.
+                      </p>
+                    </section>
+
+                    {/* Make it a habit */}
+                    <section>
+                      <h3 className="text-base font-bold text-black mb-3">Make it a habit, not a chore</h3>
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        Use the app as a pause between moments: morning grounding, a midday reset, or a nighttime wind-down. Pair it with something you already do—coffee brewing, brushing your teeth, setting your alarm—and let repetition work its quiet magic.
+                      </p>
+                      <p className="text-sm text-gray-700 leading-relaxed mt-3">
+                        The result: fewer reactive moments, more clarity, deeper rest—and a growing sense that calm is something you can access on demand.
+                      </p>
+                    </section>
+
+                    {/* Closing */}
+                    <section className="border-t border-gray-300 pt-6">
+                      <p className="text-sm text-gray-700 leading-relaxed font-semibold mb-2">
+                        One breath won't change your life.
+                      </p>
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        But a few mindful breaths, practiced daily, can change how your life feels.
                       </p>
                     </section>
                   </div>
