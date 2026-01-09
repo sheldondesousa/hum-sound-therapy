@@ -1090,6 +1090,37 @@ export default function Home() {
     }
   };
 
+  // Get difficulty level for each exercise (1-5)
+  const getDifficultyLevel = (exerciseName) => {
+    const difficultyMap = {
+      'Box Breathing (4-4-4-4)': 3,
+      '4-7-8 Breathing': 3,
+      'Coherent Breathing': 2,
+      'Physiological Sigh': 4,
+      'Alternate Nostril': 2,
+      'Humming Bee': 4
+    };
+    return difficultyMap[exerciseName] || 0;
+  };
+
+  // Render difficulty indicator (1-5 circles)
+  const DifficultyIndicator = ({ level }) => {
+    return (
+      <div className="flex gap-1">
+        {[1, 2, 3, 4, 5].map((circle) => (
+          <div
+            key={circle}
+            className="w-2 h-2 rounded-full"
+            style={{
+              backgroundColor: circle <= level ? '#000000' : 'transparent',
+              border: circle <= level ? 'none' : '1px solid #D1D5DB'
+            }}
+          />
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom, #F4F9FD, #C3DBEA)' }}>
       <style>{`
@@ -1497,14 +1528,34 @@ export default function Home() {
                       </div>
                     </div>
 
-                    {/* Second Row: Why Breathing Helps - Full Width, Double Height */}
+                    {/* Second Row: Why Breathing Helps - Full Width with Carousel */}
                     <button
                       onClick={() => setCurrentView('breathing-info')}
-                      className="w-full rounded-2xl p-8 text-white text-left hover:opacity-90 transition-opacity relative overflow-hidden"
-                      style={{ background: 'linear-gradient(to bottom right, #AB8CC4, #E1AFD1)', minHeight: '120px' }}
+                      className="w-full rounded-2xl p-6 text-white text-left hover:opacity-90 transition-opacity relative overflow-hidden"
+                      style={{ background: 'linear-gradient(to bottom right, #AB8CC4, #E1AFD1)', minHeight: '144px' }}
                     >
-                      <div className="breathing-smoke"></div>
-                      <h3 className="text-base font-bold relative z-10">Why intentional breathing helps</h3>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-base font-bold mb-2">Why Intentional Breathing Helps</h3>
+                          <p className="text-xs font-light opacity-90">Swipe to learn more</p>
+                        </div>
+                        <div className="ml-4">
+                          {/* White line illustration SVG */}
+                          <svg width="60" height="100" viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            {/* Abstract flowing lines representing breath/meditation */}
+                            <path d="M10 20 Q 30 10, 50 20 T 10 40" stroke="#FFFFFF" strokeWidth="2" fill="none" opacity="0.9"/>
+                            <path d="M15 35 Q 35 25, 55 35 T 15 55" stroke="#F5F5F5" strokeWidth="1.5" fill="none" opacity="0.7"/>
+                            <path d="M8 50 Q 28 40, 48 50 T 8 70" stroke="#FAFAFA" strokeWidth="2" fill="none" opacity="0.8"/>
+                            <path d="M12 65 Q 32 55, 52 65 T 12 85" stroke="#FFFFFF" strokeWidth="1.5" fill="none" opacity="0.6"/>
+                            {/* Subtle dots */}
+                            <circle cx="30" cy="15" r="2" fill="#FFFFFF" opacity="0.5"/>
+                            <circle cx="45" cy="30" r="1.5" fill="#F5F5F5" opacity="0.4"/>
+                            <circle cx="20" cy="45" r="2" fill="#FFFFFF" opacity="0.6"/>
+                            <circle cx="40" cy="60" r="1.5" fill="#FAFAFA" opacity="0.5"/>
+                            <circle cx="25" cy="75" r="2" fill="#FFFFFF" opacity="0.4"/>
+                          </svg>
+                        </div>
+                      </div>
                     </button>
                   </div>
                 </div>
@@ -2756,7 +2807,7 @@ export default function Home() {
                     {selectedOption === 'breathe' && (
                       <div className="mt-8 mb-4">
                         <h3 className="font-semibold text-xl text-black">
-                          {currentTracks.length} Breathing exercise{currentTracks.length !== 1 ? 's' : ''} you can try
+                          Select from 6 proven breathing techniques
                         </h3>
                       </div>
                     )}
@@ -2779,7 +2830,9 @@ export default function Home() {
                           <p className="text-sm font-medium text-black">{track.name}</p>
                         </div>
                       </div>
-                      {selectedOption !== 'breathe' && (
+                      {selectedOption === 'breathe' ? (
+                        <DifficultyIndicator level={getDifficultyLevel(track.name)} />
+                      ) : (
                         <span className="text-sm text-gray-500">{track.duration}</span>
                       )}
                     </button>
