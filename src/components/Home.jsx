@@ -2369,7 +2369,7 @@ export default function Home() {
                             {/* Phase Text - At Center of Circle */}
                             <div className="absolute text-center">
                               <div
-                                className={`text-lg font-semibold text-white uppercase tracking-wider`}
+                                className={`text-lg font-semibold text-black uppercase tracking-wider`}
                               >
                                 {breathingPhase === 'inhale' && 'Breathe In'}
                                 {breathingPhase === 'exhale' && 'Breathe Out'}
@@ -2416,7 +2416,7 @@ export default function Home() {
                             {/* Phase Text - At Center of Circle */}
                             <div className="absolute text-center">
                               <div
-                                className={`text-lg font-semibold text-white uppercase tracking-wider`}
+                                className={`text-lg font-semibold text-black uppercase tracking-wider`}
                               >
                                 {breathingPhase === 'inhale' && 'Breathe In'}
                                 {breathingPhase === 'exhale' && 'Breathe Out'}
