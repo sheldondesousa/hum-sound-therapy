@@ -2401,123 +2401,82 @@ export default function Home() {
                         <>
                           {/* Breathing Square Illustration - Box Breathing Only */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Ghosting Trail Orbs - Create motion trail effect */}
-                            {[0.6, 0.45, 0.3, 0.15].map((timeOffset, index) => {
-                              const ghostPos = getBoxBreathingOrbPosition(timeOffset);
-                              const ghostOpacity = 1 - (index * 0.2); // Decreasing opacity
-                              return (
-                                <div
-                                  key={`ghost-${index}`}
-                                  className="absolute"
-                                  style={{
-                                    left: `${ghostPos.x}px`,
-                                    top: `${ghostPos.y}px`,
-                                    transform: 'translate(-50%, -50%)',
-                                    width: '45px',
-                                    height: '45px',
-                                    pointerEvents: 'none',
-                                    opacity: ghostOpacity * 0.3
-                                  }}
-                                >
-                                  {/* Ghost Trail (Barely Pink to Pink Villa) */}
-                                  <div
-                                    className="absolute inset-0"
-                                    style={{
-                                      background: 'radial-gradient(circle, rgba(246, 208, 234, 0.8) 0%, rgba(225, 175, 209, 0.5) 50%, transparent 80%)',
-                                      filter: 'blur(18px)',
-                                      transform: 'scale(1.4)'
-                                    }}
-                                  />
-                                  {/* Ghost Core (Light Orchid) */}
-                                  <div
-                                    className="absolute inset-0"
-                                    style={{
-                                      background: 'radial-gradient(circle, rgba(225, 175, 209, 0.9) 0%, rgba(200, 170, 215, 0.6) 50%, transparent 80%)',
-                                      filter: 'blur(12px)',
-                                      transform: 'scale(1.1)'
-                                    }}
-                                  />
-                                </div>
-                              );
-                            })}
+                            {/* Gray Border Square */}
+                            <svg
+                              className="absolute"
+                              width="363"
+                              height="363"
+                            >
+                              <rect
+                                x="4"
+                                y="4"
+                                width="355"
+                                height="355"
+                                rx="15"
+                                fill="none"
+                                stroke="#E5E7EB"
+                                strokeWidth="4"
+                              />
+                            </svg>
 
-                            {/* Main Flowing Energy Orb - Moves along square path */}
+                            {/* Secondary Colors Gradient Background */}
+                            <div
+                              className="absolute"
+                              style={{
+                                width: '355px',
+                                height: '355px',
+                                background: 'linear-gradient(135deg, rgba(225, 175, 209, 0.3) 0%, rgba(246, 208, 234, 0.3) 50%, rgba(255, 230, 247, 0.3) 100%)',
+                                borderRadius: '15px'
+                              }}
+                            />
+
+                            {/* Mountain Wave Animation */}
                             {(() => {
-                              const orbPos = getBoxBreathingOrbPosition();
+                              // Calculate mountain height based on phase and timer
+                              let mountainHeight = 0;
+
+                              if (breathingPhase === 'inhale') {
+                                // Rise from 0% to 100% over 4 seconds
+                                mountainHeight = (timer / 4) * 100;
+                              } else if (breathingPhase === 'hold1' || breathingPhase === 'hold2') {
+                                // Hold at 100%
+                                mountainHeight = 100;
+                              } else if (breathingPhase === 'exhale') {
+                                // Fall from 100% to 0% over 4 seconds
+                                mountainHeight = (1 - (timer / 4)) * 100;
+                              }
+
                               return (
-                                <div
+                                <svg
                                   className="absolute"
-                                  style={{
-                                    left: `${orbPos.x}px`,
-                                    top: `${orbPos.y}px`,
-                                    transform: 'translate(-50%, -50%)',
-                                    transition: 'left 1000ms linear, top 1000ms linear',
-                                    width: '45px',
-                                    height: '45px',
-                                    pointerEvents: 'none'
-                                  }}
+                                  width="355"
+                                  height="355"
+                                  viewBox="0 0 355 355"
+                                  style={{ overflow: 'visible' }}
                                 >
-                                  {/* Outer Trail Layer - Farthest from orb (Barely Pink) */}
-                                  <div
-                                    className="absolute inset-0"
+                                  <defs>
+                                    {/* Primary colors gradient for mountain */}
+                                    <linearGradient id="mountainGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                      <stop offset="0%" stopColor="#AD88C6" stopOpacity="0.95" />
+                                      <stop offset="50%" stopColor="#7469B6" stopOpacity="0.9" />
+                                      <stop offset="100%" stopColor="#7469B6" stopOpacity="0.85" />
+                                    </linearGradient>
+                                  </defs>
+
+                                  {/* Bell curve mountain shape */}
+                                  <path
+                                    d={`
+                                      M 0,355
+                                      Q 88.75,${355 - (mountainHeight * 3.55 * 0.3)} 177.5,${355 - (mountainHeight * 3.55)}
+                                      Q 266.25,${355 - (mountainHeight * 3.55 * 0.3)} 355,355
+                                      Z
+                                    `}
+                                    fill="url(#mountainGradient)"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(255, 230, 247, 0.6) 0%, rgba(246, 208, 234, 0.4) 40%, rgba(225, 175, 209, 0.2) 70%, transparent 100%)',
-                                      filter: 'blur(20px)',
-                                      transform: 'scale(1.6)',
-                                      animation: 'smoke-trail 3s ease-in-out infinite'
+                                      transition: 'all 1000ms ease-out'
                                     }}
                                   />
-                                  {/* Mid Trail Layer (Pink Villa) */}
-                                  <div
-                                    className="absolute inset-0"
-                                    style={{
-                                      background: 'radial-gradient(circle, rgba(246, 208, 234, 0.7) 0%, rgba(225, 175, 209, 0.55) 50%, rgba(200, 170, 215, 0.3) 80%, transparent 100%)',
-                                      filter: 'blur(16px)',
-                                      transform: 'scale(1.4)',
-                                      animation: 'smoke-trail 2.5s ease-in-out infinite 0.3s'
-                                    }}
-                                  />
-                                  {/* Inner Trail Layer (Light Orchid) */}
-                                  <div
-                                    className="absolute inset-0"
-                                    style={{
-                                      background: 'radial-gradient(circle, rgba(225, 175, 209, 0.8) 0%, rgba(200, 170, 215, 0.65) 50%, rgba(173, 136, 198, 0.35) 80%, transparent 100%)',
-                                      filter: 'blur(14px)',
-                                      transform: 'scale(1.3)',
-                                      animation: 'orb-pulse 2s ease-in-out infinite'
-                                    }}
-                                  />
-                                  {/* Outer Glow Layer (African Violet) */}
-                                  <div
-                                    className="absolute inset-0"
-                                    style={{
-                                      background: 'radial-gradient(circle, rgba(200, 170, 215, 0.85) 0%, rgba(173, 136, 198, 0.75) 40%, rgba(145, 120, 190, 0.5) 70%, transparent 100%)',
-                                      filter: 'blur(12px)',
-                                      transform: 'scale(1.2)',
-                                      animation: 'orb-pulse 2s ease-in-out infinite 0.5s'
-                                    }}
-                                  />
-                                  {/* Core Energy Layer - Fluid (African Violet to Blue-Violet) */}
-                                  <div
-                                    className="absolute inset-0"
-                                    style={{
-                                      background: 'radial-gradient(circle, rgba(200, 170, 215, 1) 0%, rgba(173, 136, 198, 0.95) 30%, rgba(145, 120, 190, 0.85) 60%, rgba(116, 105, 182, 0.6) 90%, transparent 100%)',
-                                      filter: 'blur(8px)',
-                                      transform: 'scale(1.05)',
-                                      animation: 'orb-glow 2s ease-in-out infinite'
-                                    }}
-                                  />
-                                  {/* Inner Core - Brightest point (Light African Violet) */}
-                                  <div
-                                    className="absolute inset-0"
-                                    style={{
-                                      background: 'radial-gradient(circle, rgba(230, 205, 235, 1) 0%, rgba(200, 170, 215, 0.95) 40%, rgba(173, 136, 198, 0.5) 70%, transparent 100%)',
-                                      filter: 'blur(4px)',
-                                      transform: 'scale(0.55)',
-                                      animation: 'orb-glow 2s ease-in-out infinite 0.2s'
-                                    }}
-                                  />
-                                </div>
+                                </svg>
                               );
                             })()}
 
