@@ -1283,42 +1283,42 @@ export default function Home() {
         }
         @keyframes orb-pulse {
           0%, 100% {
-            transform: scale(1.7);
-            opacity: 0.6;
-          }
-          33% {
-            transform: scale(2);
+            transform: scale(1.3);
             opacity: 0.7;
           }
+          33% {
+            transform: scale(1.5);
+            opacity: 0.8;
+          }
           66% {
-            transform: scale(1.85);
-            opacity: 0.65;
+            transform: scale(1.4);
+            opacity: 0.75;
           }
         }
         @keyframes orb-glow {
           0%, 100% {
-            filter: brightness(1.1) saturate(1.2) blur(10px);
+            filter: brightness(1.15) saturate(1.3) blur(8px);
           }
           50% {
-            filter: brightness(1.4) saturate(1.4) blur(12px);
+            filter: brightness(1.5) saturate(1.5) blur(10px);
           }
         }
         @keyframes smoke-trail {
           0% {
-            transform: scale(2.5);
-            opacity: 0.4;
-          }
-          40% {
-            transform: scale(2.8);
+            transform: scale(1.6);
             opacity: 0.5;
           }
+          40% {
+            transform: scale(1.75);
+            opacity: 0.6;
+          }
           70% {
-            transform: scale(3.2);
-            opacity: 0.3;
+            transform: scale(1.9);
+            opacity: 0.4;
           }
           100% {
-            transform: scale(3.5);
-            opacity: 0.15;
+            transform: scale(2);
+            opacity: 0.2;
           }
         }
         @keyframes text-breathe {
@@ -2399,8 +2399,8 @@ export default function Home() {
                                     top: `${orbPos.y}px`,
                                     transform: 'translate(-50%, -50%)',
                                     transition: 'left 1000ms linear, top 1000ms linear',
-                                    width: '60px',
-                                    height: '60px',
+                                    width: '45px',
+                                    height: '45px',
                                     pointerEvents: 'none'
                                   }}
                                 >
@@ -2408,9 +2408,9 @@ export default function Home() {
                                   <div
                                     className="absolute inset-0"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(255, 230, 247, 0.5) 0%, rgba(246, 208, 234, 0.35) 40%, rgba(225, 175, 209, 0.15) 70%, transparent 100%)',
-                                      filter: 'blur(25px)',
-                                      transform: 'scale(2.5)',
+                                      background: 'radial-gradient(circle, rgba(255, 230, 247, 0.6) 0%, rgba(246, 208, 234, 0.4) 40%, rgba(225, 175, 209, 0.2) 70%, transparent 100%)',
+                                      filter: 'blur(20px)',
+                                      transform: 'scale(1.6)',
                                       animation: 'smoke-trail 3s ease-in-out infinite'
                                     }}
                                   />
@@ -2418,9 +2418,9 @@ export default function Home() {
                                   <div
                                     className="absolute inset-0"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(246, 208, 234, 0.6) 0%, rgba(225, 175, 209, 0.45) 50%, rgba(200, 170, 215, 0.2) 80%, transparent 100%)',
-                                      filter: 'blur(20px)',
-                                      transform: 'scale(2)',
+                                      background: 'radial-gradient(circle, rgba(246, 208, 234, 0.7) 0%, rgba(225, 175, 209, 0.55) 50%, rgba(200, 170, 215, 0.3) 80%, transparent 100%)',
+                                      filter: 'blur(16px)',
+                                      transform: 'scale(1.4)',
                                       animation: 'smoke-trail 2.5s ease-in-out infinite 0.3s'
                                     }}
                                   />
@@ -2428,9 +2428,9 @@ export default function Home() {
                                   <div
                                     className="absolute inset-0"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(225, 175, 209, 0.7) 0%, rgba(200, 170, 215, 0.55) 50%, rgba(173, 136, 198, 0.25) 80%, transparent 100%)',
-                                      filter: 'blur(18px)',
-                                      transform: 'scale(1.7)',
+                                      background: 'radial-gradient(circle, rgba(225, 175, 209, 0.8) 0%, rgba(200, 170, 215, 0.65) 50%, rgba(173, 136, 198, 0.35) 80%, transparent 100%)',
+                                      filter: 'blur(14px)',
+                                      transform: 'scale(1.3)',
                                       animation: 'orb-pulse 2s ease-in-out infinite'
                                     }}
                                   />
@@ -2438,9 +2438,9 @@ export default function Home() {
                                   <div
                                     className="absolute inset-0"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(200, 170, 215, 0.8) 0%, rgba(173, 136, 198, 0.7) 40%, rgba(145, 120, 190, 0.45) 70%, transparent 100%)',
-                                      filter: 'blur(15px)',
-                                      transform: 'scale(1.4)',
+                                      background: 'radial-gradient(circle, rgba(200, 170, 215, 0.85) 0%, rgba(173, 136, 198, 0.75) 40%, rgba(145, 120, 190, 0.5) 70%, transparent 100%)',
+                                      filter: 'blur(12px)',
+                                      transform: 'scale(1.2)',
                                       animation: 'orb-pulse 2s ease-in-out infinite 0.5s'
                                     }}
                                   />
@@ -2448,9 +2448,9 @@ export default function Home() {
                                   <div
                                     className="absolute inset-0"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(200, 170, 215, 1) 0%, rgba(173, 136, 198, 0.95) 30%, rgba(145, 120, 190, 0.8) 60%, rgba(116, 105, 182, 0.5) 90%, transparent 100%)',
-                                      filter: 'blur(10px)',
-                                      transform: 'scale(1.1)',
+                                      background: 'radial-gradient(circle, rgba(200, 170, 215, 1) 0%, rgba(173, 136, 198, 0.95) 30%, rgba(145, 120, 190, 0.85) 60%, rgba(116, 105, 182, 0.6) 90%, transparent 100%)',
+                                      filter: 'blur(8px)',
+                                      transform: 'scale(1.05)',
                                       animation: 'orb-glow 2s ease-in-out infinite'
                                     }}
                                   />
@@ -2458,9 +2458,9 @@ export default function Home() {
                                   <div
                                     className="absolute inset-0"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(220, 190, 225, 1) 0%, rgba(200, 170, 215, 0.9) 40%, rgba(173, 136, 198, 0.4) 70%, transparent 100%)',
-                                      filter: 'blur(6px)',
-                                      transform: 'scale(0.6)',
+                                      background: 'radial-gradient(circle, rgba(230, 205, 235, 1) 0%, rgba(200, 170, 215, 0.95) 40%, rgba(173, 136, 198, 0.5) 70%, transparent 100%)',
+                                      filter: 'blur(4px)',
+                                      transform: 'scale(0.55)',
                                       animation: 'orb-glow 2s ease-in-out infinite 0.2s'
                                     }}
                                   />
