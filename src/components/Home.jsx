@@ -979,32 +979,45 @@ export default function Home() {
   };
 
   // Get orb position for Box Breathing (moves along square path)
-  const getBoxBreathingOrbPosition = () => {
+  const getBoxBreathingOrbPosition = (timeOffset = 0) => {
     if (!isExercising) return { x: 0, y: 0 };
 
     const squareSize = 280; // Size of the square path
-    const progress = Math.min(timer / 4, 1); // 0 to 1, capped at 1
+    let adjustedTimer = timer - timeOffset;
+    let currentPhase = breathingPhase;
 
-    if (breathingPhase === 'inhale') {
-      // INHALE: Move from top-left to top-right - along top edge
+    // Adjust phase if timeOffset causes us to look back into previous phase
+    if (adjustedTimer < 0) {
+      adjustedTimer = 4 + adjustedTimer; // Wrap around
+      // Move to previous phase
+      if (currentPhase === 'inhale') currentPhase = 'hold2';
+      else if (currentPhase === 'hold1') currentPhase = 'inhale';
+      else if (currentPhase === 'exhale') currentPhase = 'hold1';
+      else if (currentPhase === 'hold2') currentPhase = 'exhale';
+    }
+
+    const progress = Math.min(adjustedTimer / 4, 1); // 0 to 1, capped at 1
+
+    if (currentPhase === 'inhale') {
+      // INHALE: Point 1 to Point 2 - top-left to top-right (move RIGHT)
       return {
         x: squareSize * progress,
         y: 0
       };
-    } else if (breathingPhase === 'hold1') {
-      // HOLD1: Move from top-right to bottom-right - along right edge
+    } else if (currentPhase === 'hold1') {
+      // HOLD1: Point 2 to Point 3 - top-right to bottom-right (move DOWN)
       return {
         x: squareSize,
         y: squareSize * progress
       };
-    } else if (breathingPhase === 'exhale') {
-      // EXHALE: Move from bottom-right to bottom-left - along bottom edge
+    } else if (currentPhase === 'exhale') {
+      // EXHALE: Point 3 to Point 4 - bottom-right to bottom-left (move LEFT)
       return {
         x: squareSize * (1 - progress),
         y: squareSize
       };
-    } else if (breathingPhase === 'hold2') {
-      // HOLD2: Move from bottom-left to top-left - along left edge
+    } else if (currentPhase === 'hold2') {
+      // HOLD2: Point 4 to Point 1 - bottom-left to top-left (move UP)
       return {
         x: 0,
         y: squareSize * (1 - progress)
@@ -2388,7 +2401,47 @@ export default function Home() {
                         <>
                           {/* Breathing Square Illustration - Box Breathing Only */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Flowing Energy Orb - Moves along square path */}
+                            {/* Ghosting Trail Orbs - Create motion trail effect */}
+                            {[0.6, 0.45, 0.3, 0.15].map((timeOffset, index) => {
+                              const ghostPos = getBoxBreathingOrbPosition(timeOffset);
+                              const ghostOpacity = 1 - (index * 0.2); // Decreasing opacity
+                              return (
+                                <div
+                                  key={`ghost-${index}`}
+                                  className="absolute"
+                                  style={{
+                                    left: `${ghostPos.x}px`,
+                                    top: `${ghostPos.y}px`,
+                                    transform: 'translate(-50%, -50%)',
+                                    width: '45px',
+                                    height: '45px',
+                                    pointerEvents: 'none',
+                                    opacity: ghostOpacity * 0.3
+                                  }}
+                                >
+                                  {/* Ghost Trail (Barely Pink to Pink Villa) */}
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{
+                                      background: 'radial-gradient(circle, rgba(246, 208, 234, 0.8) 0%, rgba(225, 175, 209, 0.5) 50%, transparent 80%)',
+                                      filter: 'blur(18px)',
+                                      transform: 'scale(1.4)'
+                                    }}
+                                  />
+                                  {/* Ghost Core (Light Orchid) */}
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{
+                                      background: 'radial-gradient(circle, rgba(225, 175, 209, 0.9) 0%, rgba(200, 170, 215, 0.6) 50%, transparent 80%)',
+                                      filter: 'blur(12px)',
+                                      transform: 'scale(1.1)'
+                                    }}
+                                  />
+                                </div>
+                              );
+                            })}
+
+                            {/* Main Flowing Energy Orb - Moves along square path */}
                             {(() => {
                               const orbPos = getBoxBreathingOrbPosition();
                               return (
