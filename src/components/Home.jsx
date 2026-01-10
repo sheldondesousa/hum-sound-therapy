@@ -1606,7 +1606,7 @@ export default function Home() {
               )}
 
               {/* Track List or Exercise Detail View */}
-              <div className={`flex-1 overflow-hidden ${selectedOption === 'breathe' && selectedExercise ? 'flex' : 'space-y-0 mb-6'}`}>
+              <div className={`flex-1 overflow-hidden min-h-0 ${selectedOption === 'breathe' && selectedExercise ? 'flex' : 'flex flex-col'}`}>
                 {selectedOption === 'breathe' && selectedExercise && showingInfo ? (
                   /* Breathing Exercise Info Screen */
                   <div className="flex flex-col h-full w-full">
@@ -2831,15 +2831,15 @@ export default function Home() {
                   </div>
                 ) : (
                   /* Track List */
-                  <>
+                  <div className="flex flex-col flex-1 min-h-0">
                     {selectedOption === 'breathe' && (
-                      <div className="mt-4 mb-4">
+                      <div className="mt-4 mb-4 flex-shrink-0">
                         <h3 className="font-semibold text-xl text-black">
                           Select from 6 proven techniques
                         </h3>
                       </div>
                     )}
-                    <div className="overflow-y-auto flex-1">
+                    <div className="overflow-y-auto flex-1 min-h-0">
                       {currentTracks.map((track, index) => (
                       <button
                         key={track.id}
@@ -2874,7 +2874,7 @@ export default function Home() {
                     </button>
                       ))}
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
 
