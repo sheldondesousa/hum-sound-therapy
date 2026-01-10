@@ -980,38 +980,39 @@ export default function Home() {
 
   // Get orb position for Box Breathing (moves along square edges)
   const getBoxBreathingOrbPosition = () => {
-    if (!isExercising) return { x: 0, y: 0 };
+    if (!isExercising) return { x: 4, y: 4 };
 
-    const squareSize = 280; // Size of the square path (reduced to fit orb in viewport)
+    const squareSize = 280; // Size of the square path
+    const offset = 4; // SVG rect offset to align orb center with border line
     const progress = Math.min(timer / 4, 1); // 0 to 1, capped at 1
 
     if (breathingPhase === 'inhale') {
-      // INHALE: Move from top-left (0,0) to top-right (280,0) - along top edge
+      // INHALE: Move from top-left (4,4) to top-right (284,4) - along top edge
       return {
-        x: squareSize * progress,
-        y: 0
+        x: offset + (squareSize * progress),
+        y: offset
       };
     } else if (breathingPhase === 'hold1') {
-      // HOLD1: Move from top-right (280,0) to bottom-right (280,280) - along right edge
+      // HOLD1: Move from top-right (284,4) to bottom-right (284,284) - along right edge
       return {
-        x: squareSize,
-        y: squareSize * progress
+        x: offset + squareSize,
+        y: offset + (squareSize * progress)
       };
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: Move from bottom-right (280,280) to bottom-left (0,280) - along bottom edge
+      // EXHALE: Move from bottom-right (284,284) to bottom-left (4,284) - along bottom edge
       return {
-        x: squareSize * (1 - progress),
-        y: squareSize
+        x: offset + (squareSize * (1 - progress)),
+        y: offset + squareSize
       };
     } else if (breathingPhase === 'hold2') {
-      // HOLD2: Move from bottom-left (0,280) to top-left (0,0) - along left edge
+      // HOLD2: Move from bottom-left (4,284) to top-left (4,4) - along left edge
       return {
-        x: 0,
-        y: squareSize * (1 - progress)
+        x: offset,
+        y: offset + (squareSize * (1 - progress))
       };
     }
 
-    return { x: 0, y: 0 };
+    return { x: 4, y: 4 };
   };
 
   // Get green circle indicator position for Box Breathing
@@ -2454,22 +2455,13 @@ export default function Home() {
                                       animation: 'orb-pulse 2s ease-in-out infinite'
                                     }}
                                   />
-                                  {/* Core Glowing Orb - Primary Purple/Violet */}
+                                  {/* Core Glowing Orb - Smooth radial gradient with primary purple/violet */}
                                   <div
                                     className="absolute inset-0 rounded-full"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(173, 136, 198, 1) 0%, rgba(116, 105, 182, 0.95) 30%, rgba(116, 105, 182, 0.8) 60%, rgba(116, 105, 182, 0.3) 100%)',
-                                      boxShadow: '0 0 40px rgba(116, 105, 182, 0.8), 0 0 80px rgba(173, 136, 198, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.5)',
+                                      background: 'radial-gradient(circle, rgba(200, 170, 215, 1) 0%, rgba(173, 136, 198, 1) 25%, rgba(145, 120, 190, 1) 50%, rgba(116, 105, 182, 0.95) 75%, rgba(116, 105, 182, 0.7) 100%)',
+                                      boxShadow: '0 0 40px rgba(173, 136, 198, 0.8), 0 0 80px rgba(173, 136, 198, 0.6)',
                                       animation: 'orb-glow 2s ease-in-out infinite'
-                                    }}
-                                  />
-                                  {/* Inner bright core */}
-                                  <div
-                                    className="absolute inset-0 rounded-full"
-                                    style={{
-                                      background: 'radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(173, 136, 198, 0.7) 30%, transparent 70%)',
-                                      transform: 'scale(0.5)',
-                                      filter: 'blur(2px)'
                                     }}
                                   />
                                 </div>
