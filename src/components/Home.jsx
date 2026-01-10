@@ -2399,48 +2399,9 @@ export default function Home() {
                       {/* Conditional Animation based on exercise */}
                       {selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
                         <>
-                          {/* Phase Tabs */}
-                          <div className="flex justify-center gap-2 mb-6">
-                            <div
-                              className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                                breathingPhase === 'inhale'
-                                  ? 'bg-white text-black shadow-md'
-                                  : 'bg-transparent text-gray-400'
-                              }`}
-                            >
-                              In 4s
-                            </div>
-                            <div
-                              className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                                breathingPhase === 'hold1'
-                                  ? 'bg-white text-black shadow-md'
-                                  : 'bg-transparent text-gray-400'
-                              }`}
-                            >
-                              Hold 4s
-                            </div>
-                            <div
-                              className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                                breathingPhase === 'exhale'
-                                  ? 'bg-white text-black shadow-md'
-                                  : 'bg-transparent text-gray-400'
-                              }`}
-                            >
-                              Out 4s
-                            </div>
-                            <div
-                              className={`px-6 py-2 rounded-lg font-medium transition-all ${
-                                breathingPhase === 'hold2'
-                                  ? 'bg-white text-black shadow-md'
-                                  : 'bg-transparent text-gray-400'
-                              }`}
-                            >
-                              Hold 4s
-                            </div>
-                          </div>
-
                           {/* Breathing Square Illustration - Box Breathing Only */}
-                          <div className="flex-1 flex items-center justify-center w-full relative">
+                          <div className="flex-1 flex flex-col items-center justify-center w-full">
+                            <div className="relative">
                             {/* Gray Border Square */}
                             <svg
                               className="absolute"
@@ -2482,8 +2443,8 @@ export default function Home() {
                                 // Hold at 100%
                                 mountainHeight = 100;
                               } else if (breathingPhase === 'exhale') {
-                                // Fall from 100% to 0% over 4 seconds
-                                mountainHeight = (1 - (timer / 4)) * 100;
+                                // Start at 100% (timer 0) and fall to 0% (timer 4)
+                                mountainHeight = ((4 - timer) / 4) * 100;
                               }
 
                               const peakHeight = 355 - (mountainHeight * 3.55);
@@ -2570,7 +2531,7 @@ export default function Home() {
                               );
                             })()}
 
-                            {/* Phase Text - At Center of Square */}
+                            {/* Phase Text and Timer - At Center of Square */}
                             <div className="absolute text-center">
                               <div
                                 className="text-lg font-semibold text-gray-700 uppercase tracking-wider"
@@ -2583,7 +2544,53 @@ export default function Home() {
                                 {breathingPhase === 'exhale' && 'Breathe Out'}
                                 {breathingPhase === 'hold2' && 'HOLD'}
                               </div>
+                              {countdown === null && (
+                                <div className="text-5xl font-bold text-gray-800 mt-2">
+                                  {timer}
+                                </div>
+                              )}
                             </div>
+                          </div>
+
+                          {/* Phase Tabs - Below animation with spacing */}
+                          <div className="flex justify-center gap-2 mt-8">
+                            <div
+                              className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                                breathingPhase === 'inhale'
+                                  ? 'bg-white text-black shadow-md'
+                                  : 'bg-transparent text-gray-400'
+                              }`}
+                            >
+                              In 4s
+                            </div>
+                            <div
+                              className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                                breathingPhase === 'hold1'
+                                  ? 'bg-white text-black shadow-md'
+                                  : 'bg-transparent text-gray-400'
+                              }`}
+                            >
+                              Hold 4s
+                            </div>
+                            <div
+                              className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                                breathingPhase === 'exhale'
+                                  ? 'bg-white text-black shadow-md'
+                                  : 'bg-transparent text-gray-400'
+                              }`}
+                            >
+                              Out 4s
+                            </div>
+                            <div
+                              className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                                breathingPhase === 'hold2'
+                                  ? 'bg-white text-black shadow-md'
+                                  : 'bg-transparent text-gray-400'
+                              }`}
+                            >
+                              Hold 4s
+                            </div>
+                          </div>
                           </div>
                         </>
                       ) : selectedExercise?.name === '4-7-8 Breathing' ? (
