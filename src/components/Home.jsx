@@ -1106,12 +1106,12 @@ export default function Home() {
   // Get metadata for each exercise (Best For & Ideal Session)
   const getExerciseMetadata = (exerciseName) => {
     const metadataMap = {
-      'Box Breathing (4-4-4-4)': { bestFor: 'Stress & focus', idealSession: '3–10 min' },
-      '4-7-8 Breathing': { bestFor: 'Anxiety & sleep', idealSession: '2–5 min' },
-      'Coherent Breathing': { bestFor: 'HRV & relaxation', idealSession: '10–20 min' },
-      'Physiological Sigh': { bestFor: 'Acute stress relief', idealSession: '1–3 min' },
-      'Alternate Nostril': { bestFor: 'Nervous system balance', idealSession: '5–15 min' },
-      'Humming Bee': { bestFor: 'Relaxation & sleep', idealSession: '5–10 min' }
+      'Box Breathing (4-4-4-4)': { bestFor: 'Stress & Focus', idealSession: '3–10 min' },
+      '4-7-8 Breathing': { bestFor: 'Anxiety & Sleep', idealSession: '2–5 min' },
+      'Coherent Breathing': { bestFor: 'HRV & Relaxation', idealSession: '10–20 min' },
+      'Physiological Sigh': { bestFor: 'Acute Stress Relief', idealSession: '1–3 min' },
+      'Alternate Nostril': { bestFor: 'Nervous System Balance', idealSession: '5–15 min' },
+      'Humming Bee': { bestFor: 'Relaxation & Sleep', idealSession: '5–10 min' }
     };
     return metadataMap[exerciseName] || { bestFor: '', idealSession: '' };
   };
@@ -1119,29 +1119,32 @@ export default function Home() {
   // Render difficulty indicator (1-5 circles, supports half-filled for decimals)
   const DifficultyIndicator = ({ level }) => {
     return (
-      <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((circle) => {
-          const isFilled = circle <= Math.floor(level);
-          const isHalf = circle === Math.ceil(level) && level % 1 !== 0;
+      <div className="flex flex-col items-end gap-1">
+        <span className="text-xs font-semibold text-gray-700">Difficulty</span>
+        <div className="flex gap-1">
+          {[1, 2, 3, 4, 5].map((circle) => {
+            const isFilled = circle <= Math.floor(level);
+            const isHalf = circle === Math.ceil(level) && level % 1 !== 0;
 
-          return (
-            <div
-              key={circle}
-              className="w-2 h-2 rounded-full relative overflow-hidden"
-              style={{
-                backgroundColor: isFilled ? '#000000' : 'transparent',
-                border: !isFilled && !isHalf ? '1px solid #D1D5DB' : 'none'
-              }}
-            >
-              {isHalf && (
-                <>
-                  <div className="absolute inset-0 w-1/2 bg-black" />
-                  <div className="absolute inset-0 w-full h-full border border-gray-300 rounded-full" />
-                </>
-              )}
-            </div>
-          );
-        })}
+            return (
+              <div
+                key={circle}
+                className="w-2 h-2 rounded-full relative overflow-hidden"
+                style={{
+                  backgroundColor: isFilled ? '#000000' : 'transparent',
+                  border: !isFilled && !isHalf ? '1px solid #D1D5DB' : 'none'
+                }}
+              >
+                {isHalf && (
+                  <>
+                    <div className="absolute inset-0 w-1/2 bg-black" />
+                    <div className="absolute inset-0 w-full h-full border border-gray-300 rounded-full" />
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   };
@@ -2830,13 +2833,13 @@ export default function Home() {
                   /* Track List */
                   <>
                     {selectedOption === 'breathe' && (
-                      <div className="mt-6 mb-4">
+                      <div className="mt-4 mb-4">
                         <h3 className="font-semibold text-xl text-black">
                           Select from 6 proven techniques
                         </h3>
                       </div>
                     )}
-                    <div>
+                    <div className="overflow-y-auto" style={{ maxHeight: 'calc(100vh - 600px)' }}>
                       {currentTracks.map((track, index) => (
                       <button
                         key={track.id}
@@ -2856,8 +2859,8 @@ export default function Home() {
                           {selectedOption === 'breathe' && (() => {
                             const metadata = getExerciseMetadata(track.name);
                             return (
-                              <p className="text-xs text-gray-500 mt-0.5">
-                                {metadata.bestFor} · {metadata.idealSession}
+                              <p className="text-xs text-gray-500 mt-1">
+                                <span className="font-bold">Best for:</span> {metadata.bestFor} · <span className="font-bold">Ideal time:</span> {metadata.idealSession}
                               </p>
                             );
                           })()}
