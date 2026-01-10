@@ -598,23 +598,23 @@ export default function Home() {
         } else {
           // Box Breathing pattern (4-4-4-4) - second-based counting
           if (breathingPhase === 'inhale') {
-            // INHALE: 0→5 (5 timer values for 4 seconds to reach max at 4)
-            if (prevTimer < 5) {
+            // INHALE: 0→4 (exactly 4 seconds: 0s,1s,2s,3s,4s)
+            if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
               setBreathingPhase('hold1');
               return 0; // Start HOLD1 at 0
             }
           } else if (breathingPhase === 'hold1') {
-            // HOLD1: 0→4 (4 seconds)
+            // HOLD1: 0→4 (exactly 4 seconds)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
               setBreathingPhase('exhale');
-              return 5; // Start EXHALE at 5 to reach 0 at end
+              return 4; // Start EXHALE at 4
             }
           } else if (breathingPhase === 'exhale') {
-            // EXHALE: 5→0 (descending to reach 0 at 4 seconds)
+            // EXHALE: 4→0 (exactly 4 seconds: 4s,3s,2s,1s,0s)
             if (prevTimer > 0) {
               return prevTimer - 1;
             } else {
@@ -622,7 +622,7 @@ export default function Home() {
               return 0; // Start HOLD2 at 0
             }
           } else if (breathingPhase === 'hold2') {
-            // HOLD2: 0→4 (4 seconds)
+            // HOLD2: 0→4 (exactly 4 seconds)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
@@ -968,15 +968,17 @@ export default function Home() {
     const maxSize = 349; // 355 - 4 (stroke width) - 2 (1px padding each side)
 
     if (breathingPhase === 'inhale') {
-      // INHALE: 0→5 timer values, reaches max at timer=4 (end of 4 seconds)
-      const progress = Math.min(timer / 4, 1); // 0 to 1, capped at 1
+      // INHALE: 0→4 timer (exactly 4 seconds)
+      // At timer=0: 0%, timer=1: 25%, timer=2: 50%, timer=3: 75%, timer=4: 100%
+      const progress = timer / 4; // 0 to 1
       return minSize + (maxSize - minSize) * progress;
     } else if (breathingPhase === 'hold1') {
       // HOLD1: Stay at max size for 4 seconds
       return maxSize;
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: 5→0 timer values, reaches min at timer=0 (end of 4 seconds)
-      const progress = Math.min(timer / 4, 1); // 1.25 to 0, capped at 1
+      // EXHALE: 4→0 timer (exactly 4 seconds)
+      // At timer=4: 100%, timer=3: 75%, timer=2: 50%, timer=1: 25%, timer=0: 0%
+      const progress = timer / 4; // 1 to 0
       return minSize + (maxSize - minSize) * progress;
     } else if (breathingPhase === 'hold2') {
       // HOLD2: Stay at min size (0) for 4 seconds
