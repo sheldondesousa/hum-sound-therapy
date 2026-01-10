@@ -982,29 +982,29 @@ export default function Home() {
   const getBoxBreathingOrbPosition = () => {
     if (!isExercising) return { x: 0, y: 0 };
 
-    const squareSize = 350; // Size of the square path
+    const squareSize = 280; // Size of the square path (reduced to fit orb in viewport)
     const progress = Math.min(timer / 4, 1); // 0 to 1, capped at 1
 
     if (breathingPhase === 'inhale') {
-      // INHALE: Move from top-left (0,0) to top-right (350,0) - along top edge
+      // INHALE: Move from top-left (0,0) to top-right (280,0) - along top edge
       return {
         x: squareSize * progress,
         y: 0
       };
     } else if (breathingPhase === 'hold1') {
-      // HOLD1: Move from top-right (350,0) to bottom-right (350,350) - along right edge
+      // HOLD1: Move from top-right (280,0) to bottom-right (280,280) - along right edge
       return {
         x: squareSize,
         y: squareSize * progress
       };
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: Move from bottom-right (350,350) to bottom-left (0,350) - along bottom edge
+      // EXHALE: Move from bottom-right (280,280) to bottom-left (0,280) - along bottom edge
       return {
         x: squareSize * (1 - progress),
         y: squareSize
       };
     } else if (breathingPhase === 'hold2') {
-      // HOLD2: Move from bottom-left (0,350) to top-left (0,0) - along left edge
+      // HOLD2: Move from bottom-left (0,280) to top-left (0,0) - along left edge
       return {
         x: 0,
         y: squareSize * (1 - progress)
@@ -1016,9 +1016,9 @@ export default function Home() {
 
   // Get green circle indicator position for Box Breathing
   const getBoxBreathingIndicatorPosition = () => {
-    const size = 355; // Fixed size of gray outer square marker
-    const radius = 15; // Border radius of the square
-    const centerOffset = 181.5; // Center of the 363px container
+    const size = 280; // Fixed size of gray outer square marker (reduced from 355)
+    const radius = 12; // Border radius of the square (reduced from 15)
+    const centerOffset = 144; // Center of the 288px container (288/2)
     const halfSize = size / 2;
 
     // Only visible during HOLD phases
@@ -1297,6 +1297,24 @@ export default function Home() {
           }
           50% {
             filter: brightness(1.3) saturate(1.2);
+          }
+        }
+        @keyframes smoke-trail {
+          0%, 100% {
+            transform: scale(2.5);
+            opacity: 0.3;
+          }
+          50% {
+            transform: scale(3);
+            opacity: 0.5;
+          }
+        }
+        @keyframes text-breathe {
+          0%, 100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.15);
           }
         }
       `}</style>
@@ -2361,39 +2379,39 @@ export default function Home() {
                             {/* Gray Background Square - Always visible */}
                             <svg
                               className="absolute"
-                              width="363"
-                              height="363"
+                              width="288"
+                              height="288"
                             >
                               <rect
                                 x="4"
                                 y="4"
-                                width="355"
-                                height="355"
-                                rx="15"
+                                width="280"
+                                height="280"
+                                rx="12"
                                 fill="none"
                                 stroke="#E5E7EB"
-                                strokeWidth="4"
+                                strokeWidth="3"
                               />
                             </svg>
 
-                            {/* Blue Progress Line - Shows during HOLD phases, starts from top-left */}
+                            {/* Purple Progress Line - Shows during HOLD phases, starts from top-left */}
                             {(breathingPhase === 'hold1' || breathingPhase === 'hold2') && (
                               <svg
                                 className="absolute"
-                                width="363"
-                                height="363"
+                                width="288"
+                                height="288"
                               >
                                 <rect
                                   x="4"
                                   y="4"
-                                  width="355"
-                                  height="355"
-                                  rx="15"
+                                  width="280"
+                                  height="280"
+                                  rx="12"
                                   fill="none"
-                                  stroke="#067AC3"
-                                  strokeWidth="4"
-                                  strokeDasharray="1420"
-                                  strokeDashoffset={1420 - (1420 * timer / 4)}
+                                  stroke="#7469B6"
+                                  strokeWidth="3"
+                                  strokeDasharray="1120"
+                                  strokeDashoffset={1120 - (1120 * timer / 4)}
                                   style={{ transition: 'stroke-dashoffset 1000ms linear' }}
                                   strokeLinecap="square"
                                 />
@@ -2416,22 +2434,32 @@ export default function Home() {
                                     pointerEvents: 'none'
                                   }}
                                 >
+                                  {/* Smoke Trail Effect - Trails behind the orb */}
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{
+                                      background: 'radial-gradient(circle, rgba(225, 175, 209, 0.5) 0%, rgba(246, 208, 234, 0.3) 30%, rgba(255, 230, 247, 0.1) 60%, transparent 100%)',
+                                      filter: 'blur(25px)',
+                                      transform: 'scale(2.5)',
+                                      animation: 'smoke-trail 2s ease-in-out infinite'
+                                    }}
+                                  />
                                   {/* Smoke/Aura Effect Behind Orb */}
                                   <div
                                     className="absolute inset-0"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(6, 122, 195, 0.6) 0%, rgba(6, 122, 195, 0.3) 30%, rgba(6, 122, 195, 0.1) 60%, transparent 100%)',
+                                      background: 'radial-gradient(circle, rgba(225, 175, 209, 0.7) 0%, rgba(246, 208, 234, 0.4) 30%, rgba(255, 230, 247, 0.2) 60%, transparent 100%)',
                                       filter: 'blur(20px)',
                                       transform: 'scale(1.8)',
                                       animation: 'orb-pulse 2s ease-in-out infinite'
                                     }}
                                   />
-                                  {/* Core Glowing Orb */}
+                                  {/* Core Glowing Orb - Primary Purple/Violet */}
                                   <div
                                     className="absolute inset-0 rounded-full"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(135, 206, 250, 1) 0%, rgba(6, 122, 195, 0.9) 40%, rgba(6, 122, 195, 0.6) 70%, rgba(6, 122, 195, 0.2) 100%)',
-                                      boxShadow: '0 0 40px rgba(6, 122, 195, 0.8), 0 0 80px rgba(6, 122, 195, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.5)',
+                                      background: 'radial-gradient(circle, rgba(173, 136, 198, 1) 0%, rgba(116, 105, 182, 0.95) 30%, rgba(116, 105, 182, 0.8) 60%, rgba(116, 105, 182, 0.3) 100%)',
+                                      boxShadow: '0 0 40px rgba(116, 105, 182, 0.8), 0 0 80px rgba(173, 136, 198, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.5)',
                                       animation: 'orb-glow 2s ease-in-out infinite'
                                     }}
                                   />
@@ -2439,7 +2467,7 @@ export default function Home() {
                                   <div
                                     className="absolute inset-0 rounded-full"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(135, 206, 250, 0.7) 30%, transparent 70%)',
+                                      background: 'radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(173, 136, 198, 0.7) 30%, transparent 70%)',
                                       transform: 'scale(0.5)',
                                       filter: 'blur(2px)'
                                     }}
@@ -2451,9 +2479,10 @@ export default function Home() {
                             {/* Phase Text - At Center of Square */}
                             <div className="absolute text-center">
                               <div
-                                className={`text-lg font-semibold text-gray-700 uppercase tracking-wider ${
-                                  (breathingPhase === 'hold1' || breathingPhase === 'hold2') ? 'pulse-hold' : ''
-                                }`}
+                                className="text-lg font-semibold text-gray-700 uppercase tracking-wider"
+                                style={{
+                                  animation: 'text-breathe 4s ease-in-out infinite'
+                                }}
                               >
                                 {breathingPhase === 'inhale' && countdown === null && 'Breathe In'}
                                 {breathingPhase === 'hold1' && 'HOLD'}
