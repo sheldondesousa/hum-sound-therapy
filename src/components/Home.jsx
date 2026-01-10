@@ -2401,10 +2401,10 @@ export default function Home() {
                         <>
                           {/* Breathing Square Illustration - Box Breathing Only */}
                           <div className="flex-1 flex flex-col items-center justify-center w-full">
-                            <div className="relative">
+                            <div className="relative" style={{ width: '363px', height: '363px' }}>
                             {/* Gray Border Square */}
                             <svg
-                              className="absolute"
+                              className="absolute top-0 left-0"
                               width="363"
                               height="363"
                             >
@@ -2424,6 +2424,8 @@ export default function Home() {
                             <div
                               className="absolute"
                               style={{
+                                top: '4px',
+                                left: '4px',
                                 width: '355px',
                                 height: '355px',
                                 background: 'linear-gradient(to top, rgba(255, 230, 247, 0.8) 0%, rgba(246, 208, 234, 0.75) 50%, rgba(225, 175, 209, 0.7) 100%)',
@@ -2456,7 +2458,7 @@ export default function Home() {
                                   width="355"
                                   height="355"
                                   viewBox="0 0 355 355"
-                                  style={{ overflow: 'visible' }}
+                                  style={{ top: '4px', left: '4px', overflow: 'visible' }}
                                 >
                                   <defs>
                                     {/* Primary colors gradient for mountain - top to bottom */}
@@ -2532,7 +2534,7 @@ export default function Home() {
                             })()}
 
                             {/* Phase Text and Timer - At Center of Square */}
-                            <div className="absolute text-center">
+                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
                               <div
                                 className="text-lg font-semibold text-gray-700 uppercase tracking-wider"
                                 style={{
@@ -2931,26 +2933,7 @@ export default function Home() {
 
                     {/* Pattern Info Section - 5% */}
                     <div className="flex-[0.05] flex items-center justify-center pt-[5px]">
-                      {/* Box Breathing Pattern Tabs */}
-                      {selectedExercise?.name === 'Box Breathing (4-4-4-4)' && !exerciseCompleted && isExercising && (
-                        <div className="flex items-center gap-3 text-sm text-gray-600">
-                          <div className={`pb-1 transition-all ${breathingPhase === 'inhale' ? 'border-b-2 border-gray-900 font-medium' : ''}`}>
-                            In 4s
-                          </div>
-                          <div className="text-gray-300">|</div>
-                          <div className={`pb-1 transition-all ${breathingPhase === 'hold1' ? 'border-b-2 border-gray-900 font-medium' : ''}`}>
-                            Hold 4s
-                          </div>
-                          <div className="text-gray-300">|</div>
-                          <div className={`pb-1 transition-all ${breathingPhase === 'exhale' ? 'border-b-2 border-gray-900 font-medium' : ''}`}>
-                            Out 4s
-                          </div>
-                          <div className="text-gray-300">|</div>
-                          <div className={`pb-1 transition-all ${breathingPhase === 'hold2' ? 'border-b-2 border-gray-900 font-medium' : ''}`}>
-                            Hold 4s
-                          </div>
-                        </div>
-                      )}
+                      {/* Pattern info removed - tabs now shown within the exercise animation area */}
                     </div>
 
                     {/* Exercise Starting Section - 10% */}
