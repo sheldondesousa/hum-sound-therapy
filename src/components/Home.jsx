@@ -978,41 +978,40 @@ export default function Home() {
     return minSize;
   };
 
-  // Get orb position for Box Breathing (moves along square edges)
+  // Get orb position for Box Breathing (moves along square path)
   const getBoxBreathingOrbPosition = () => {
-    if (!isExercising) return { x: 4, y: 4 };
+    if (!isExercising) return { x: 0, y: 0 };
 
     const squareSize = 280; // Size of the square path
-    const offset = 4; // SVG rect offset to align orb center with border line
     const progress = Math.min(timer / 4, 1); // 0 to 1, capped at 1
 
     if (breathingPhase === 'inhale') {
-      // INHALE: Move from top-left (4,4) to top-right (284,4) - along top edge
+      // INHALE: Move from top-left to top-right - along top edge
       return {
-        x: offset + (squareSize * progress),
-        y: offset
+        x: squareSize * progress,
+        y: 0
       };
     } else if (breathingPhase === 'hold1') {
-      // HOLD1: Move from top-right (284,4) to bottom-right (284,284) - along right edge
+      // HOLD1: Move from top-right to bottom-right - along right edge
       return {
-        x: offset + squareSize,
-        y: offset + (squareSize * progress)
+        x: squareSize,
+        y: squareSize * progress
       };
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: Move from bottom-right (284,284) to bottom-left (4,284) - along bottom edge
+      // EXHALE: Move from bottom-right to bottom-left - along bottom edge
       return {
-        x: offset + (squareSize * (1 - progress)),
-        y: offset + squareSize
+        x: squareSize * (1 - progress),
+        y: squareSize
       };
     } else if (breathingPhase === 'hold2') {
-      // HOLD2: Move from bottom-left (4,284) to top-left (4,4) - along left edge
+      // HOLD2: Move from bottom-left to top-left - along left edge
       return {
-        x: offset,
-        y: offset + (squareSize * (1 - progress))
+        x: 0,
+        y: squareSize * (1 - progress)
       };
     }
 
-    return { x: 4, y: 4 };
+    return { x: 0, y: 0 };
   };
 
   // Get green circle indicator position for Box Breathing
@@ -1284,30 +1283,42 @@ export default function Home() {
         }
         @keyframes orb-pulse {
           0%, 100% {
-            transform: scale(1.8);
+            transform: scale(2.2);
+            opacity: 0.5;
+          }
+          33% {
+            transform: scale(2.6);
             opacity: 0.6;
           }
-          50% {
-            transform: scale(2.2);
-            opacity: 0.4;
+          66% {
+            transform: scale(2.4);
+            opacity: 0.45;
           }
         }
         @keyframes orb-glow {
           0%, 100% {
-            filter: brightness(1) saturate(1);
+            filter: brightness(1.1) saturate(1.1) blur(8px);
           }
           50% {
-            filter: brightness(1.3) saturate(1.2);
+            filter: brightness(1.4) saturate(1.3) blur(12px);
           }
         }
         @keyframes smoke-trail {
-          0%, 100% {
-            transform: scale(2.5);
-            opacity: 0.3;
+          0% {
+            transform: scale(3.5);
+            opacity: 0.25;
           }
-          50% {
-            transform: scale(3);
-            opacity: 0.5;
+          40% {
+            transform: scale(4);
+            opacity: 0.35;
+          }
+          70% {
+            transform: scale(4.5);
+            opacity: 0.2;
+          }
+          100% {
+            transform: scale(5);
+            opacity: 0.1;
           }
         }
         @keyframes text-breathe {
@@ -2377,49 +2388,7 @@ export default function Home() {
                         <>
                           {/* Breathing Square Illustration - Box Breathing Only */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Gray Background Square - Always visible */}
-                            <svg
-                              className="absolute"
-                              width="288"
-                              height="288"
-                            >
-                              <rect
-                                x="4"
-                                y="4"
-                                width="280"
-                                height="280"
-                                rx="12"
-                                fill="none"
-                                stroke="#E5E7EB"
-                                strokeWidth="3"
-                              />
-                            </svg>
-
-                            {/* Purple Progress Line - Shows during HOLD phases, starts from top-left */}
-                            {(breathingPhase === 'hold1' || breathingPhase === 'hold2') && (
-                              <svg
-                                className="absolute"
-                                width="288"
-                                height="288"
-                              >
-                                <rect
-                                  x="4"
-                                  y="4"
-                                  width="280"
-                                  height="280"
-                                  rx="12"
-                                  fill="none"
-                                  stroke="#7469B6"
-                                  strokeWidth="3"
-                                  strokeDasharray="1120"
-                                  strokeDashoffset={1120 - (1120 * timer / 4)}
-                                  style={{ transition: 'stroke-dashoffset 1000ms linear' }}
-                                  strokeLinecap="square"
-                                />
-                              </svg>
-                            )}
-
-                            {/* Glowing Orb - Moves along square edges */}
+                            {/* Flowing Energy Orb - Moves along square path */}
                             {(() => {
                               const orbPos = getBoxBreathingOrbPosition();
                               return (
@@ -2430,38 +2399,69 @@ export default function Home() {
                                     top: `${orbPos.y}px`,
                                     transform: 'translate(-50%, -50%)',
                                     transition: 'left 1000ms linear, top 1000ms linear',
-                                    width: '80px',
-                                    height: '80px',
+                                    width: '100px',
+                                    height: '100px',
                                     pointerEvents: 'none'
                                   }}
                                 >
-                                  {/* Smoke Trail Effect - Trails behind the orb */}
+                                  {/* Outer Trail Layer - Farthest from orb */}
                                   <div
                                     className="absolute inset-0"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(225, 175, 209, 0.5) 0%, rgba(246, 208, 234, 0.3) 30%, rgba(255, 230, 247, 0.1) 60%, transparent 100%)',
-                                      filter: 'blur(25px)',
-                                      transform: 'scale(2.5)',
-                                      animation: 'smoke-trail 2s ease-in-out infinite'
+                                      background: 'radial-gradient(circle, rgba(255, 230, 247, 0.3) 0%, rgba(246, 208, 234, 0.2) 40%, transparent 80%)',
+                                      filter: 'blur(35px)',
+                                      transform: 'scale(3.5)',
+                                      animation: 'smoke-trail 3s ease-in-out infinite'
                                     }}
                                   />
-                                  {/* Smoke/Aura Effect Behind Orb */}
+                                  {/* Mid Trail Layer */}
                                   <div
                                     className="absolute inset-0"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(225, 175, 209, 0.7) 0%, rgba(246, 208, 234, 0.4) 30%, rgba(255, 230, 247, 0.2) 60%, transparent 100%)',
-                                      filter: 'blur(20px)',
-                                      transform: 'scale(1.8)',
+                                      background: 'radial-gradient(circle, rgba(246, 208, 234, 0.4) 0%, rgba(225, 175, 209, 0.3) 50%, transparent 90%)',
+                                      filter: 'blur(30px)',
+                                      transform: 'scale(2.8)',
+                                      animation: 'smoke-trail 2.5s ease-in-out infinite 0.3s'
+                                    }}
+                                  />
+                                  {/* Inner Trail Layer */}
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{
+                                      background: 'radial-gradient(circle, rgba(225, 175, 209, 0.5) 0%, rgba(200, 170, 215, 0.4) 50%, transparent 85%)',
+                                      filter: 'blur(25px)',
+                                      transform: 'scale(2.2)',
                                       animation: 'orb-pulse 2s ease-in-out infinite'
                                     }}
                                   />
-                                  {/* Core Glowing Orb - Smooth radial gradient with primary purple/violet */}
+                                  {/* Outer Glow Layer */}
                                   <div
-                                    className="absolute inset-0 rounded-full"
+                                    className="absolute inset-0"
                                     style={{
-                                      background: 'radial-gradient(circle, rgba(200, 170, 215, 1) 0%, rgba(173, 136, 198, 1) 25%, rgba(145, 120, 190, 1) 50%, rgba(116, 105, 182, 0.95) 75%, rgba(116, 105, 182, 0.7) 100%)',
-                                      boxShadow: '0 0 40px rgba(173, 136, 198, 0.8), 0 0 80px rgba(173, 136, 198, 0.6)',
+                                      background: 'radial-gradient(circle, rgba(200, 170, 215, 0.6) 0%, rgba(173, 136, 198, 0.5) 40%, rgba(145, 120, 190, 0.3) 70%, transparent 100%)',
+                                      filter: 'blur(20px)',
+                                      transform: 'scale(1.8)',
+                                      animation: 'orb-pulse 2s ease-in-out infinite 0.5s'
+                                    }}
+                                  />
+                                  {/* Core Energy Layer - Fluid with no sharp edges */}
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{
+                                      background: 'radial-gradient(circle, rgba(200, 170, 215, 0.95) 0%, rgba(173, 136, 198, 0.9) 30%, rgba(145, 120, 190, 0.7) 60%, rgba(116, 105, 182, 0.4) 90%, transparent 100%)',
+                                      filter: 'blur(12px)',
+                                      transform: 'scale(1.2)',
                                       animation: 'orb-glow 2s ease-in-out infinite'
+                                    }}
+                                  />
+                                  {/* Inner Core - Brightest point */}
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{
+                                      background: 'radial-gradient(circle, rgba(220, 190, 225, 1) 0%, rgba(200, 170, 215, 0.8) 40%, transparent 75%)',
+                                      filter: 'blur(8px)',
+                                      transform: 'scale(0.7)',
+                                      animation: 'orb-glow 2s ease-in-out infinite 0.2s'
                                     }}
                                   />
                                 </div>
