@@ -2323,34 +2323,44 @@ export default function Home() {
 
                     {/* Timer Section - 15% */}
                     <div className="flex-[0.15] flex items-center justify-center">
-                      {/* Timer Display - Show during INHALE and EXHALE (hide when completed) */}
-                      {!exerciseCompleted && isExercising && (breathingPhase === 'inhale' || breathingPhase === 'exhale') && (
-                        <div className="text-center">
-                          <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
-                            {selectedExercise?.name === 'Coherent Breathing'
-                              ? (breathingPhase === 'inhale'
-                                  ? `${Math.floor(timer / 10)}s`  // INHALE: 0s to coherentBreathTime (e.g., 0s-6s)
-                                  : `${Math.ceil(timer / 10)}s`)  // EXHALE: coherentBreathTime to 0s (e.g., 6s-0s)
-                              : selectedExercise?.name === 'Alternate Nostril'
+                      {/* Timer Display - Show during all phases for Box Breathing, INHALE and EXHALE for others */}
+                      {!exerciseCompleted && isExercising && countdown === null && (
+                        selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
+                          /* Box Breathing: Show timer for ALL phases including HOLD */
+                          <div className="text-center">
+                            <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
+                              {timer}
+                            </div>
+                          </div>
+                        ) : (breathingPhase === 'inhale' || breathingPhase === 'exhale') ? (
+                          /* Other exercises: Show timer only during INHALE and EXHALE */
+                          <div className="text-center">
+                            <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
+                              {selectedExercise?.name === 'Coherent Breathing'
                                 ? (breathingPhase === 'inhale'
-                                    ? `${Math.floor(timer / 10)}s`  // INHALE: 0s to alternateNostrilBreathTime (e.g., 0s-4s)
-                                    : `${Math.ceil(timer / 10)}s`)  // EXHALE: alternateNostrilBreathTime to 0s (e.g., 4s-0s)
-                                : selectedExercise?.name === 'Physiological Sigh'
+                                    ? `${Math.floor(timer / 10)}s`  // INHALE: 0s to coherentBreathTime (e.g., 0s-6s)
+                                    : `${Math.ceil(timer / 10)}s`)  // EXHALE: coherentBreathTime to 0s (e.g., 6s-0s)
+                                : selectedExercise?.name === 'Alternate Nostril'
                                   ? (breathingPhase === 'inhale'
-                                      ? `${Math.ceil((timer + 1) / 10)}s`  // INHALE: 0-39 → 1s-4s
-                                      : `${Math.ceil(timer / 10)}s`)       // EXHALE: 79-0 → 8s-0s
-                                  : selectedExercise?.name === '4-7-8 Breathing'
+                                      ? `${Math.floor(timer / 10)}s`  // INHALE: 0s to alternateNostrilBreathTime (e.g., 0s-4s)
+                                      : `${Math.ceil(timer / 10)}s`)  // EXHALE: alternateNostrilBreathTime to 0s (e.g., 4s-0s)
+                                  : selectedExercise?.name === 'Physiological Sigh'
                                     ? (breathingPhase === 'inhale'
-                                        ? `${Math.floor(timer / 10)}s`  // INHALE: 0-40 → 0s-4s
-                                        : `${Math.ceil(timer / 10)}s`)  // EXHALE: 80-0 → 8s-0s
-                                    : selectedExercise?.name === 'Humming Bee'
+                                        ? `${Math.ceil((timer + 1) / 10)}s`  // INHALE: 0-39 → 1s-4s
+                                        : `${Math.ceil(timer / 10)}s`)       // EXHALE: 79-0 → 8s-0s
+                                    : selectedExercise?.name === '4-7-8 Breathing'
                                       ? (breathingPhase === 'inhale'
                                           ? `${Math.floor(timer / 10)}s`  // INHALE: 0-40 → 0s-4s
                                           : `${Math.ceil(timer / 10)}s`)  // EXHALE: 80-0 → 8s-0s
-                                      : `${timer}s`
-                            }
+                                      : selectedExercise?.name === 'Humming Bee'
+                                        ? (breathingPhase === 'inhale'
+                                            ? `${Math.floor(timer / 10)}s`  // INHALE: 0-40 → 0s-4s
+                                            : `${Math.ceil(timer / 10)}s`)  // EXHALE: 80-0 → 8s-0s
+                                        : `${timer}s`
+                              }
+                            </div>
                           </div>
-                        </div>
+                        ) : null
                       )}
                     </div>
 
@@ -2441,12 +2451,15 @@ export default function Home() {
                               if (breathingPhase === 'inhale') {
                                 // Rise from 0% to 100% over 4 seconds
                                 mountainHeight = (timer / 4) * 100;
-                              } else if (breathingPhase === 'hold1' || breathingPhase === 'hold2') {
-                                // Hold at 100%
+                              } else if (breathingPhase === 'hold1') {
+                                // Hold at 100% (top) after inhale
                                 mountainHeight = 100;
                               } else if (breathingPhase === 'exhale') {
-                                // Start at 100% (timer 0) and fall to 0% (timer 4)
+                                // Fall from 100% (top) to 0% (bottom) over 4 seconds
                                 mountainHeight = ((4 - timer) / 4) * 100;
+                              } else if (breathingPhase === 'hold2') {
+                                // Hold at 0% (bottom) after exhale
+                                mountainHeight = 0;
                               }
 
                               const peakHeight = 355 - (mountainHeight * 3.55);
@@ -2480,8 +2493,8 @@ export default function Home() {
                                   <path
                                     d={`
                                       M 0,${baseHeight}
-                                      C 59,${baseHeight - (mountainHeight * 3.55 * 0.15)}, 89,${peakHeight + (mountainHeight * 3.55 * 0.15)}, 177.5,${peakHeight}
-                                      C 266,${peakHeight + (mountainHeight * 3.55 * 0.15)}, 296,${baseHeight - (mountainHeight * 3.55 * 0.15)}, 355,${baseHeight}
+                                      C 59,${baseHeight - (mountainHeight * 3.55 * 0.15)}, 89,${peakHeight + (mountainHeight * 3.55 * 0.05)}, 177.5,${peakHeight}
+                                      C 266,${peakHeight + (mountainHeight * 3.55 * 0.05)}, 296,${baseHeight - (mountainHeight * 3.55 * 0.15)}, 355,${baseHeight}
                                       Z
                                     `}
                                     fill="url(#mountainGradient)"
@@ -2493,8 +2506,8 @@ export default function Home() {
                                   <path
                                     d={`
                                       M 0,${baseHeight}
-                                      C 59,${baseHeight - (mountainHeight * 3.55 * 0.15)}, 89,${peakHeight + (mountainHeight * 3.55 * 0.15)}, 177.5,${peakHeight}
-                                      C 266,${peakHeight + (mountainHeight * 3.55 * 0.15)}, 296,${baseHeight - (mountainHeight * 3.55 * 0.15)}, 355,${baseHeight}
+                                      C 59,${baseHeight - (mountainHeight * 3.55 * 0.15)}, 89,${peakHeight + (mountainHeight * 3.55 * 0.05)}, 177.5,${peakHeight}
+                                      C 266,${peakHeight + (mountainHeight * 3.55 * 0.05)}, 296,${baseHeight - (mountainHeight * 3.55 * 0.15)}, 355,${baseHeight}
                                       Z
                                     `}
                                     fill="url(#mountainOverlay)"
@@ -2533,7 +2546,7 @@ export default function Home() {
                               );
                             })()}
 
-                            {/* Phase Text and Timer - At Center of Square */}
+                            {/* Phase Text - At Center of Square */}
                             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
                               <div
                                 className="text-lg font-semibold text-gray-700 uppercase tracking-wider"
@@ -2546,11 +2559,6 @@ export default function Home() {
                                 {breathingPhase === 'exhale' && 'Breathe Out'}
                                 {breathingPhase === 'hold2' && 'HOLD'}
                               </div>
-                              {countdown === null && (
-                                <div className="text-5xl font-bold text-gray-800 mt-2">
-                                  {timer}
-                                </div>
-                              )}
                             </div>
                           </div>
 
@@ -2931,13 +2939,13 @@ export default function Home() {
                       )}
                     </div>
 
-                    {/* Pattern Info Section - 5% */}
-                    <div className="flex-[0.05] flex items-center justify-center pt-[5px]">
+                    {/* Pattern Info Section - 10% */}
+                    <div className="flex-[0.1] flex items-center justify-center pt-[5px]">
                       {/* Pattern info removed - tabs now shown within the exercise animation area */}
                     </div>
 
-                    {/* Exercise Starting Section - 10% */}
-                    <div className="flex-[0.1] flex items-center justify-center">
+                    {/* Exercise Starting Section - 5% */}
+                    <div className="flex-[0.05] flex items-center justify-center">
                       {/* Countdown Progress Bar - Show during countdown (only on first start, not after completion) */}
                       {countdown !== null && countdown > 0 && !exerciseCompleted && (
                         <div className="w-full max-w-xs px-4">
