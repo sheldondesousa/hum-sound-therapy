@@ -1119,8 +1119,8 @@ export default function Home() {
   // Render difficulty indicator (1-5 circles, supports half-filled for decimals)
   const DifficultyIndicator = ({ level }) => {
     return (
-      <div className="flex flex-col items-end gap-1">
-        <span className="text-xs font-semibold text-gray-700">Difficulty</span>
+      <div className="flex items-center gap-2">
+        <span className="text-xs font-bold text-gray-700">Difficulty:</span>
         <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((circle) => {
             const isFilled = circle <= Math.floor(level);
@@ -1606,7 +1606,7 @@ export default function Home() {
               )}
 
               {/* Track List or Exercise Detail View */}
-              <div className={`flex-1 ${selectedOption === 'breathe' && selectedExercise ? 'flex' : 'space-y-0 mb-6'}`}>
+              <div className={`flex-1 overflow-hidden ${selectedOption === 'breathe' && selectedExercise ? 'flex' : 'space-y-0 mb-6'}`}>
                 {selectedOption === 'breathe' && selectedExercise && showingInfo ? (
                   /* Breathing Exercise Info Screen */
                   <div className="flex flex-col h-full w-full">
@@ -2839,7 +2839,7 @@ export default function Home() {
                         </h3>
                       </div>
                     )}
-                    <div className="overflow-y-auto" style={{ maxHeight: 'calc(100vh - 600px)' }}>
+                    <div className="overflow-y-auto flex-1">
                       {currentTracks.map((track, index) => (
                       <button
                         key={track.id}
@@ -2850,25 +2850,25 @@ export default function Home() {
                             setShowingInfo(true);
                           }
                         }}
-                        className="w-full flex items-center justify-between py-4 border-b border-gray-200 hover:bg-gray-50 hover:opacity-70 transition-all group"
+                        className="w-full flex items-start py-4 border-b border-gray-200 hover:bg-gray-50 hover:opacity-70 transition-all group"
                     >
-                      <div className="flex items-center gap-3 flex-1">
-                        <span className="text-sm text-gray-500 w-6">{index + 1}</span>
-                        <div className="text-left flex-1">
-                          <p className="text-sm font-medium text-black">{track.name}</p>
-                          {selectedOption === 'breathe' && (() => {
-                            const metadata = getExerciseMetadata(track.name);
-                            return (
+                      <div className="text-left flex-1">
+                        <p className="text-sm font-medium text-black">{track.name}</p>
+                        {selectedOption === 'breathe' && (() => {
+                          const metadata = getExerciseMetadata(track.name);
+                          return (
+                            <>
                               <p className="text-xs text-gray-500 mt-1">
                                 <span className="font-bold">Best for:</span> {metadata.bestFor} · <span className="font-bold">Ideal time:</span> {metadata.idealSession}
                               </p>
-                            );
-                          })()}
-                        </div>
+                              <div className="mt-2">
+                                <DifficultyIndicator level={getDifficultyLevel(track.name)} />
+                              </div>
+                            </>
+                          );
+                        })()}
                       </div>
-                      {selectedOption === 'breathe' ? (
-                        <DifficultyIndicator level={getDifficultyLevel(track.name)} />
-                      ) : (
+                      {selectedOption !== 'breathe' && (
                         <span className="text-sm text-gray-500">{track.duration}</span>
                       )}
                     </button>
