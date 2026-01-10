@@ -978,32 +978,40 @@ export default function Home() {
     return minSize;
   };
 
-  // Get smooth square size for Box Breathing
-  const getBoxBreathingSquareSize = () => {
-    if (!isExercising) return 0;
+  // Get orb position for Box Breathing (moves along square edges)
+  const getBoxBreathingOrbPosition = () => {
+    if (!isExercising) return { x: 0, y: 0 };
 
-    const minSize = 0; // Start from nothing (empty)
-    const maxSize = 349; // 355 - 4 (stroke width) - 2 (1px padding each side)
+    const squareSize = 350; // Size of the square path
+    const progress = Math.min(timer / 4, 1); // 0 to 1, capped at 1
 
     if (breathingPhase === 'inhale') {
-      // INHALE: 0→4 timer (exactly 4 seconds)
-      // At timer=0: 0%, timer=1: 25%, timer=2: 50%, timer=3: 75%, timer=4: 100%
-      const progress = timer / 4; // 0 to 1
-      return minSize + (maxSize - minSize) * progress;
+      // INHALE: Move from top-left (0,0) to top-right (350,0) - along top edge
+      return {
+        x: squareSize * progress,
+        y: 0
+      };
     } else if (breathingPhase === 'hold1') {
-      // HOLD1: Stay at max size for 4 seconds
-      return maxSize;
+      // HOLD1: Move from top-right (350,0) to bottom-right (350,350) - along right edge
+      return {
+        x: squareSize,
+        y: squareSize * progress
+      };
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: 4→0 timer (exactly 4 seconds)
-      // At timer=4: 100%, timer=3: 75%, timer=2: 50%, timer=1: 25%, timer=0: 0%
-      const progress = timer / 4; // 1 to 0
-      return minSize + (maxSize - minSize) * progress;
+      // EXHALE: Move from bottom-right (350,350) to bottom-left (0,350) - along bottom edge
+      return {
+        x: squareSize * (1 - progress),
+        y: squareSize
+      };
     } else if (breathingPhase === 'hold2') {
-      // HOLD2: Stay at min size (0) for 4 seconds
-      return minSize;
+      // HOLD2: Move from bottom-left (0,350) to top-left (0,0) - along left edge
+      return {
+        x: 0,
+        y: squareSize * (1 - progress)
+      };
     }
 
-    return minSize;
+    return { x: 0, y: 0 };
   };
 
   // Get green circle indicator position for Box Breathing
@@ -1272,6 +1280,24 @@ export default function Home() {
           bottom: -50px;
           right: 20%;
           animation: breathingSmoke 6s ease-in-out 3s infinite;
+        }
+        @keyframes orb-pulse {
+          0%, 100% {
+            transform: scale(1.8);
+            opacity: 0.6;
+          }
+          50% {
+            transform: scale(2.2);
+            opacity: 0.4;
+          }
+        }
+        @keyframes orb-glow {
+          0%, 100% {
+            filter: brightness(1) saturate(1);
+          }
+          50% {
+            filter: brightness(1.3) saturate(1.2);
+          }
         }
       `}</style>
       <div className="flex min-h-screen flex-col lg:flex-row">
@@ -2374,18 +2400,53 @@ export default function Home() {
                               </svg>
                             )}
 
-                            {/* Single Expanding/Compressing Square with Radial Gradient */}
-                            <div
-                              className="absolute"
-                              style={{
-                                width: `${getBoxBreathingSquareSize()}px`,
-                                height: `${getBoxBreathingSquareSize()}px`,
-                                background: 'radial-gradient(circle, rgba(6, 122, 195, 1) 0%, rgba(6, 122, 195, 0.6) 50%, rgba(6, 122, 195, 0.2) 100%)',
-                                boxShadow: '0 0 27px rgba(6, 122, 195, 0.45)',
-                                borderRadius: '15px',
-                                transition: 'all 1000ms linear'
-                              }}
-                            />
+                            {/* Glowing Orb - Moves along square edges */}
+                            {(() => {
+                              const orbPos = getBoxBreathingOrbPosition();
+                              return (
+                                <div
+                                  className="absolute"
+                                  style={{
+                                    left: `${orbPos.x}px`,
+                                    top: `${orbPos.y}px`,
+                                    transform: 'translate(-50%, -50%)',
+                                    transition: 'left 1000ms linear, top 1000ms linear',
+                                    width: '80px',
+                                    height: '80px',
+                                    pointerEvents: 'none'
+                                  }}
+                                >
+                                  {/* Smoke/Aura Effect Behind Orb */}
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{
+                                      background: 'radial-gradient(circle, rgba(6, 122, 195, 0.6) 0%, rgba(6, 122, 195, 0.3) 30%, rgba(6, 122, 195, 0.1) 60%, transparent 100%)',
+                                      filter: 'blur(20px)',
+                                      transform: 'scale(1.8)',
+                                      animation: 'orb-pulse 2s ease-in-out infinite'
+                                    }}
+                                  />
+                                  {/* Core Glowing Orb */}
+                                  <div
+                                    className="absolute inset-0 rounded-full"
+                                    style={{
+                                      background: 'radial-gradient(circle, rgba(135, 206, 250, 1) 0%, rgba(6, 122, 195, 0.9) 40%, rgba(6, 122, 195, 0.6) 70%, rgba(6, 122, 195, 0.2) 100%)',
+                                      boxShadow: '0 0 40px rgba(6, 122, 195, 0.8), 0 0 80px rgba(6, 122, 195, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.5)',
+                                      animation: 'orb-glow 2s ease-in-out infinite'
+                                    }}
+                                  />
+                                  {/* Inner bright core */}
+                                  <div
+                                    className="absolute inset-0 rounded-full"
+                                    style={{
+                                      background: 'radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(135, 206, 250, 0.7) 30%, transparent 70%)',
+                                      transform: 'scale(0.5)',
+                                      filter: 'blur(2px)'
+                                    }}
+                                  />
+                                </div>
+                              );
+                            })()}
 
                             {/* Phase Text - At Center of Square */}
                             <div className="absolute text-center">
