@@ -59,7 +59,7 @@ export default function Login() {
       >
         {/* Left Side - Login Credentials (50%) */}
         <div className="w-1/2 flex flex-col justify-center px-12">
-          <div className="max-w-md mx-auto w-full bg-white bg-opacity-90 p-8 rounded-2xl shadow-lg">
+          <div className="max-w-md mx-auto w-full bg-white bg-opacity-75 backdrop-blur-md p-8 rounded-2xl shadow-lg">
             {/* Logo Placeholder */}
             <div className="flex justify-center mb-12">
               <div className="w-64 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
