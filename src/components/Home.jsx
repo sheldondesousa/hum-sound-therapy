@@ -2438,7 +2438,7 @@ export default function Home() {
                                 left: '4px',
                                 width: '355px',
                                 height: '355px',
-                                background: 'linear-gradient(to top, rgba(255, 230, 247, 0.8) 0%, rgba(246, 208, 234, 0.75) 50%, rgba(225, 175, 209, 0.7) 100%)',
+                                background: 'linear-gradient(to bottom, rgba(255, 230, 247, 0.8) 0%, rgba(246, 208, 234, 0.75) 50%, rgba(225, 175, 209, 0.7) 100%)',
                                 borderRadius: '15px'
                               }}
                             />
@@ -2449,14 +2449,14 @@ export default function Home() {
                               let mountainHeight = 0;
 
                               if (breathingPhase === 'inhale') {
-                                // Rise from 0% to 100% over 4 seconds
+                                // Rise from 0% to 100% over 4 seconds (timer: 0→4)
                                 mountainHeight = (timer / 4) * 100;
                               } else if (breathingPhase === 'hold1') {
                                 // Hold at 100% (top) after inhale
                                 mountainHeight = 100;
                               } else if (breathingPhase === 'exhale') {
-                                // Fall from 100% (top) to 0% (bottom) over 4 seconds
-                                mountainHeight = ((4 - timer) / 4) * 100;
+                                // Fall from 100% to 0% over 4 seconds (timer: 4→0, counts down)
+                                mountainHeight = (timer / 4) * 100;
                               } else if (breathingPhase === 'hold2') {
                                 // Hold at 0% (bottom) after exhale
                                 mountainHeight = 0;
@@ -2474,12 +2474,11 @@ export default function Home() {
                                   style={{ top: '4px', left: '4px', overflow: 'visible' }}
                                 >
                                   <defs>
-                                    {/* Primary colors gradient for mountain - top to bottom */}
+                                    {/* Primary colors gradient for mountain - top to bottom with equal weightage */}
                                     <linearGradient id="mountainGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                                       <stop offset="0%" stopColor="#AD88C6" stopOpacity="1" />
-                                      <stop offset="30%" stopColor="#9B7AB8" stopOpacity="1" />
-                                      <stop offset="70%" stopColor="#7469B6" stopOpacity="1" />
-                                      <stop offset="100%" stopColor="#6B5FA8" stopOpacity="1" />
+                                      <stop offset="50%" stopColor="#7469B6" stopOpacity="1" />
+                                      <stop offset="100%" stopColor="#AD88C6" stopOpacity="1" />
                                     </linearGradient>
                                     {/* Radial gradient overlay for depth */}
                                     <radialGradient id="mountainOverlay" cx="50%" cy="30%">
@@ -2518,7 +2517,7 @@ export default function Home() {
 
                                   {/* Star effect at peak when maximum height reached */}
                                   {mountainHeight >= 95 && (
-                                    <g transform={`translate(${177.5 + 50}, ${peakHeight - 10})`}>
+                                    <g transform={`translate(${177.5 + 30}, ${peakHeight + 15})`}>
                                       {/* Sparkle/Star effect */}
                                       <circle cx="0" cy="0" r="3" fill="#FFE6F7" opacity="0.9">
                                         <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1s" repeatCount="indefinite" />
