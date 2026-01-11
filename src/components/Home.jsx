@@ -1723,7 +1723,7 @@ export default function Home() {
                       )}
 
                       {/* Card Content */}
-                      <div className="flex items-start justify-between">
+                      <div className="flex items-start">
                         <div className="flex-1 px-8">
                           <h3 className="text-base font-bold mb-3"
                               style={{ color: carouselCards[carouselIndex].textColor }}>
@@ -1733,30 +1733,6 @@ export default function Home() {
                              style={{ color: carouselCards[carouselIndex].textColor }}>
                             {carouselCards[carouselIndex].content}
                           </p>
-                        </div>
-                        <div className="ml-4">
-                          {/* Dynamic color illustration SVG */}
-                          <svg width="60" height="100" viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            {/* Abstract flowing lines representing breath/meditation */}
-                            <path d="M10 20 Q 30 10, 50 20 T 10 40"
-                                  stroke={carouselCards[carouselIndex].textColor}
-                                  strokeWidth="2" fill="none" opacity="0.9"/>
-                            <path d="M15 35 Q 35 25, 55 35 T 15 55"
-                                  stroke={carouselCards[carouselIndex].textColor}
-                                  strokeWidth="1.5" fill="none" opacity="0.7"/>
-                            <path d="M8 50 Q 28 40, 48 50 T 8 70"
-                                  stroke={carouselCards[carouselIndex].textColor}
-                                  strokeWidth="2" fill="none" opacity="0.8"/>
-                            <path d="M12 65 Q 32 55, 52 65 T 12 85"
-                                  stroke={carouselCards[carouselIndex].textColor}
-                                  strokeWidth="1.5" fill="none" opacity="0.6"/>
-                            {/* Subtle dots */}
-                            <circle cx="30" cy="15" r="2" fill={carouselCards[carouselIndex].textColor} opacity="0.5"/>
-                            <circle cx="45" cy="30" r="1.5" fill={carouselCards[carouselIndex].textColor} opacity="0.4"/>
-                            <circle cx="20" cy="45" r="2" fill={carouselCards[carouselIndex].textColor} opacity="0.6"/>
-                            <circle cx="40" cy="60" r="1.5" fill={carouselCards[carouselIndex].textColor} opacity="0.5"/>
-                            <circle cx="25" cy="75" r="2" fill={carouselCards[carouselIndex].textColor} opacity="0.4"/>
-                          </svg>
                         </div>
                       </div>
 
@@ -1836,7 +1812,7 @@ export default function Home() {
                     </div>
 
                     {/* Scrollable Content */}
-                    <div className="flex-1 overflow-y-auto px-2">
+                    <div className="flex-1 overflow-y-auto px-2 hide-scrollbar">
                       {/* Title */}
                       <h1 className="text-4xl font-bold mb-4 text-black">
                         {selectedExercise.name.replace(/\s*\([^)]*\)/, '')}
@@ -3161,7 +3137,7 @@ export default function Home() {
                         </h3>
                       </div>
                     )}
-                    <div className="overflow-y-auto flex-1 min-h-0">
+                    <div className="overflow-y-auto flex-1 min-h-0 hide-scrollbar">
                       {currentTracks.map((track, index) => (
                       <button
                         key={track.id}
@@ -3175,14 +3151,26 @@ export default function Home() {
                         className="w-full flex items-start py-4 border-b border-gray-200 hover:bg-gray-50 hover:opacity-70 transition-all group"
                     >
                       <div className="text-left flex-1">
-                        <p className="text-base font-medium text-black">{track.name}</p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-base font-medium text-black">{track.name}</p>
+                          {track.name === 'Box Breathing (4-4-4-4)' && (
+                            <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                              Beginner-friendly
+                            </span>
+                          )}
+                        </div>
                         {selectedOption === 'breathe' && (() => {
                           const metadata = getExerciseMetadata(track.name);
                           return (
                             <>
-                              <p className="text-gray-500 mt-1" style={{ fontSize: '13px' }}>
-                                <span className="font-bold">Best for:</span> {metadata.bestFor} · <span className="font-bold">Ideal time:</span> {metadata.idealSession}
-                              </p>
+                              <div className="text-gray-500 mt-1" style={{ fontSize: '13px' }}>
+                                <p>
+                                  <span className="font-bold">Helps with:</span> {metadata.bestFor}
+                                </p>
+                                <p>
+                                  <span className="font-bold">Ideal time:</span> {metadata.idealSession}
+                                </p>
+                              </div>
                               <div className="mt-2">
                                 <DifficultyIndicator level={getDifficultyLevel(track.name)} />
                               </div>
