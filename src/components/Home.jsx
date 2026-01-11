@@ -32,27 +32,32 @@ export default function Home() {
     {
       title: 'The Power of Your Breath',
       content: "Our breath is the fastest way to change how you feel—anytime, anywhere. When you intentionally guide your breath, your nervous system listens. Heart rate slows. The mind becomes clearer. Stress loosens its grip.",
-      gradient: 'linear-gradient(135deg, #7469B6, #AD88C6)'
+      backgroundColor: '#7469B6',
+      textColor: '#FFFFFF'
     },
     {
       title: 'Why It Works So Quickly',
       content: "Slow, rhythmic breathing activates your body's natural 'rest and restore' response. It lowers stress, improves focus, supports better sleep, and builds emotional resilience. Even five minutes can create noticeable shifts.",
-      gradient: 'linear-gradient(135deg, #AD88C6, #E1AFD1)'
+      backgroundColor: '#AD88C6',
+      textColor: '#FFFFFF'
     },
     {
       title: 'Proven Techniques',
       content: "Experience Box Breathing for focus, 4-7-8 Breathing for sleep, Cyclic Sighing for mood resets, and Alternate Nostril Breathing for balance. The visuals do the counting—you simply breathe.",
-      gradient: 'linear-gradient(135deg, #E1AFD1, #F7D6EC)'
+      backgroundColor: '#E1AFD1',
+      textColor: '#000000'
     },
     {
       title: 'Make It a Habit',
       content: "Use the app as a pause between moments: morning grounding, a midday reset, or nighttime wind-down. Pair it with something you already do and let repetition work its quiet magic.",
-      gradient: 'linear-gradient(135deg, #F7D6EC, #FFE6E6)'
+      backgroundColor: '#F7D6EC',
+      textColor: '#000000'
     },
     {
       title: 'Start Your Journey',
       content: "One breath won't change your life. But a few mindful breaths, practiced daily, can change how your life feels. Fewer reactive moments, more clarity, deeper rest—calm on demand.",
-      gradient: 'linear-gradient(135deg, #FFE6E6, #FFF0F0)'
+      backgroundColor: '#FFE6E6',
+      textColor: '#000000'
     }
   ];
 
@@ -1228,7 +1233,7 @@ export default function Home() {
   const DifficultyIndicator = ({ level }) => {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-xs font-bold text-gray-500">Effort</span>
+        <span className="font-bold text-gray-500" style={{ fontSize: '13px' }}>Effort</span>
         <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((circle) => {
             const isFilled = circle <= Math.floor(level);
@@ -1693,17 +1698,25 @@ export default function Home() {
                       onTouchStart={handleTouchStart}
                       onTouchMove={handleTouchMove}
                       onTouchEnd={handleTouchEnd}
-                      className="w-full rounded-2xl p-6 text-white text-left relative overflow-hidden transition-all duration-300"
-                      style={{ background: carouselCards[carouselIndex].gradient, minHeight: '200px' }}
+                      className="w-full rounded-2xl p-6 text-left relative overflow-hidden transition-all duration-300"
+                      style={{
+                        backgroundColor: carouselCards[carouselIndex].backgroundColor,
+                        color: carouselCards[carouselIndex].textColor,
+                        height: '200px'
+                      }}
                     >
                       {/* Left Chevron - Show on cards 2-5 */}
                       {carouselIndex > 0 && (
                         <button
                           onClick={goToPrevCard}
-                          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
+                          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full transition-all"
+                          style={{
+                            backgroundColor: carouselCards[carouselIndex].textColor === '#FFFFFF' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+                            color: carouselCards[carouselIndex].textColor
+                          }}
                           aria-label="Previous card"
                         >
-                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                           </svg>
                         </button>
@@ -1712,23 +1725,37 @@ export default function Home() {
                       {/* Card Content */}
                       <div className="flex items-start justify-between">
                         <div className="flex-1 px-8">
-                          <h3 className="text-base font-bold mb-3">{carouselCards[carouselIndex].title}</h3>
-                          <p className="text-xs font-light opacity-90 leading-relaxed">{carouselCards[carouselIndex].content}</p>
+                          <h3 className="text-base font-bold mb-3"
+                              style={{ color: carouselCards[carouselIndex].textColor }}>
+                            {carouselCards[carouselIndex].title}
+                          </h3>
+                          <p className="text-xs font-light opacity-90 leading-relaxed"
+                             style={{ color: carouselCards[carouselIndex].textColor }}>
+                            {carouselCards[carouselIndex].content}
+                          </p>
                         </div>
                         <div className="ml-4">
-                          {/* White line illustration SVG */}
+                          {/* Dynamic color illustration SVG */}
                           <svg width="60" height="100" viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                             {/* Abstract flowing lines representing breath/meditation */}
-                            <path d="M10 20 Q 30 10, 50 20 T 10 40" stroke="#FFFFFF" strokeWidth="2" fill="none" opacity="0.9"/>
-                            <path d="M15 35 Q 35 25, 55 35 T 15 55" stroke="#F5F5F5" strokeWidth="1.5" fill="none" opacity="0.7"/>
-                            <path d="M8 50 Q 28 40, 48 50 T 8 70" stroke="#FAFAFA" strokeWidth="2" fill="none" opacity="0.8"/>
-                            <path d="M12 65 Q 32 55, 52 65 T 12 85" stroke="#FFFFFF" strokeWidth="1.5" fill="none" opacity="0.6"/>
+                            <path d="M10 20 Q 30 10, 50 20 T 10 40"
+                                  stroke={carouselCards[carouselIndex].textColor}
+                                  strokeWidth="2" fill="none" opacity="0.9"/>
+                            <path d="M15 35 Q 35 25, 55 35 T 15 55"
+                                  stroke={carouselCards[carouselIndex].textColor}
+                                  strokeWidth="1.5" fill="none" opacity="0.7"/>
+                            <path d="M8 50 Q 28 40, 48 50 T 8 70"
+                                  stroke={carouselCards[carouselIndex].textColor}
+                                  strokeWidth="2" fill="none" opacity="0.8"/>
+                            <path d="M12 65 Q 32 55, 52 65 T 12 85"
+                                  stroke={carouselCards[carouselIndex].textColor}
+                                  strokeWidth="1.5" fill="none" opacity="0.6"/>
                             {/* Subtle dots */}
-                            <circle cx="30" cy="15" r="2" fill="#FFFFFF" opacity="0.5"/>
-                            <circle cx="45" cy="30" r="1.5" fill="#F5F5F5" opacity="0.4"/>
-                            <circle cx="20" cy="45" r="2" fill="#FFFFFF" opacity="0.6"/>
-                            <circle cx="40" cy="60" r="1.5" fill="#FAFAFA" opacity="0.5"/>
-                            <circle cx="25" cy="75" r="2" fill="#FFFFFF" opacity="0.4"/>
+                            <circle cx="30" cy="15" r="2" fill={carouselCards[carouselIndex].textColor} opacity="0.5"/>
+                            <circle cx="45" cy="30" r="1.5" fill={carouselCards[carouselIndex].textColor} opacity="0.4"/>
+                            <circle cx="20" cy="45" r="2" fill={carouselCards[carouselIndex].textColor} opacity="0.6"/>
+                            <circle cx="40" cy="60" r="1.5" fill={carouselCards[carouselIndex].textColor} opacity="0.5"/>
+                            <circle cx="25" cy="75" r="2" fill={carouselCards[carouselIndex].textColor} opacity="0.4"/>
                           </svg>
                         </div>
                       </div>
@@ -1737,10 +1764,14 @@ export default function Home() {
                       {carouselIndex < 4 && (
                         <button
                           onClick={goToNextCard}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full transition-all"
+                          style={{
+                            backgroundColor: carouselCards[carouselIndex].textColor === '#FFFFFF' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)',
+                            color: carouselCards[carouselIndex].textColor
+                          }}
                           aria-label="Next card"
                         >
-                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </button>
@@ -3159,7 +3190,15 @@ export default function Home() {
                           );
                         })()}
                       </div>
-                      {selectedOption !== 'breathe' && (
+
+                      {/* Right Side - Duration or Chevron */}
+                      {selectedOption === 'breathe' ? (
+                        <div className="flex items-center ml-4">
+                          <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      ) : (
                         <span className="text-sm text-gray-500">{track.duration}</span>
                       )}
                     </button>
