@@ -69,7 +69,7 @@ export default function Login() {
         }}
       >
         {/* Left Side - Login Credentials (50%) */}
-        <div className="w-1/2 flex flex-col justify-start px-12 pt-12">
+        <div className="w-1/2 flex flex-col justify-center px-12">
           <div className="max-w-md mx-auto w-full bg-white bg-opacity-75 backdrop-blur-md p-8 rounded-2xl shadow-lg">
             {/* Logo */}
             <div className="flex justify-center mb-12">
@@ -180,7 +180,7 @@ export default function Login() {
         </div>
 
         {/* Right Side - Proof Points (50%) */}
-        <div className="w-1/2 flex flex-col justify-start px-12 pt-12">
+        <div className="w-1/2 flex flex-col justify-center px-12">
           <div className="max-w-4xl mx-auto w-full">
             {/* Title - Aligned with logo */}
             <div className="flex justify-center mb-12" style={{ height: '43px' }}>
