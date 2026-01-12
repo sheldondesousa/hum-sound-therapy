@@ -184,8 +184,8 @@ export default function Login() {
           <div className="max-w-4xl mx-auto w-full">
             {/* Title - Aligned with logo */}
             <div className="flex justify-center mb-12" style={{ height: '43px' }}>
-              <h2 className="text-4xl font-bold text-white flex items-center"
-                  style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+              <h2 className="font-bold text-white flex items-center"
+                  style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '41px' }}>
                 Take a deep breath and relax
               </h2>
             </div>
@@ -257,10 +257,10 @@ export default function Login() {
                   <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
                     <p className="font-bold text-white"
                        style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px', marginBottom: '12px' }}>
-                      6
+                      Six
                     </p>
                     <p className="text-base font-bold text-white">
-                      science-inspired techniques to address calm, focus, and stress
+                      science-inspired techniques for calm, focus, and stress
                     </p>
                   </div>
                 </>
