@@ -81,11 +81,6 @@ export default function Login() {
               Let's get started
             </h1>
 
-            {/* Subheading */}
-            <h2 className="text-2xl font-bold text-center mb-8 text-black">
-              Take a deep breath and relax
-            </h2>
-
             {/* Error Message */}
             {error && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
@@ -185,8 +180,14 @@ export default function Login() {
         </div>
 
         {/* Right Side - Proof Points (50%) */}
-        <div className="w-1/2 flex flex-col justify-center px-12">
+        <div className="w-1/2 flex flex-col justify-start px-12 pt-12">
           <div className="max-w-4xl mx-auto w-full">
+            {/* Title - Aligned with logo */}
+            <h2 className="text-2xl font-bold text-white text-center mb-12"
+                style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+              Take a deep breath and relax
+            </h2>
+
             {/* Proof Points - 3 Blocks Side by Side */}
             <div className="grid grid-cols-3 gap-6">
               {!isReturningUser ? (
@@ -194,33 +195,33 @@ export default function Login() {
                   {/* Version A - First Time Users */}
                   {/* Proof Point 1 */}
                   <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
-                    <p className="text-base font-bold text-white mb-2"
-                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px' }}>
+                    <p className="font-bold text-white"
+                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px', marginBottom: '12px' }}>
                       500,000
                     </p>
-                    <p className="text-base text-white">
+                    <p className="text-base font-bold text-white">
                       users worldwide trust Hush to manage stress
                     </p>
                   </div>
 
                   {/* Proof Point 2 */}
                   <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
-                    <p className="text-base font-bold text-white mb-2"
-                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px' }}>
+                    <p className="font-bold text-white"
+                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px', marginBottom: '12px' }}>
                       93%
                     </p>
-                    <p className="text-base text-white">
+                    <p className="text-base font-bold text-white">
                       of users report feeling calmer after just one session
                     </p>
                   </div>
 
                   {/* Proof Point 3 */}
                   <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
-                    <p className="text-base font-bold text-white mb-2"
-                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px' }}>
+                    <p className="font-bold text-white"
+                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px', marginBottom: '12px' }}>
                       5 minutes
                     </p>
-                    <p className="text-base text-white">
+                    <p className="text-base font-bold text-white">
                       of intentional breathing helps restores calm
                     </p>
                   </div>
@@ -230,33 +231,33 @@ export default function Login() {
                   {/* Version B - Returning Users */}
                   {/* Proof Point 1 */}
                   <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
-                    <p className="text-base font-bold text-white mb-2"
-                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px' }}>
+                    <p className="font-bold text-white"
+                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px', marginBottom: '12px' }}>
                       1 million+
                     </p>
-                    <p className="text-base text-white">
+                    <p className="text-base font-bold text-white">
                       mindful minutes logged by users this year
                     </p>
                   </div>
 
                   {/* Proof Point 2 */}
                   <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
-                    <p className="text-base font-bold text-white mb-2"
-                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px' }}>
+                    <p className="font-bold text-white"
+                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px', marginBottom: '12px' }}>
                       28%
                     </p>
-                    <p className="text-base text-white">
+                    <p className="text-base font-bold text-white">
                       avg reduction in stress levels reported by users after 7 days
                     </p>
                   </div>
 
                   {/* Proof Point 3 */}
                   <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
-                    <p className="text-base font-bold text-white mb-2"
-                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px' }}>
+                    <p className="font-bold text-white"
+                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)', fontSize: '53px', marginBottom: '12px' }}>
                       6
                     </p>
-                    <p className="text-base text-white">
+                    <p className="text-base font-bold text-white">
                       science-inspired techniques to address calm, focus, and stress
                     </p>
                   </div>
