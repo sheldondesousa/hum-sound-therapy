@@ -264,11 +264,15 @@ export default function Login() {
                   <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center">
                     <p className="text-sm leading-relaxed text-white mb-3"
                        style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-                      Average reduction in stress levels after 7 days
+                      Users experience an avg of
                     </p>
                     <p className="text-5xl font-bold text-white mb-2"
                        style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
                       28%
+                    </p>
+                    <p className="text-sm text-white"
+                       style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                      reduction in stress levels after 7 days
                     </p>
                   </div>
 
@@ -276,7 +280,7 @@ export default function Login() {
                   <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center">
                     <p className="text-sm leading-relaxed text-white mb-3"
                        style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-                      Built on
+                      Our breathing exercises are built on
                     </p>
                     <p className="text-5xl font-bold text-white mb-2"
                        style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
