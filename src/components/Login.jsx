@@ -69,7 +69,7 @@ export default function Login() {
         }}
       >
         {/* Left Side - Login Credentials (50%) */}
-        <div className="w-1/2 flex flex-col justify-center px-12">
+        <div className="w-1/2 flex flex-col justify-start px-12 pt-12">
           <div className="max-w-md mx-auto w-full bg-white bg-opacity-75 backdrop-blur-md p-8 rounded-2xl shadow-lg">
             {/* Logo */}
             <div className="flex justify-center mb-12">
@@ -183,10 +183,12 @@ export default function Login() {
         <div className="w-1/2 flex flex-col justify-start px-12 pt-12">
           <div className="max-w-4xl mx-auto w-full">
             {/* Title - Aligned with logo */}
-            <h2 className="text-2xl font-bold text-white text-center mb-12"
-                style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-              Take a deep breath and relax
-            </h2>
+            <div className="flex justify-center mb-12" style={{ height: '43px' }}>
+              <h2 className="text-4xl font-bold text-white flex items-center"
+                  style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                Take a deep breath and relax
+              </h2>
+            </div>
 
             {/* Proof Points - 3 Blocks Side by Side */}
             <div className="grid grid-cols-3 gap-6">
