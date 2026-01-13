@@ -235,7 +235,7 @@ export default function Login() {
                   <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center flex flex-col justify-center" style={{ minHeight: '280px', height: '280px' }}>
                     <p className="font-bold text-white"
                        style={{ fontSize: '38px', marginBottom: '12px', whiteSpace: 'nowrap' }}>
-                      1 million+
+                      1.2M+
                     </p>
                     <p className="text-base font-bold text-white">
                       mindful minutes logged by users this year
