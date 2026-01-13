@@ -199,7 +199,7 @@ export default function Login() {
                       500,000
                     </p>
                     <div className="w-full border-t border-white mb-4"></div>
-                    <p className="text-base font-bold text-white">
+                    <p className="text-base text-white">
                       users worldwide trust Hush to manage stress
                     </p>
                   </div>
@@ -211,7 +211,7 @@ export default function Login() {
                       93%
                     </p>
                     <div className="w-full border-t border-black mb-4"></div>
-                    <p className="text-base font-bold text-black">
+                    <p className="text-base text-black">
                       of users report feeling calmer after just one session
                     </p>
                   </div>
@@ -223,7 +223,7 @@ export default function Login() {
                       5 minutes
                     </p>
                     <div className="w-full border-t border-black mb-4"></div>
-                    <p className="text-base font-bold text-black">
+                    <p className="text-base text-black">
                       of intentional breathing helps restores calm
                     </p>
                   </div>
@@ -238,7 +238,7 @@ export default function Login() {
                       1.2M+
                     </p>
                     <div className="w-full border-t border-white mb-4"></div>
-                    <p className="text-base font-bold text-white">
+                    <p className="text-base text-white">
                       mindful minutes logged by users this year
                     </p>
                   </div>
@@ -250,7 +250,7 @@ export default function Login() {
                       28%
                     </p>
                     <div className="w-full border-t border-black mb-4"></div>
-                    <p className="text-base font-bold text-black">
+                    <p className="text-base text-black">
                       avg reduction in stress levels reported by users after 7 days
                     </p>
                   </div>
@@ -262,7 +262,7 @@ export default function Login() {
                       Six
                     </p>
                     <div className="w-full border-t border-black mb-4"></div>
-                    <p className="text-base font-bold text-black">
+                    <p className="text-base text-black">
                       science-inspired techniques for calm, focus, and stress
                     </p>
                   </div>
