@@ -191,12 +191,12 @@ export default function Login() {
             </div>
 
             {/* Proof Points - 3 Blocks Side by Side */}
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 gap-6" style={{ gridAutoRows: '1fr' }}>
               {!isReturningUser ? (
                 <>
                   {/* Version A - First Time Users */}
                   {/* Proof Point 1 */}
-                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
+                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center flex flex-col justify-center" style={{ minHeight: '280px', height: '280px' }}>
                     <p className="font-bold text-white"
                        style={{ fontSize: '53px', marginBottom: '12px' }}>
                       500,000
@@ -207,7 +207,7 @@ export default function Login() {
                   </div>
 
                   {/* Proof Point 2 */}
-                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
+                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center flex flex-col justify-center" style={{ minHeight: '280px', height: '280px' }}>
                     <p className="font-bold text-white"
                        style={{ fontSize: '53px', marginBottom: '12px' }}>
                       93%
@@ -218,7 +218,7 @@ export default function Login() {
                   </div>
 
                   {/* Proof Point 3 */}
-                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
+                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center flex flex-col justify-center" style={{ minHeight: '280px', height: '280px' }}>
                     <p className="font-bold text-white"
                        style={{ fontSize: '53px', marginBottom: '12px' }}>
                       5 minutes
@@ -232,7 +232,7 @@ export default function Login() {
                 <>
                   {/* Version B - Returning Users */}
                   {/* Proof Point 1 */}
-                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
+                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center flex flex-col justify-center" style={{ minHeight: '280px', height: '280px' }}>
                     <p className="font-bold text-white"
                        style={{ fontSize: '53px', marginBottom: '12px' }}>
                       1 million+
@@ -243,7 +243,7 @@ export default function Login() {
                   </div>
 
                   {/* Proof Point 2 */}
-                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
+                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center flex flex-col justify-center" style={{ minHeight: '280px', height: '280px' }}>
                     <p className="font-bold text-white"
                        style={{ fontSize: '53px', marginBottom: '12px' }}>
                       28%
@@ -254,7 +254,7 @@ export default function Login() {
                   </div>
 
                   {/* Proof Point 3 */}
-                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center aspect-square flex flex-col justify-center">
+                  <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-xl p-6 text-center flex flex-col justify-center" style={{ minHeight: '280px', height: '280px' }}>
                     <p className="font-bold text-white"
                        style={{ fontSize: '53px', marginBottom: '12px' }}>
                       Six
