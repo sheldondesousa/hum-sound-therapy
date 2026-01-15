@@ -2004,9 +2004,16 @@ export default function Home() {
                     <div className="px-2 pb-4">
                       <button
                         onClick={() => {
-                          setShowingInfo(false);
-                          setCountdown(3); // Start countdown
-                          phaseHoldRef.current = false; // Reset phase hold flag
+                          // Convert exercise name to URL-friendly slug
+                          const exerciseSlug = selectedExercise.name
+                            .toLowerCase()
+                            .replace(/\s*\([^)]*\)/g, '') // Remove parentheses and content
+                            .replace(/\s+/g, '-'); // Replace spaces with hyphens
+
+                          // Navigate to dedicated exercise screen
+                          navigate(`/breathe/${exerciseSlug}/exercise`, {
+                            state: { cycles: selectedCycles }
+                          });
                         }}
                         className="w-full py-3 bg-black text-white text-base font-bold rounded-xl hover:bg-gray-800 transition-colors"
                       >
