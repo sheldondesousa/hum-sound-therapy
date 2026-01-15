@@ -1702,7 +1702,7 @@ export default function Home() {
                       style={{
                         backgroundColor: carouselCards[carouselIndex].backgroundColor,
                         color: carouselCards[carouselIndex].textColor,
-                        height: '200px'
+                        height: '240px'
                       }}
                     >
                       {/* Left Chevron - Show on cards 2-5 */}
@@ -1723,13 +1723,13 @@ export default function Home() {
                       )}
 
                       {/* Card Content */}
-                      <div className="flex items-start">
+                      <div className="flex items-center h-full">
                         <div className="flex-1 px-8">
                           <h3 className="text-base font-bold mb-3"
                               style={{ color: carouselCards[carouselIndex].textColor }}>
                             {carouselCards[carouselIndex].title}
                           </h3>
-                          <p className="font-light opacity-90 leading-relaxed"
+                          <p className="font-normal opacity-90 leading-relaxed"
                              style={{
                                color: carouselCards[carouselIndex].textColor,
                                fontSize: '16px'
