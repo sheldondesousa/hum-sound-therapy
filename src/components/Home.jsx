@@ -1689,7 +1689,7 @@ export default function Home() {
 
                   {/* Motivational Text */}
                   <h1 className="text-4xl font-bold text-black mb-8" style={{ fontFamily: "'SF Pro Display', sans-serif" }}>
-                    Take a deep breath and relax
+                    Take a deep breath<br />and relax
                   </h1>
 
                   {/* Why Breathing Helps - Working Carousel */}
