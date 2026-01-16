@@ -2004,23 +2004,8 @@ export default function Home() {
                     <div className="px-2 pb-4">
                       <button
                         onClick={() => {
-                          // Map exercise names to correct URL slugs
-                          const exerciseSlugMap = {
-                            'Box Breathing (4-4-4-4)': 'box',
-                            '4-7-8 Breathing': '4-7-8',
-                            'Coherent Breathing': 'coherent',
-                            'Physiological Sigh': 'physiological-sigh',
-                            'Alternate Nostril': 'alternate-nostril',
-                            'Humming Bee': 'humming-bee'
-                          };
-
-                          const exerciseSlug = exerciseSlugMap[selectedExercise.name] ||
-                            selectedExercise.name.toLowerCase().replace(/\s+/g, '-');
-
-                          // Navigate to dedicated exercise screen via info screen
-                          navigate(`/breathe/${exerciseSlug}/info`, {
-                            state: { cycles: selectedCycles }
-                          });
+                          // Start the exercise by hiding the info screen
+                          setShowingInfo(false);
                         }}
                         className="w-full py-3 bg-black text-white text-base font-bold rounded-xl hover:bg-gray-800 transition-colors"
                       >
