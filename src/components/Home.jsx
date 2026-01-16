@@ -2540,27 +2540,30 @@ export default function Home() {
                               }}
                             />
 
-                            {/* Mountain Wave Animation */}
+                            {/* Expanding/Contracting Square Animation */}
                             {(() => {
-                              // Calculate mountain height based on phase and timer
-                              let mountainHeight = 0;
+                              // Calculate square size based on phase and timer
+                              let squareScale = 0;
 
                               if (breathingPhase === 'inhale') {
-                                // Rise from 0% to 100% over 4 seconds (timer: 0→4)
-                                mountainHeight = (timer / 4) * 100;
+                                // Expand from 0% to 100% over 4 seconds (timer: 0→4)
+                                squareScale = (timer / 4) * 100;
                               } else if (breathingPhase === 'hold1') {
-                                // Hold at 100% (top) after inhale
-                                mountainHeight = 100;
+                                // Hold at 100% (full size) after inhale
+                                squareScale = 100;
                               } else if (breathingPhase === 'exhale') {
-                                // Fall from 100% to 0% over 4 seconds (timer: 4→0, counts down)
-                                mountainHeight = (timer / 4) * 100;
+                                // Contract from 100% to 0% over 4 seconds (timer: 4→0, counts down)
+                                squareScale = (timer / 4) * 100;
                               } else if (breathingPhase === 'hold2') {
-                                // Hold at 0% (bottom) after exhale
-                                mountainHeight = 0;
+                                // Hold at 0% (small size) after exhale
+                                squareScale = 0;
                               }
 
-                              const peakHeight = 355 - (mountainHeight * 3.55);
-                              const baseHeight = 355;
+                              // Min size: 60px, Max size: 355px
+                              const minSize = 60;
+                              const maxSize = 355;
+                              const currentSize = minSize + ((maxSize - minSize) * squareScale / 100);
+                              const offset = (355 - currentSize) / 2;
 
                               return (
                                 <svg
@@ -2571,72 +2574,93 @@ export default function Home() {
                                   style={{ top: '4px', left: '4px', overflow: 'visible' }}
                                 >
                                   <defs>
-                                    {/* Primary colors gradient for mountain - top to bottom with equal weightage */}
-                                    <linearGradient id="mountainGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    {/* Primary colors gradient for square - diagonal gradient */}
+                                    <linearGradient id="boxGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                                       <stop offset="0%" stopColor="#AD88C6" stopOpacity="1" />
                                       <stop offset="50%" stopColor="#7469B6" stopOpacity="1" />
                                       <stop offset="100%" stopColor="#AD88C6" stopOpacity="1" />
                                     </linearGradient>
                                     {/* Radial gradient overlay for depth */}
-                                    <radialGradient id="mountainOverlay" cx="50%" cy="30%">
-                                      <stop offset="0%" stopColor="#C8AAD6" stopOpacity="0.6" />
-                                      <stop offset="50%" stopColor="#AD88C6" stopOpacity="0.3" />
+                                    <radialGradient id="boxOverlay" cx="50%" cy="50%">
+                                      <stop offset="0%" stopColor="#C8AAD6" stopOpacity="0.4" />
+                                      <stop offset="50%" stopColor="#AD88C6" stopOpacity="0.2" />
                                       <stop offset="100%" stopColor="#7469B6" stopOpacity="0" />
                                     </radialGradient>
                                   </defs>
 
-                                  {/* Bell curve mountain shape using cubic bezier for smooth, rounded curve */}
-                                  <path
-                                    d={`
-                                      M 0,${baseHeight}
-                                      C 59,${baseHeight - (mountainHeight * 3.55 * 0.15)}, 89,${peakHeight + (mountainHeight * 3.55 * 0.05)}, 177.5,${peakHeight}
-                                      C 266,${peakHeight + (mountainHeight * 3.55 * 0.05)}, 296,${baseHeight - (mountainHeight * 3.55 * 0.15)}, 355,${baseHeight}
-                                      Z
-                                    `}
-                                    fill="url(#mountainGradient)"
+                                  {/* Animated Square with rounded corners */}
+                                  <rect
+                                    x={offset}
+                                    y={offset}
+                                    width={currentSize}
+                                    height={currentSize}
+                                    rx="12"
+                                    fill="url(#boxGradient)"
                                     style={{
-                                      transition: 'all 1000ms ease-out'
-                                    }}
-                                  />
-                                  {/* Overlay gradient for depth effect */}
-                                  <path
-                                    d={`
-                                      M 0,${baseHeight}
-                                      C 59,${baseHeight - (mountainHeight * 3.55 * 0.15)}, 89,${peakHeight + (mountainHeight * 3.55 * 0.05)}, 177.5,${peakHeight}
-                                      C 266,${peakHeight + (mountainHeight * 3.55 * 0.05)}, 296,${baseHeight - (mountainHeight * 3.55 * 0.15)}, 355,${baseHeight}
-                                      Z
-                                    `}
-                                    fill="url(#mountainOverlay)"
-                                    style={{
-                                      transition: 'all 1000ms ease-out'
+                                      transition: 'all 300ms ease-out'
                                     }}
                                   />
 
-                                  {/* Star effect at peak when maximum height reached */}
-                                  {mountainHeight >= 95 && (
-                                    <g transform={`translate(${177.5 + 30}, ${peakHeight + 15})`}>
-                                      {/* Sparkle/Star effect */}
-                                      <circle cx="0" cy="0" r="3" fill="#FFE6F7" opacity="0.9">
-                                        <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1s" repeatCount="indefinite" />
-                                      </circle>
-                                      <circle cx="0" cy="0" r="6" fill="#F6D0EA" opacity="0.5">
-                                        <animate attributeName="opacity" values="0.5;0.1;0.5" dur="1s" repeatCount="indefinite" />
-                                        <animate attributeName="r" values="6;8;6" dur="1s" repeatCount="indefinite" />
-                                      </circle>
-                                      {/* Star rays */}
-                                      <line x1="-8" y1="0" x2="8" y2="0" stroke="#FFE6F7" strokeWidth="1.5" opacity="0.8">
-                                        <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1s" repeatCount="indefinite" />
-                                      </line>
-                                      <line x1="0" y1="-8" x2="0" y2="8" stroke="#FFE6F7" strokeWidth="1.5" opacity="0.8">
-                                        <animate attributeName="opacity" values="0.8;0.3;0.8" dur="1s" repeatCount="indefinite" />
-                                      </line>
-                                      <line x1="-6" y1="-6" x2="6" y2="6" stroke="#F6D0EA" strokeWidth="1" opacity="0.6">
-                                        <animate attributeName="opacity" values="0.6;0.2;0.6" dur="1s" repeatCount="indefinite" />
-                                      </line>
-                                      <line x1="6" y1="-6" x2="-6" y2="6" stroke="#F6D0EA" strokeWidth="1" opacity="0.6">
-                                        <animate attributeName="opacity" values="0.6;0.2;0.6" dur="1s" repeatCount="indefinite" />
-                                      </line>
-                                    </g>
+                                  {/* Overlay gradient for depth effect */}
+                                  <rect
+                                    x={offset}
+                                    y={offset}
+                                    width={currentSize}
+                                    height={currentSize}
+                                    rx="12"
+                                    fill="url(#boxOverlay)"
+                                    style={{
+                                      transition: 'all 300ms ease-out'
+                                    }}
+                                  />
+
+                                  {/* Sparkle effect at corners when fully expanded */}
+                                  {squareScale >= 95 && (
+                                    <>
+                                      {/* Top-left corner sparkle */}
+                                      <g transform={`translate(${offset + 20}, ${offset + 20})`}>
+                                        <circle cx="0" cy="0" r="2" fill="#FFE6F7" opacity="0.9">
+                                          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1.5s" repeatCount="indefinite" />
+                                        </circle>
+                                        <circle cx="0" cy="0" r="4" fill="#F6D0EA" opacity="0.5">
+                                          <animate attributeName="opacity" values="0.5;0.1;0.5" dur="1.5s" repeatCount="indefinite" />
+                                          <animate attributeName="r" values="4;6;4" dur="1.5s" repeatCount="indefinite" />
+                                        </circle>
+                                      </g>
+
+                                      {/* Top-right corner sparkle */}
+                                      <g transform={`translate(${offset + currentSize - 20}, ${offset + 20})`}>
+                                        <circle cx="0" cy="0" r="2" fill="#FFE6F7" opacity="0.9">
+                                          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1.5s" begin="0.5s" repeatCount="indefinite" />
+                                        </circle>
+                                        <circle cx="0" cy="0" r="4" fill="#F6D0EA" opacity="0.5">
+                                          <animate attributeName="opacity" values="0.5;0.1;0.5" dur="1.5s" begin="0.5s" repeatCount="indefinite" />
+                                          <animate attributeName="r" values="4;6;4" dur="1.5s" begin="0.5s" repeatCount="indefinite" />
+                                        </circle>
+                                      </g>
+
+                                      {/* Bottom-right corner sparkle */}
+                                      <g transform={`translate(${offset + currentSize - 20}, ${offset + currentSize - 20})`}>
+                                        <circle cx="0" cy="0" r="2" fill="#FFE6F7" opacity="0.9">
+                                          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1.5s" begin="1s" repeatCount="indefinite" />
+                                        </circle>
+                                        <circle cx="0" cy="0" r="4" fill="#F6D0EA" opacity="0.5">
+                                          <animate attributeName="opacity" values="0.5;0.1;0.5" dur="1.5s" begin="1s" repeatCount="indefinite" />
+                                          <animate attributeName="r" values="4;6;4" dur="1.5s" begin="1s" repeatCount="indefinite" />
+                                        </circle>
+                                      </g>
+
+                                      {/* Bottom-left corner sparkle */}
+                                      <g transform={`translate(${offset + 20}, ${offset + currentSize - 20})`}>
+                                        <circle cx="0" cy="0" r="2" fill="#FFE6F7" opacity="0.9">
+                                          <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1.5s" begin="0.25s" repeatCount="indefinite" />
+                                        </circle>
+                                        <circle cx="0" cy="0" r="4" fill="#F6D0EA" opacity="0.5">
+                                          <animate attributeName="opacity" values="0.5;0.1;0.5" dur="1.5s" begin="0.25s" repeatCount="indefinite" />
+                                          <animate attributeName="r" values="4;6;4" dur="1.5s" begin="0.25s" repeatCount="indefinite" />
+                                        </circle>
+                                      </g>
+                                    </>
                                   )}
                                 </svg>
                               );
