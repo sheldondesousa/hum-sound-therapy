@@ -46,6 +46,7 @@ export default function BreathingExerciseScreen() {
       setBreathingPhase('inhale');
       setTimer(0);
       setCurrentCycle(0);
+      setFilledSquares([]);
       const userId = currentUser?.uid;
       trackBreathingExercise(type, 'start', userId, { cycles: cyclesFromInfo });
       return;
