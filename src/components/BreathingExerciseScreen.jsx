@@ -24,6 +24,8 @@ export default function BreathingExerciseScreen() {
       case '4-7-8': return '4-7-8 Breathing';
       case 'coherent': return 'Coherent Breathing';
       case 'physiological-sigh': return 'Physiological Sigh';
+      case 'alternate-nostril': return 'Alternate Nostril Breathing';
+      case 'humming-bee': return 'Humming Bee Breath';
       default: return 'Breathing Exercise';
     }
   };
@@ -265,6 +267,85 @@ export default function BreathingExerciseScreen() {
             }
           }
         }
+        // ALTERNATE NOSTRIL BREATHING
+        else if (type === 'alternate-nostril') {
+          const maxTimer = 40; // 4 seconds at 100ms intervals
+          if (breathingPhase === 'inhale') {
+            if (prevTimer < maxTimer) {
+              return prevTimer + 1;
+            } else {
+              setBreathingPhase('hold1');
+              return 0;
+            }
+          } else if (breathingPhase === 'hold1') {
+            if (prevTimer < 10) { // Brief hold
+              return prevTimer + 1;
+            } else {
+              setBreathingPhase('exhale');
+              return maxTimer;
+            }
+          } else if (breathingPhase === 'exhale') {
+            if (prevTimer > 0) {
+              return prevTimer - 1;
+            } else {
+              setBreathingPhase('hold2');
+              return 0;
+            }
+          } else if (breathingPhase === 'hold2') {
+            if (prevTimer < 10) { // Brief hold
+              return prevTimer + 1;
+            } else {
+              const nextCycle = currentCycle + 1;
+              if (nextCycle >= cyclesFromInfo) {
+                const userId = currentUser?.uid;
+                trackBreathingExercise(type, 'complete', userId, {
+                  completedCycles: nextCycle,
+                  totalCycles: cyclesFromInfo
+                });
+                setIsExercising(false);
+                setCurrentCycle(0);
+                setBreathingPhase('inhale');
+                return 0;
+              } else {
+                setCurrentCycle(nextCycle);
+                setBreathingPhase('inhale');
+                return 0;
+              }
+            }
+          }
+        }
+        // HUMMING BEE BREATH
+        else if (type === 'humming-bee') {
+          if (breathingPhase === 'inhale') {
+            if (prevTimer < 40) { // 4 seconds
+              return prevTimer + 1;
+            } else {
+              setBreathingPhase('exhale');
+              return 60; // 6 seconds for exhale
+            }
+          } else if (breathingPhase === 'exhale') {
+            if (prevTimer > 0) {
+              return prevTimer - 1;
+            } else {
+              const nextCycle = currentCycle + 1;
+              if (nextCycle >= cyclesFromInfo) {
+                const userId = currentUser?.uid;
+                trackBreathingExercise(type, 'complete', userId, {
+                  completedCycles: nextCycle,
+                  totalCycles: cyclesFromInfo
+                });
+                setIsExercising(false);
+                setCurrentCycle(0);
+                setBreathingPhase('inhale');
+                return 0;
+              } else {
+                setCurrentCycle(nextCycle);
+                setBreathingPhase('inhale');
+                return 0;
+              }
+            }
+          }
+        }
 
         return prevTimer;
       });
@@ -314,6 +395,10 @@ export default function BreathingExerciseScreen() {
     } else if (type === 'physiological-sigh') {
       if (breathingPhase === 'inhale') return Math.floor(timer / 10);
       if (breathingPhase === 'exhale') return Math.floor(timer / 10);
+    } else if (type === 'alternate-nostril') {
+      return Math.floor(timer / 10);
+    } else if (type === 'humming-bee') {
+      return Math.floor(timer / 10);
     }
     return '';
   };
@@ -359,6 +444,37 @@ export default function BreathingExerciseScreen() {
           ? 2 * progress * progress
           : 1 - Math.pow(-2 * progress + 2, 2) / 2;
         return maxSize * easeProgress;
+      }
+    } else if (type === 'alternate-nostril') {
+      const maxTimer = 40;
+      if (breathingPhase === 'inhale') {
+        const progress = timer / maxTimer;
+        const easeProgress = progress < 0.5
+          ? 2 * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        return minSize + (maxSize - minSize) * easeProgress;
+      } else if (breathingPhase === 'hold1' || breathingPhase === 'hold2') {
+        return breathingPhase === 'hold1' ? maxSize : minSize;
+      } else if (breathingPhase === 'exhale') {
+        const progress = timer / maxTimer;
+        const easeProgress = progress < 0.5
+          ? 2 * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        return minSize + (maxSize - minSize) * easeProgress;
+      }
+    } else if (type === 'humming-bee') {
+      if (breathingPhase === 'inhale') {
+        const progress = timer / 40;
+        const easeProgress = progress < 0.5
+          ? 2 * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        return minSize + (maxSize - minSize) * easeProgress;
+      } else if (breathingPhase === 'exhale') {
+        const progress = timer / 60;
+        const easeProgress = progress < 0.5
+          ? 2 * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        return minSize + (maxSize - minSize) * easeProgress;
       }
     }
 

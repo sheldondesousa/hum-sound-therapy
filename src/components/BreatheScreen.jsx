@@ -28,6 +28,18 @@ const BreatheScreen = () => {
       title: 'Physiological Sigh',
       subtitle: 'Stress relief pattern',
       description: 'Double inhale, extended exhale'
+    },
+    {
+      id: 'alternate-nostril',
+      title: 'Alternate Nostril Breathing',
+      subtitle: 'Balancing breath',
+      description: 'Breathe through alternate nostrils'
+    },
+    {
+      id: 'humming-bee',
+      title: 'Humming Bee Breath',
+      subtitle: 'Calming vibration',
+      description: 'Hum during exhalation for relaxation'
     }
   ];
 

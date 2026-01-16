@@ -26,6 +26,41 @@ Improves focus: Enhances concentration, making it great for high-pressure situat
         'Position your tongue: Place the tip of your tongue against the ridge of tissue just behind your upper front teeth and keep it there throughout the entire exercise.',
         'Create sound: Exhale completely through your mouth, making an audible "whoosh" sound as you release the air.'
       ]
+    },
+    'coherent': {
+      title: 'Coherent Breathing',
+      description: 'Coherent breathing is a simple yet powerful technique that involves breathing at a rate of 5 breaths per minute (inhale for 5 seconds, exhale for 5 seconds). This rhythm has been shown to optimize heart rate variability and promote a state of physiological coherence.',
+      sectionTitle: 'Why it works',
+      sectionContent: `Balances the nervous system: Creates optimal heart rate variability, indicating a balanced autonomic nervous system.
+Reduces stress: Helps synchronize heart, breath, and brain rhythms for deep relaxation.
+Improves emotional regulation: Regular practice enhances your ability to manage stress and emotions.`
+    },
+    'physiological-sigh': {
+      title: 'Physiological Sigh',
+      description: 'The physiological sigh is a breathing pattern that involves two quick inhales through the nose followed by a long exhale through the mouth. This technique rapidly reduces stress and anxiety by reinflating collapsed alveoli in the lungs and activating the parasympathetic nervous system.',
+      sectionTitle: 'Why it works',
+      sectionContent: `Rapid stress relief: Quickly lowers stress hormones and calms the nervous system.
+Improves oxygen exchange: Reinflates collapsed air sacs in the lungs for better breathing.
+Evidence-based: Scientifically proven to be one of the fastest ways to reduce physiological stress.`
+    },
+    'alternate-nostril': {
+      title: 'Alternate Nostril Breathing',
+      description: 'Alternate nostril breathing (Nadi Shodhana) is an ancient yogic breathing technique that involves breathing through one nostril at a time while closing the other. This practice balances the left and right hemispheres of the brain and promotes mental clarity and calmness.',
+      sectionTitle: 'Tips',
+      sectionContent: [
+        'Sit comfortably with your spine straight and shoulders relaxed.',
+        'Use your right thumb to close your right nostril and inhale through the left.',
+        'Close your left nostril with your ring finger, release your thumb, and exhale through the right.',
+        'Continue alternating nostrils with each breath cycle.'
+      ]
+    },
+    'humming-bee': {
+      title: 'Humming Bee Breath',
+      description: 'Humming Bee Breath (Bhramari Pranayama) is a calming breathing technique that involves making a humming sound during exhalation. The vibration created by humming has a soothing effect on the nervous system and can help reduce anxiety, anger, and frustration.',
+      sectionTitle: 'Why it works',
+      sectionContent: `Calms the mind: The humming vibration soothes the nervous system and quiets mental chatter.
+Reduces anxiety: Scientifically shown to lower stress hormones and promote relaxation.
+Enhances concentration: The auditory feedback helps anchor attention and improve focus.`
     }
   };
 
@@ -40,7 +75,7 @@ Improves focus: Enhances concentration, making it great for high-pressure situat
       <div className="w-full max-w-[430px] h-[932px] bg-white flex flex-col p-6">
         {/* Back Button */}
         <button
-          onClick={() => navigate('/home')}
+          onClick={() => navigate('/breathe')}
           className="mb-6 flex items-center gap-2 text-black hover:text-gray-600 transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

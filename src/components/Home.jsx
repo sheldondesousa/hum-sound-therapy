@@ -2004,14 +2004,21 @@ export default function Home() {
                     <div className="px-2 pb-4">
                       <button
                         onClick={() => {
-                          // Convert exercise name to URL-friendly slug
-                          const exerciseSlug = selectedExercise.name
-                            .toLowerCase()
-                            .replace(/\s*\([^)]*\)/g, '') // Remove parentheses and content
-                            .replace(/\s+/g, '-'); // Replace spaces with hyphens
+                          // Map exercise names to correct URL slugs
+                          const exerciseSlugMap = {
+                            'Box Breathing (4-4-4-4)': 'box',
+                            '4-7-8 Breathing': '4-7-8',
+                            'Coherent Breathing': 'coherent',
+                            'Physiological Sigh': 'physiological-sigh',
+                            'Alternate Nostril': 'alternate-nostril',
+                            'Humming Bee': 'humming-bee'
+                          };
 
-                          // Navigate to dedicated exercise screen
-                          navigate(`/breathe/${exerciseSlug}/exercise`, {
+                          const exerciseSlug = exerciseSlugMap[selectedExercise.name] ||
+                            selectedExercise.name.toLowerCase().replace(/\s+/g, '-');
+
+                          // Navigate to dedicated exercise screen via info screen
+                          navigate(`/breathe/${exerciseSlug}/info`, {
                             state: { cycles: selectedCycles }
                           });
                         }}
