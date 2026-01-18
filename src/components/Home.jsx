@@ -2684,56 +2684,79 @@ export default function Home() {
                               </div>
                             </div>
 
-                          {/* Phase Indicator - 3 Boxes */}
-                          <div className="flex justify-between gap-3 mt-8" style={{ width: '300px' }}>
-                            {/* Breathe In Box */}
-                            <div
-                              className="flex flex-col items-center justify-center rounded-lg p-6 transition-all duration-300"
-                              style={{
-                                backgroundColor: (breathingPhase === 'inhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold1')) ? '#746996' : '#E5E7EB',
-                                width: '92px',
-                                minHeight: '80px'
-                              }}
-                            >
-                              <div className={`text-sm font-semibold mb-2 text-center leading-tight ${(breathingPhase === 'inhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold1')) ? 'text-white' : 'text-gray-600'}`}>
-                                Breathe<br />In
+                          {/* Phase Indicator - 4 Boxes in Square Pattern (Clockwise) */}
+                          <div className="flex flex-col items-center mt-8" style={{ width: '300px' }}>
+                            {/* Top Row - Hold 1 and Exhale */}
+                            <div className="flex justify-between gap-3 mb-3" style={{ width: '100%' }}>
+                              {/* Breathe In - Top Left */}
+                              <div
+                                className="flex flex-col items-center justify-center rounded-lg p-4 transition-all duration-300"
+                                style={{
+                                  backgroundColor: (breathingPhase === 'inhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold1')) ? '#746996' : '#E5E7EB',
+                                  width: '138px',
+                                  minHeight: '80px'
+                                }}
+                              >
+                                <div className={`text-sm font-semibold mb-1 text-center leading-tight ${(breathingPhase === 'inhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold1')) ? 'text-white' : 'text-gray-600'}`}>
+                                  Breathe In
+                                </div>
+                                <div className={`text-xl text-center ${(breathingPhase === 'inhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold1')) ? 'text-white' : 'text-gray-400'}`}>
+                                  ↑
+                                </div>
                               </div>
-                              <div className={`text-2xl text-center ${(breathingPhase === 'inhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold1')) ? 'text-white' : 'text-gray-400'}`}>
-                                ↑↑
+
+                              {/* Hold 1 - Top Right */}
+                              <div
+                                className="flex flex-col items-center justify-center rounded-lg p-4 transition-all duration-300"
+                                style={{
+                                  backgroundColor: (breathingPhase === 'hold1' || (breathingPhase === 'transition' && nextPhaseRef.current === 'exhale')) ? '#F7D6EC' : '#E5E7EB',
+                                  width: '138px',
+                                  minHeight: '80px'
+                                }}
+                              >
+                                <div className={`text-sm font-semibold mb-1 text-center ${(breathingPhase === 'hold1' || (breathingPhase === 'transition' && nextPhaseRef.current === 'exhale')) ? 'text-gray-800' : 'text-gray-600'}`}>
+                                  Hold
+                                </div>
+                                <div className={`text-xl text-center ${(breathingPhase === 'hold1' || (breathingPhase === 'transition' && nextPhaseRef.current === 'exhale')) ? 'text-gray-800' : 'text-gray-400'}`} style={{ letterSpacing: '0.15em' }}>
+                                  →
+                                </div>
                               </div>
                             </div>
 
-                            {/* Hold Box */}
-                            <div
-                              className="flex flex-col items-center justify-center rounded-lg p-6 transition-all duration-300"
-                              style={{
-                                backgroundColor: (breathingPhase === 'hold1' || breathingPhase === 'hold2' || (breathingPhase === 'transition' && (nextPhaseRef.current === 'exhale' || nextPhaseRef.current === 'inhale'))) ? '#F7D6EC' : '#E5E7EB',
-                                width: '92px',
-                                minHeight: '80px'
-                              }}
-                            >
-                              <div className={`text-sm font-semibold mb-2 text-center ${(breathingPhase === 'hold1' || breathingPhase === 'hold2' || (breathingPhase === 'transition' && (nextPhaseRef.current === 'exhale' || nextPhaseRef.current === 'inhale'))) ? 'text-gray-800' : 'text-gray-600'}`}>
-                                Hold
+                            {/* Bottom Row - Hold 2 and Breathe Out */}
+                            <div className="flex justify-between gap-3" style={{ width: '100%' }}>
+                              {/* Hold 2 - Bottom Left */}
+                              <div
+                                className="flex flex-col items-center justify-center rounded-lg p-4 transition-all duration-300"
+                                style={{
+                                  backgroundColor: (breathingPhase === 'hold2' || (breathingPhase === 'transition' && nextPhaseRef.current === 'inhale')) ? '#F7D6EC' : '#E5E7EB',
+                                  width: '138px',
+                                  minHeight: '80px'
+                                }}
+                              >
+                                <div className={`text-sm font-semibold mb-1 text-center ${(breathingPhase === 'hold2' || (breathingPhase === 'transition' && nextPhaseRef.current === 'inhale')) ? 'text-gray-800' : 'text-gray-600'}`}>
+                                  Hold
+                                </div>
+                                <div className={`text-xl text-center ${(breathingPhase === 'hold2' || (breathingPhase === 'transition' && nextPhaseRef.current === 'inhale')) ? 'text-gray-800' : 'text-gray-400'}`} style={{ letterSpacing: '0.15em' }}>
+                                  ←
+                                </div>
                               </div>
-                              <div className={`text-2xl text-center ${(breathingPhase === 'hold1' || breathingPhase === 'hold2' || (breathingPhase === 'transition' && (nextPhaseRef.current === 'exhale' || nextPhaseRef.current === 'inhale'))) ? 'text-gray-800' : 'text-gray-400'}`} style={{ letterSpacing: '0.15em' }}>
-                                ||
-                              </div>
-                            </div>
 
-                            {/* Breathe Out Box */}
-                            <div
-                              className="flex flex-col items-center justify-center rounded-lg p-6 transition-all duration-300"
-                              style={{
-                                backgroundColor: (breathingPhase === 'exhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold2')) ? '#AD8FC6' : '#E5E7EB',
-                                width: '92px',
-                                minHeight: '80px'
-                              }}
-                            >
-                              <div className={`text-sm font-semibold mb-2 text-center ${(breathingPhase === 'exhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold2')) ? 'text-white' : 'text-gray-600'}`}>
-                                Breathe Out
-                              </div>
-                              <div className={`text-2xl text-center ${(breathingPhase === 'exhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold2')) ? 'text-white' : 'text-gray-400'}`}>
-                                ↓↓
+                              {/* Breathe Out - Bottom Right */}
+                              <div
+                                className="flex flex-col items-center justify-center rounded-lg p-4 transition-all duration-300"
+                                style={{
+                                  backgroundColor: (breathingPhase === 'exhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold2')) ? '#AD8FC6' : '#E5E7EB',
+                                  width: '138px',
+                                  minHeight: '80px'
+                                }}
+                              >
+                                <div className={`text-sm font-semibold mb-1 text-center ${(breathingPhase === 'exhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold2')) ? 'text-white' : 'text-gray-600'}`}>
+                                  Breathe Out
+                                </div>
+                                <div className={`text-xl text-center ${(breathingPhase === 'exhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold2')) ? 'text-white' : 'text-gray-400'}`}>
+                                  ↓
+                                </div>
                               </div>
                             </div>
                           </div>
