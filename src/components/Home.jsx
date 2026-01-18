@@ -405,8 +405,8 @@ export default function Home() {
       setIsExercising(true);
       setIsPaused(false);
       setBreathingPhase('inhale');
-      // All exercises start at timer 0
-      setTimer(0);
+      // Box Breathing starts at timer 1, all other exercises start at 0
+      setTimer(selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? 1 : 0);
       setCurrentCycle(0);
       return;
     }
@@ -464,9 +464,15 @@ export default function Home() {
       else if (breathingPhase === 'hold2') intervalDuration = 200; // 200ms gap after EXHALE
       else intervalDuration = 100; // 100ms for smooth transitions
     } else {
-      // Box breathing: all phases use 800ms interval to show 0→1→2→3→4 (5 counts) in exactly 4 seconds
-      // Each phase counts 0→1→2→3→4 (4 seconds total: 5 counts × 800ms = 4000ms)
-      intervalDuration = 800; // 800ms intervals
+      // Box breathing: use dynamic interval for phases and transitions
+      // Main phases (inhale, hold1, exhale, hold2): 1000ms interval to show 1→2→3→4 (4 counts) in exactly 4 seconds
+      // Transition phases: 300ms gap between main phases
+      if (breathingPhase === 'transitionAfterInhale' || breathingPhase === 'transitionAfterHold1' ||
+          breathingPhase === 'transitionAfterExhale' || breathingPhase === 'transitionAfterHold2') {
+        intervalDuration = 300; // 300ms transition gap
+      } else {
+        intervalDuration = 1000; // 1000ms intervals for main phases (1→2→3→4)
+      }
     }
 
     const interval = setInterval(() => {
@@ -672,36 +678,48 @@ export default function Home() {
             }
           }
         } else {
-          // Box Breathing pattern (4-4-4-4) - each phase counts 0→1→2→3→4 (4 seconds)
+          // Box Breathing pattern (4-4-4-4) - each phase counts 1→2→3→4 (4 seconds at 1s intervals)
           if (breathingPhase === 'inhale') {
-            // INHALE: 0→1→2→3→4 (4 seconds total, 5 counts × 800ms)
+            // INHALE: 1→2→3→4 (4 seconds total, 4 counts × 1000ms)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
-              // Timer reached 4, move to hold1
-              setBreathingPhase('hold1');
-              return 0; // Start hold1 at 0
+              // Timer reached 4, transition to hold1 with 300ms gap
+              setBreathingPhase('transitionAfterInhale');
+              return 4; // Keep showing 4 during transition
             }
+          } else if (breathingPhase === 'transitionAfterInhale') {
+            // 300ms transition gap, then move to hold1
+            setBreathingPhase('hold1');
+            return 1; // Start hold1 at 1
           } else if (breathingPhase === 'hold1') {
-            // HOLD1: 0→1→2→3→4 (4 seconds total, 5 counts × 800ms)
+            // HOLD1: 1→2→3→4 (4 seconds total, 4 counts × 1000ms)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
-              // Timer reached 4, move to exhale
-              setBreathingPhase('exhale');
-              return 0; // Start exhale at 0
+              // Timer reached 4, transition to exhale with 300ms gap
+              setBreathingPhase('transitionAfterHold1');
+              return 4; // Keep showing 4 during transition
             }
+          } else if (breathingPhase === 'transitionAfterHold1') {
+            // 300ms transition gap, then move to exhale
+            setBreathingPhase('exhale');
+            return 1; // Start exhale at 1
           } else if (breathingPhase === 'exhale') {
-            // EXHALE: 0→1→2→3→4 (4 seconds total, 5 counts × 800ms)
+            // EXHALE: 1→2→3→4 (4 seconds total, 4 counts × 1000ms)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
-              // Timer reached 4, move to hold2
-              setBreathingPhase('hold2');
-              return 0; // Start hold2 at 0
+              // Timer reached 4, transition to hold2 with 300ms gap
+              setBreathingPhase('transitionAfterExhale');
+              return 4; // Keep showing 4 during transition
             }
+          } else if (breathingPhase === 'transitionAfterExhale') {
+            // 300ms transition gap, then move to hold2
+            setBreathingPhase('hold2');
+            return 1; // Start hold2 at 1
           } else if (breathingPhase === 'hold2') {
-            // HOLD2: 0→1→2→3→4 (4 seconds total, 5 counts × 800ms)
+            // HOLD2: 1→2→3→4 (4 seconds total, 4 counts × 1000ms)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
@@ -713,14 +731,18 @@ export default function Home() {
                 setExerciseCompleted(true);
                 setCurrentCycle(0);
                 setBreathingPhase('inhale');
-                return 0;
+                return 1;
               } else {
-                // Continue to next cycle - move to inhale
-                setCurrentCycle(nextCycle);
-                setBreathingPhase('inhale');
-                return 0; // Start next inhale at 0
+                // Continue to next cycle with 300ms transition gap
+                setBreathingPhase('transitionAfterHold2');
+                return 4; // Keep showing 4 during transition
               }
             }
+          } else if (breathingPhase === 'transitionAfterHold2') {
+            // 300ms transition gap, then move to next cycle's inhale
+            setCurrentCycle(currentCycle + 1);
+            setBreathingPhase('inhale');
+            return 1; // Start next inhale at 1
           }
         }
         return prevTimer;
@@ -783,17 +805,17 @@ export default function Home() {
   // Get number of circles to display based on phase and timer
   const getVisibleCircleCount = () => {
     if (breathingPhase === 'inhale') {
-      // INHALE: timer 0→4, circles 0→4 (expanding)
-      return timer === 0 ? 0 : timer;
-    } else if (breathingPhase === 'hold1') {
+      // INHALE: timer 1→4, circles 1→4 (expanding)
+      return timer;
+    } else if (breathingPhase === 'hold1' || breathingPhase === 'transitionAfterInhale' || breathingPhase === 'transitionAfterHold1') {
       return 4; // HOLD after INHALE: Keep all 4 circles at max size
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: timer 4→0, circles 4→0 (contracting from max)
-      return timer;
-    } else if (breathingPhase === 'hold2') {
-      return 0; // HOLD after EXHALE: No circles
+      // EXHALE: timer 1→4, circles 4→1 (contracting)
+      return 5 - timer; // Invert: when timer=1, show 4 circles; when timer=4, show 1 circle
+    } else if (breathingPhase === 'hold2' || breathingPhase === 'transitionAfterExhale' || breathingPhase === 'transitionAfterHold2') {
+      return 1; // HOLD after EXHALE: Show 1 circle (minimum)
     }
-    return 0;
+    return 1;
   };
 
   // Get visible circle count for 4-7-8 breathing
@@ -2488,7 +2510,8 @@ export default function Home() {
                               onClick={() => {
                                 setExerciseCompleted(false);
                                 setCurrentCycle(0);
-                                setTimer(0);
+                                // Box Breathing starts at timer 1, all other exercises start at 0
+                                setTimer(selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? 1 : 0);
                                 setBreathingPhase('inhale');
                                 setIsExercising(true);
                               }}
