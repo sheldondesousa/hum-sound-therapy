@@ -2616,8 +2616,8 @@ export default function Home() {
                                     {squares.map((square) => (
                                       <rect
                                         key={square.id}
-                                        x={square.x + 30}
-                                        y={square.y + 30}
+                                        x={square.x + 25}
+                                        y={square.y + 18}
                                         width={squareSize}
                                         height={squareSize}
                                         rx="8"
@@ -2669,10 +2669,10 @@ export default function Home() {
                                 minHeight: '100px'
                               }}
                             >
-                              <div className={`text-sm font-semibold mb-2 ${breathingPhase === 'inhale' ? 'text-white' : 'text-gray-600'}`}>
+                              <div className={`text-sm font-semibold mb-2 text-center ${breathingPhase === 'inhale' ? 'text-white' : 'text-gray-600'}`}>
                                 Breathe In
                               </div>
-                              <div className={`text-2xl ${breathingPhase === 'inhale' ? 'text-white' : 'text-gray-400'}`}>
+                              <div className={`text-2xl text-center ${breathingPhase === 'inhale' ? 'text-white' : 'text-gray-400'}`}>
                                 ↑↑
                               </div>
                             </div>
@@ -2686,11 +2686,11 @@ export default function Home() {
                                 minHeight: '100px'
                               }}
                             >
-                              <div className={`text-sm font-semibold mb-2 ${(breathingPhase === 'hold1' || breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-600'}`}>
+                              <div className={`text-sm font-semibold mb-2 text-center ${(breathingPhase === 'hold1' || breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-600'}`}>
                                 Hold
                               </div>
-                              <div className={`text-2xl ${(breathingPhase === 'hold1' || breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-400'}`}>
-                                ⏸
+                              <div className={`text-2xl text-center ${(breathingPhase === 'hold1' || breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-400'}`} style={{ letterSpacing: '0.15em' }}>
+                                ||
                               </div>
                             </div>
 
@@ -2703,10 +2703,10 @@ export default function Home() {
                                 minHeight: '100px'
                               }}
                             >
-                              <div className={`text-sm font-semibold mb-2 ${breathingPhase === 'exhale' ? 'text-white' : 'text-gray-600'}`}>
+                              <div className={`text-sm font-semibold mb-2 text-center ${breathingPhase === 'exhale' ? 'text-white' : 'text-gray-600'}`}>
                                 Breathe Out
                               </div>
-                              <div className={`text-2xl ${breathingPhase === 'exhale' ? 'text-white' : 'text-gray-400'}`}>
+                              <div className={`text-2xl text-center ${breathingPhase === 'exhale' ? 'text-white' : 'text-gray-400'}`}>
                                 ↓↓
                               </div>
                             </div>
