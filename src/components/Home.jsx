@@ -331,6 +331,7 @@ export default function Home() {
   const [coherentCycles, setCoherentCycles] = useState(6); // Total cycles (default 6)
   const [coherentBreathTime, setCoherentBreathTime] = useState(5); // Inhale-Exhale time in seconds (default 5s)
   const [showLegend, setShowLegend] = useState(false); // Track legend visibility with delay
+  const [animationReady, setAnimationReady] = useState(false); // Track when animation should start (after 300ms delay)
   const [alternateNostrilCycles, setAlternateNostrilCycles] = useState(6); // Total cycles for Alternate Nostril (default 6)
   const [alternateNostrilBreathTime, setAlternateNostrilBreathTime] = useState(5); // Breath time for Alternate Nostril (default 5s)
 
@@ -429,6 +430,19 @@ export default function Home() {
       setShowLegend(false);
     }
   }, [isExercising, countdown, exerciseCompleted]);
+
+  // Show animation with 300ms delay after countdown completes for 4-7-8 Breathing
+  useEffect(() => {
+    const is478 = selectedExercise?.name === '4-7-8 Breathing';
+    if (is478 && isExercising && countdown === null && !exerciseCompleted) {
+      const timer = setTimeout(() => {
+        setAnimationReady(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      setAnimationReady(false);
+    }
+  }, [isExercising, countdown, exerciseCompleted, selectedExercise]);
 
   // Breathing animation cycle effect
   useEffect(() => {
@@ -820,7 +834,7 @@ export default function Home() {
 
   // Get visible circle count for 4-7-8 breathing
   const getVisibleCircleCount478 = () => {
-    if (!isExercising) return 0;
+    if (!isExercising || !animationReady) return 0;
 
     if (breathingPhase === 'inhale') {
       // INHALE: Add 2 circles per second (timer 0→4 shows 0,2,4,6,8 circles)
@@ -840,17 +854,17 @@ export default function Home() {
   const getCirclesData478 = () => {
     const circleCount = getVisibleCircleCount478();
 
-    // 8 circles with 10% opacity decrements - adjusted sizes to fit container
+    // 8 circles with opacity decrements - app color scheme from darkest to lightest
     const sizes = [100, 140, 180, 220, 260, 300, 340, 360];
     const colors = [
-      'rgba(5, 104, 166, 1.0)',   // 100% opacity (darkest - innermost) - 15% darker base
-      'rgba(5, 104, 166, 0.9)',   // 90% opacity
-      'rgba(5, 104, 166, 0.8)',   // 80% opacity
-      'rgba(5, 104, 166, 0.7)',   // 70% opacity
-      'rgba(5, 104, 166, 0.6)',   // 60% opacity
-      'rgba(5, 104, 166, 0.5)',   // 50% opacity
-      'rgba(5, 104, 166, 0.4)',   // 40% opacity
-      'rgba(5, 104, 166, 0.3)'    // 30% opacity (lightest - outermost)
+      'rgba(116, 105, 187, 1.0)',   // 100% opacity - Blue-Violet (darkest - innermost)
+      'rgba(116, 105, 187, 0.9)',   // 90% opacity - Blue-Violet
+      'rgba(169, 139, 203, 0.8)',   // 80% opacity - African Violet
+      'rgba(169, 139, 203, 0.7)',   // 70% opacity - African Violet
+      'rgba(225, 215, 240, 0.6)',   // 60% opacity - Light Orchid
+      'rgba(225, 215, 240, 0.5)',   // 50% opacity - Light Orchid
+      'rgba(247, 213, 236, 0.4)',   // 40% opacity - Light Orchid (lighter)
+      'rgba(247, 213, 236, 0.3)'    // 30% opacity - Light Orchid (lightest - outermost)
     ];
     const blurs = [20, 21, 22, 23, 24, 25, 26, 27];
 
@@ -1016,7 +1030,7 @@ export default function Home() {
 
   // Get smooth circle size for 4-7-8 Breathing
   const get478CircleSize = () => {
-    if (!isExercising) return 100;
+    if (!isExercising || !animationReady) return 100;
 
     const minSize = 100;
     const maxSize = 340;
@@ -2641,8 +2655,8 @@ export default function Home() {
                               />
                             </svg>
 
-                            {/* Blue Progress Circle - Shows during HOLD phase (7 seconds) */}
-                            {breathingPhase === 'hold1' && (
+                            {/* Blue-Violet Progress Circle - Shows during HOLD phase (7 seconds) */}
+                            {breathingPhase === 'hold1' && animationReady && (
                               <svg
                                 className="absolute"
                                 width="363"
@@ -2654,7 +2668,7 @@ export default function Home() {
                                   cy="181.5"
                                   r="180"
                                   fill="none"
-                                  stroke="#067AC3"
+                                  stroke="#7469BB"
                                   strokeWidth="4"
                                   strokeDasharray="1131"
                                   strokeDashoffset={1131 - (1131 * (timer / 10) / 7)}
@@ -2670,8 +2684,8 @@ export default function Home() {
                               style={{
                                 width: `${get478CircleSize()}px`,
                                 height: `${get478CircleSize()}px`,
-                                background: 'radial-gradient(circle, rgba(6, 122, 195, 1) 0%, rgba(6, 122, 195, 0.6) 50%, rgba(6, 122, 195, 0.2) 100%)',
-                                boxShadow: '0 0 30px rgba(6, 122, 195, 0.5)',
+                                background: 'radial-gradient(circle, rgba(116, 105, 187, 1) 0%, rgba(116, 105, 187, 0.6) 50%, rgba(116, 105, 187, 0.2) 100%)',
+                                boxShadow: '0 0 30px rgba(116, 105, 187, 0.5)',
                                 transition: 'all 100ms linear'
                               }}
                             />
@@ -2680,12 +2694,12 @@ export default function Home() {
                             <div className="absolute text-center">
                               <div
                                 className={`text-lg font-semibold text-gray-800 uppercase tracking-wider bg-gradient-to-b from-white/85 to-gray-100/80 backdrop-blur-sm px-6 py-3 rounded-xl inline-block ${
-                                  breathingPhase === 'hold1' ? 'pulse-hold' : ''
+                                  breathingPhase === 'hold1' && animationReady ? 'pulse-hold' : ''
                                 }`}
                               >
-                                {breathingPhase === 'inhale' && 'Breathe In'}
-                                {breathingPhase === 'hold1' && 'HOLD'}
-                                {breathingPhase === 'exhale' && 'Breathe Out'}
+                                {breathingPhase === 'inhale' && animationReady && 'Breathe In'}
+                                {breathingPhase === 'hold1' && animationReady && 'HOLD'}
+                                {breathingPhase === 'exhale' && animationReady && 'Breathe Out'}
                               </div>
                             </div>
                           </div>
