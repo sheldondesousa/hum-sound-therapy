@@ -2443,22 +2443,14 @@ export default function Home() {
                       {!exerciseCompleted && isExercising && countdown === null && (
                         selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
                           /* Box Breathing: Show timer for ALL phases including HOLD */
-                          <div className="text-center flex items-center justify-center gap-3">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-gray-900">
-                              <circle cx="12" cy="12" r="10" strokeWidth="2"/>
-                              <polyline points="12 6 12 12 16 14" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
+                          <div className="text-center">
                             <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
                               {timer}
                             </div>
                           </div>
                         ) : (breathingPhase === 'inhale' || breathingPhase === 'exhale') ? (
                           /* Other exercises: Show timer only during INHALE and EXHALE */
-                          <div className="text-center flex items-center justify-center gap-3">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-gray-900">
-                              <circle cx="12" cy="12" r="10" strokeWidth="2"/>
-                              <polyline points="12 6 12 12 16 14" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
+                          <div className="text-center">
                             <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
                               {selectedExercise?.name === 'Coherent Breathing'
                                 ? (breathingPhase === 'inhale'
