@@ -2692,7 +2692,7 @@ export default function Home() {
                               style={{
                                 backgroundColor: (breathingPhase === 'inhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold1')) ? '#746996' : '#E5E7EB',
                                 width: '92px',
-                                minHeight: '100px'
+                                minHeight: '80px'
                               }}
                             >
                               <div className={`text-sm font-semibold mb-2 text-center leading-tight ${(breathingPhase === 'inhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold1')) ? 'text-white' : 'text-gray-600'}`}>
@@ -2709,7 +2709,7 @@ export default function Home() {
                               style={{
                                 backgroundColor: (breathingPhase === 'hold1' || breathingPhase === 'hold2' || (breathingPhase === 'transition' && (nextPhaseRef.current === 'exhale' || nextPhaseRef.current === 'inhale'))) ? '#F7D6EC' : '#E5E7EB',
                                 width: '92px',
-                                minHeight: '100px'
+                                minHeight: '80px'
                               }}
                             >
                               <div className={`text-sm font-semibold mb-2 text-center ${(breathingPhase === 'hold1' || breathingPhase === 'hold2' || (breathingPhase === 'transition' && (nextPhaseRef.current === 'exhale' || nextPhaseRef.current === 'inhale'))) ? 'text-gray-800' : 'text-gray-600'}`}>
@@ -2726,7 +2726,7 @@ export default function Home() {
                               style={{
                                 backgroundColor: (breathingPhase === 'exhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold2')) ? '#AD8FC6' : '#E5E7EB',
                                 width: '92px',
-                                minHeight: '100px'
+                                minHeight: '80px'
                               }}
                             >
                               <div className={`text-sm font-semibold mb-2 text-center ${(breathingPhase === 'exhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold2')) ? 'text-white' : 'text-gray-600'}`}>
