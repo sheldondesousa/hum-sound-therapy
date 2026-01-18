@@ -2658,78 +2658,58 @@ export default function Home() {
                               </div>
                             </div>
 
-                          {/* Phase Indicator - Box Border Design */}
-                          <div className="flex justify-center mt-8">
-                            {(() => {
-                              const boxSize = 28;
-                              const spacing = 4;
-                              const cornerRadius = 6;
+                          {/* Phase Indicator - 3 Boxes */}
+                          <div className="flex justify-center gap-4 mt-8">
+                            {/* Breathe In Box */}
+                            <div
+                              className="flex flex-col items-center justify-center rounded-lg p-6 transition-all duration-300"
+                              style={{
+                                backgroundColor: breathingPhase === 'inhale' ? '#746996' : '#E5E7EB',
+                                minWidth: '140px',
+                                minHeight: '100px'
+                              }}
+                            >
+                              <div className={`text-sm font-semibold mb-2 ${breathingPhase === 'inhale' ? 'text-white' : 'text-gray-600'}`}>
+                                Breathe In
+                              </div>
+                              <div className={`text-2xl ${breathingPhase === 'inhale' ? 'text-white' : 'text-gray-400'}`}>
+                                ↓↓
+                              </div>
+                            </div>
 
-                              // Define 16 boxes in border pattern: 6 top + 2 right + 6 bottom + 2 left
-                              const boxes = [
-                                // Top row (left to right): boxes 0-5
-                                { id: 0, x: 0, y: 0, phase: 'inhale' },
-                                { id: 1, x: boxSize + spacing, y: 0, phase: 'inhale' },
-                                { id: 2, x: (boxSize + spacing) * 2, y: 0, phase: 'inhale' },
-                                { id: 3, x: (boxSize + spacing) * 3, y: 0, phase: 'inhale' },
-                                { id: 4, x: (boxSize + spacing) * 4, y: 0, phase: 'inhale' },
-                                { id: 5, x: (boxSize + spacing) * 5, y: 0, phase: 'inhale' },
-                                // Right side (top to bottom): boxes 6-7
-                                { id: 6, x: (boxSize + spacing) * 5, y: boxSize + spacing, phase: 'hold1' },
-                                { id: 7, x: (boxSize + spacing) * 5, y: (boxSize + spacing) * 2, phase: 'hold1' },
-                                // Bottom row (right to left): boxes 8-13
-                                { id: 8, x: (boxSize + spacing) * 5, y: (boxSize + spacing) * 3, phase: 'exhale' },
-                                { id: 9, x: (boxSize + spacing) * 4, y: (boxSize + spacing) * 3, phase: 'exhale' },
-                                { id: 10, x: (boxSize + spacing) * 3, y: (boxSize + spacing) * 3, phase: 'exhale' },
-                                { id: 11, x: (boxSize + spacing) * 2, y: (boxSize + spacing) * 3, phase: 'exhale' },
-                                { id: 12, x: boxSize + spacing, y: (boxSize + spacing) * 3, phase: 'exhale' },
-                                { id: 13, x: 0, y: (boxSize + spacing) * 3, phase: 'exhale' },
-                                // Left side (bottom to top): boxes 14-15
-                                { id: 14, x: 0, y: (boxSize + spacing) * 2, phase: 'hold2' },
-                                { id: 15, x: 0, y: boxSize + spacing, phase: 'hold2' },
-                              ];
+                            {/* Hold Box */}
+                            <div
+                              className="flex flex-col items-center justify-center rounded-lg p-6 transition-all duration-300"
+                              style={{
+                                backgroundColor: (breathingPhase === 'hold1' || breathingPhase === 'hold2') ? '#E1AFD1' : '#E5E7EB',
+                                minWidth: '140px',
+                                minHeight: '100px'
+                              }}
+                            >
+                              <div className={`text-sm font-semibold mb-2 ${(breathingPhase === 'hold1' || breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-600'}`}>
+                                Hold
+                              </div>
+                              <div className={`text-2xl ${(breathingPhase === 'hold1' || breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-400'}`}>
+                                ‖
+                              </div>
+                            </div>
 
-                              const getBoxColor = (box) => {
-                                // Map phase names to colors
-                                const phaseColors = {
-                                  'inhale': '#746996',  // Blue Violet
-                                  'hold1': '#E1AFD1',   // Light Orchid
-                                  'exhale': '#AD88C6',  // African Violet
-                                  'hold2': '#FFE6F7'    // Misty Rose
-                                };
-
-                                // Return phase color if active, otherwise light gray
-                                return box.phase === breathingPhase
-                                  ? phaseColors[box.phase]
-                                  : '#D1D5DB'; // Light gray for inactive
-                              };
-
-                              const totalWidth = (boxSize + spacing) * 6;
-                              const totalHeight = (boxSize + spacing) * 4;
-
-                              return (
-                                <svg
-                                  width={totalWidth}
-                                  height={totalHeight}
-                                  viewBox={`0 0 ${totalWidth} ${totalHeight}`}
-                                >
-                                  {boxes.map((box) => (
-                                    <rect
-                                      key={box.id}
-                                      x={box.x}
-                                      y={box.y}
-                                      width={boxSize}
-                                      height={boxSize}
-                                      rx={cornerRadius}
-                                      fill={getBoxColor(box)}
-                                      style={{
-                                        transition: 'fill 0.3s ease-in-out'
-                                      }}
-                                    />
-                                  ))}
-                                </svg>
-                              );
-                            })()}
+                            {/* Breathe Out Box */}
+                            <div
+                              className="flex flex-col items-center justify-center rounded-lg p-6 transition-all duration-300"
+                              style={{
+                                backgroundColor: breathingPhase === 'exhale' ? '#AD88C6' : '#E5E7EB',
+                                minWidth: '140px',
+                                minHeight: '100px'
+                              }}
+                            >
+                              <div className={`text-sm font-semibold mb-2 ${breathingPhase === 'exhale' ? 'text-white' : 'text-gray-600'}`}>
+                                Breathe Out
+                              </div>
+                              <div className={`text-2xl ${breathingPhase === 'exhale' ? 'text-white' : 'text-gray-400'}`}>
+                                ↑↑
+                              </div>
+                            </div>
                           </div>
                           </div>
                         </>
