@@ -14,6 +14,7 @@ export default function Home() {
   const [currentView, setCurrentView] = useState('interactive'); // 'interactive', 'about', 'support', 'faqs', 'privacy', 'terms', 'breathing-info'
   const completionTrackedRef = useRef(false);
   const phaseHoldRef = useRef(false); // Track if we've held at final timer value for animation completion
+  const nextPhaseRef = useRef(null); // Track target phase for Box Breathing transitions
 
   // Carousel state
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -404,7 +405,7 @@ export default function Home() {
       setIsExercising(true);
       setIsPaused(false);
       setBreathingPhase('inhale');
-      setTimer(selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? 1 : 0);
+      setTimer(0); // All exercises start at timer 0
       setCurrentCycle(0);
       return;
     }
@@ -462,9 +463,13 @@ export default function Home() {
       else if (breathingPhase === 'hold2') intervalDuration = 200; // 200ms gap after EXHALE
       else intervalDuration = 100; // 100ms for smooth transitions
     } else {
-      // Box breathing: all phases use 1000ms interval for second-based counting
-      // INHALE: 0→4 (4 seconds), HOLD1: 0→4 (4 seconds), EXHALE: 4→0 (4 seconds), HOLD2: 0→4 (4 seconds)
-      intervalDuration = 1000; // 1 second intervals
+      // Box breathing: phases use 1000ms interval, transitions use 200ms
+      // INHALE: 0→4 (4 seconds), 200ms gap, HOLD1: 0→4 (4 seconds), 200ms gap, EXHALE: 0→4 (4 seconds), 200ms gap, HOLD2: 0→4 (4 seconds), 200ms gap
+      if (breathingPhase === 'transition') {
+        intervalDuration = 200; // 200ms gap between phases
+      } else {
+        intervalDuration = 1000; // 1 second intervals for active phases
+      }
     }
 
     const interval = setInterval(() => {
@@ -670,41 +675,53 @@ export default function Home() {
             }
           }
         } else {
-          // Box Breathing pattern (4-4-4-4) - second-based counting
-          // Each phase is exactly 4 seconds: timer counts 1,2,3,4 then transitions
+          // Box Breathing pattern (4-4-4-4) - second-based counting with 200ms gaps
+          // Each phase is exactly 4 seconds: timer counts 0,1,2,3,4 then 200ms transition
           if (breathingPhase === 'inhale') {
-            // INHALE: 1→4 (exactly 4 seconds)
+            // INHALE: 0→4 (exactly 4 seconds, starting with no squares lit)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
-              // Timer reached 4, transition to next phase
-              setBreathingPhase('hold1');
-              return 1; // Start HOLD1 at 1
+              // Timer reached 4, enter transition to hold1
+              nextPhaseRef.current = 'hold1';
+              setBreathingPhase('transition');
+              return 4; // Keep timer at 4 during transition
             }
+          } else if (breathingPhase === 'transition') {
+            // TRANSITION: 200ms gap, then move to next phase
+            const targetPhase = nextPhaseRef.current;
+            if (targetPhase) {
+              setBreathingPhase(targetPhase);
+              nextPhaseRef.current = null;
+              return 0; // Start next phase at 0
+            }
+            return prevTimer;
           } else if (breathingPhase === 'hold1') {
-            // HOLD1: 1→4 (exactly 4 seconds)
+            // HOLD1: 0→4 (exactly 4 seconds)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
-              // Timer reached 4, transition to exhale
-              setBreathingPhase('exhale');
-              return 1; // Start EXHALE at 1
+              // Timer reached 4, enter transition to exhale
+              nextPhaseRef.current = 'exhale';
+              setBreathingPhase('transition');
+              return 4; // Keep timer at 4 during transition
             }
           } else if (breathingPhase === 'exhale') {
-            // EXHALE: 1→4 (exactly 4 seconds)
+            // EXHALE: 0→4 (exactly 4 seconds)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
-              // Timer reached 4, transition to next phase
-              setBreathingPhase('hold2');
-              return 1; // Start HOLD2 at 1
+              // Timer reached 4, enter transition to hold2
+              nextPhaseRef.current = 'hold2';
+              setBreathingPhase('transition');
+              return 4; // Keep timer at 4 during transition
             }
           } else if (breathingPhase === 'hold2') {
-            // HOLD2: 1→4 (exactly 4 seconds)
+            // HOLD2: 0→4 (exactly 4 seconds)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
-              // Timer reached 4, cycle completed
+              // Timer reached 4, check if cycle completed
               const nextCycle = currentCycle + 1;
               if (nextCycle >= selectedCycles) {
                 // Reached target cycles, show completion screen
@@ -712,12 +729,14 @@ export default function Home() {
                 setExerciseCompleted(true);
                 setCurrentCycle(0);
                 setBreathingPhase('inhale');
-                return 1;
+                nextPhaseRef.current = null;
+                return 0;
               } else {
-                // Continue to next cycle
+                // Continue to next cycle with transition to inhale
                 setCurrentCycle(nextCycle);
-                setBreathingPhase('inhale');
-                return 1;
+                nextPhaseRef.current = 'inhale';
+                setBreathingPhase('transition');
+                return 4; // Keep timer at 4 during transition
               }
             }
           }
@@ -2517,25 +2536,34 @@ export default function Home() {
                                   // All phases now count 0→4 progressively
                                   const numSquares = Math.min(Math.max(timer, 0), 4);
 
-                                  if (breathingPhase === 'inhale') {
+                                  // During transition, show the completed state of the previous phase
+                                  const displayPhase = breathingPhase === 'transition'
+                                    ? (nextPhaseRef.current === 'hold1' ? 'inhale'
+                                      : nextPhaseRef.current === 'exhale' ? 'hold1'
+                                      : nextPhaseRef.current === 'hold2' ? 'exhale'
+                                      : nextPhaseRef.current === 'inhale' ? 'hold2'
+                                      : breathingPhase)
+                                    : breathingPhase;
+
+                                  if (displayPhase === 'inhale') {
                                     // Top row: light up squares 2, 3, 4, 5 progressively
                                     for (let i = 0; i < numSquares; i++) {
                                       activeSquares.add(2 + i);
                                     }
-                                  } else if (breathingPhase === 'hold1') {
+                                  } else if (displayPhase === 'hold1') {
                                     // Keep top row lit, light up right side: squares 6, 7, 8, 9
                                     for (let i = 2; i <= 5; i++) activeSquares.add(i);
                                     for (let i = 0; i < numSquares; i++) {
                                       activeSquares.add(6 + i);
                                     }
-                                  } else if (breathingPhase === 'exhale') {
+                                  } else if (displayPhase === 'exhale') {
                                     // Keep top and right lit, light up bottom: squares 10, 11, 12, 13
                                     for (let i = 2; i <= 5; i++) activeSquares.add(i);
                                     for (let i = 6; i <= 9; i++) activeSquares.add(i);
                                     for (let i = 0; i < numSquares; i++) {
                                       activeSquares.add(10 + i);
                                     }
-                                  } else if (breathingPhase === 'hold2') {
+                                  } else if (displayPhase === 'hold2') {
                                     // Keep top, right, bottom lit, light up left: squares 14, 15, 16, 1
                                     for (let i = 2; i <= 5; i++) activeSquares.add(i);
                                     for (let i = 6; i <= 9; i++) activeSquares.add(i);
@@ -2647,30 +2675,30 @@ export default function Home() {
                                       animation: 'magnify-compress 2s ease-in-out infinite'
                                     }}
                                   >
-                                    {breathingPhase === 'inhale' && 'Breathe In'}
-                                    {breathingPhase === 'hold1' && 'Hold'}
-                                    {breathingPhase === 'exhale' && 'Breathe Out'}
-                                    {breathingPhase === 'hold2' && 'Hold'}
+                                    {(breathingPhase === 'inhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold1')) && 'Breathe In'}
+                                    {((breathingPhase === 'hold1' && breathingPhase !== 'transition') || (breathingPhase === 'transition' && nextPhaseRef.current === 'exhale')) && 'Hold'}
+                                    {(breathingPhase === 'exhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold2')) && 'Breathe Out'}
+                                    {((breathingPhase === 'hold2' && breathingPhase !== 'transition') || (breathingPhase === 'transition' && nextPhaseRef.current === 'inhale')) && 'Hold'}
                                   </div>
                                 )}
                               </div>
                             </div>
 
                           {/* Phase Indicator - 3 Boxes */}
-                          <div className="flex justify-between gap-3 mt-8" style={{ width: '360px' }}>
+                          <div className="flex justify-between gap-3 mt-8" style={{ width: '300px' }}>
                             {/* Breathe In Box */}
                             <div
                               className="flex flex-col items-center justify-center rounded-lg p-6 transition-all duration-300"
                               style={{
-                                backgroundColor: breathingPhase === 'inhale' ? '#746996' : '#E5E7EB',
-                                width: '112px',
+                                backgroundColor: (breathingPhase === 'inhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold1')) ? '#746996' : '#E5E7EB',
+                                width: '92px',
                                 minHeight: '100px'
                               }}
                             >
-                              <div className={`text-sm font-semibold mb-2 text-center leading-tight ${breathingPhase === 'inhale' ? 'text-white' : 'text-gray-600'}`}>
+                              <div className={`text-sm font-semibold mb-2 text-center leading-tight ${(breathingPhase === 'inhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold1')) ? 'text-white' : 'text-gray-600'}`}>
                                 Breathe<br />In
                               </div>
-                              <div className={`text-2xl text-center ${breathingPhase === 'inhale' ? 'text-white' : 'text-gray-400'}`}>
+                              <div className={`text-2xl text-center ${(breathingPhase === 'inhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold1')) ? 'text-white' : 'text-gray-400'}`}>
                                 ↑↑
                               </div>
                             </div>
@@ -2679,15 +2707,15 @@ export default function Home() {
                             <div
                               className="flex flex-col items-center justify-center rounded-lg p-6 transition-all duration-300"
                               style={{
-                                backgroundColor: (breathingPhase === 'hold1' || breathingPhase === 'hold2') ? '#F7D6EC' : '#E5E7EB',
-                                width: '112px',
+                                backgroundColor: (breathingPhase === 'hold1' || breathingPhase === 'hold2' || (breathingPhase === 'transition' && (nextPhaseRef.current === 'exhale' || nextPhaseRef.current === 'inhale'))) ? '#F7D6EC' : '#E5E7EB',
+                                width: '92px',
                                 minHeight: '100px'
                               }}
                             >
-                              <div className={`text-sm font-semibold mb-2 text-center ${(breathingPhase === 'hold1' || breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-600'}`}>
+                              <div className={`text-sm font-semibold mb-2 text-center ${(breathingPhase === 'hold1' || breathingPhase === 'hold2' || (breathingPhase === 'transition' && (nextPhaseRef.current === 'exhale' || nextPhaseRef.current === 'inhale'))) ? 'text-gray-800' : 'text-gray-600'}`}>
                                 Hold
                               </div>
-                              <div className={`text-2xl text-center ${(breathingPhase === 'hold1' || breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-400'}`} style={{ letterSpacing: '0.15em' }}>
+                              <div className={`text-2xl text-center ${(breathingPhase === 'hold1' || breathingPhase === 'hold2' || (breathingPhase === 'transition' && (nextPhaseRef.current === 'exhale' || nextPhaseRef.current === 'inhale'))) ? 'text-gray-800' : 'text-gray-400'}`} style={{ letterSpacing: '0.15em' }}>
                                 ||
                               </div>
                             </div>
@@ -2696,15 +2724,15 @@ export default function Home() {
                             <div
                               className="flex flex-col items-center justify-center rounded-lg p-6 transition-all duration-300"
                               style={{
-                                backgroundColor: breathingPhase === 'exhale' ? '#AD8FC6' : '#E5E7EB',
-                                width: '112px',
+                                backgroundColor: (breathingPhase === 'exhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold2')) ? '#AD8FC6' : '#E5E7EB',
+                                width: '92px',
                                 minHeight: '100px'
                               }}
                             >
-                              <div className={`text-sm font-semibold mb-2 text-center ${breathingPhase === 'exhale' ? 'text-white' : 'text-gray-600'}`}>
+                              <div className={`text-sm font-semibold mb-2 text-center ${(breathingPhase === 'exhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold2')) ? 'text-white' : 'text-gray-600'}`}>
                                 Breathe Out
                               </div>
-                              <div className={`text-2xl text-center ${breathingPhase === 'exhale' ? 'text-white' : 'text-gray-400'}`}>
+                              <div className={`text-2xl text-center ${(breathingPhase === 'exhale' || (breathingPhase === 'transition' && nextPhaseRef.current === 'hold2')) ? 'text-white' : 'text-gray-400'}`}>
                                 ↓↓
                               </div>
                             </div>
