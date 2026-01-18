@@ -404,7 +404,7 @@ export default function Home() {
       setIsExercising(true);
       setIsPaused(false);
       setBreathingPhase('inhale');
-      setTimer(selectedExercise?.name === 'Physiological Sigh' ? 0 : 0);
+      setTimer(selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? 1 : 0);
       setCurrentCycle(0);
       return;
     }
@@ -673,34 +673,34 @@ export default function Home() {
           // Box Breathing pattern (4-4-4-4) - second-based counting
           // Each phase is exactly 4 seconds: timer counts 1,2,3,4 then transitions
           if (breathingPhase === 'inhale') {
-            // INHALE: 0→4 (exactly 4 seconds)
+            // INHALE: 1→4 (exactly 4 seconds)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
               // Timer reached 4, transition to next phase
               setBreathingPhase('hold1');
-              return 0; // Start HOLD1 at 0
+              return 1; // Start HOLD1 at 1
             }
           } else if (breathingPhase === 'hold1') {
-            // HOLD1: 0→4 (exactly 4 seconds)
+            // HOLD1: 1→4 (exactly 4 seconds)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
               // Timer reached 4, transition to exhale
               setBreathingPhase('exhale');
-              return 4; // Start EXHALE at 4
+              return 1; // Start EXHALE at 1
             }
           } else if (breathingPhase === 'exhale') {
-            // EXHALE: 4→0 (exactly 4 seconds)
-            if (prevTimer > 0) {
-              return prevTimer - 1;
+            // EXHALE: 1→4 (exactly 4 seconds)
+            if (prevTimer < 4) {
+              return prevTimer + 1;
             } else {
-              // Timer reached 0, transition to next phase
+              // Timer reached 4, transition to next phase
               setBreathingPhase('hold2');
-              return 0; // Start HOLD2 at 0
+              return 1; // Start HOLD2 at 1
             }
           } else if (breathingPhase === 'hold2') {
-            // HOLD2: 0→4 (exactly 4 seconds)
+            // HOLD2: 1→4 (exactly 4 seconds)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
@@ -712,12 +712,12 @@ export default function Home() {
                 setExerciseCompleted(true);
                 setCurrentCycle(0);
                 setBreathingPhase('inhale');
-                return 0;
+                return 1;
               } else {
                 // Continue to next cycle
                 setCurrentCycle(nextCycle);
                 setBreathingPhase('inhale');
-                return 0;
+                return 1;
               }
             }
           }
@@ -2487,7 +2487,7 @@ export default function Home() {
                               onClick={() => {
                                 setExerciseCompleted(false);
                                 setCurrentCycle(0);
-                                setTimer(selectedExercise?.name === 'Physiological Sigh' ? 0 : 0);
+                                setTimer(selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? 1 : 0);
                                 setBreathingPhase('inhale');
                                 setIsExercising(true);
                               }}
@@ -2514,10 +2514,8 @@ export default function Home() {
                                   const activeSquares = new Set();
 
                                   // Determine how many squares to light up in current phase
-                                  // For exhale, timer goes 4→0, so invert it to get progressive lighting
-                                  const numSquares = breathingPhase === 'exhale'
-                                    ? Math.min(Math.max(4 - timer, 0), 4)
-                                    : Math.min(Math.max(timer, 0), 4);
+                                  // All phases now count 0→4 progressively
+                                  const numSquares = Math.min(Math.max(timer, 0), 4);
 
                                   if (breathingPhase === 'inhale') {
                                     // Top row: light up squares 2, 3, 4, 5 progressively
@@ -2555,8 +2553,8 @@ export default function Home() {
                                 };
 
                                 const activeSquares = getActiveSquares();
-                                const squareSize = 45;
-                                const spacing = 8;
+                                const squareSize = 54;
+                                const spacing = 7;
 
                                 // Define square positions - 16 squares forming a border
                                 // Layout: 6 top + 2 right + 6 bottom + 2 left = 16 total
@@ -2594,10 +2592,10 @@ export default function Home() {
                                     return '#746996'; // Blue Violet
                                   } else if (squareId >= 6 && squareId <= 9) {
                                     // Right side - lit during hold1
-                                    return '#E1AFD1'; // Light Orchid
+                                    return '#E7AFDF'; // Light Orchid
                                   } else if (squareId >= 10 && squareId <= 13) {
                                     // Bottom row - lit during exhale
-                                    return '#AD88C6'; // African Violet
+                                    return '#AD8FC6'; // African Violet
                                   } else if (squareId === 14 || squareId === 15 || squareId === 16 || squareId === 1) {
                                     // Left side - lit during hold2
                                     return '#FFE6F7'; // Misty Rose
@@ -2681,7 +2679,7 @@ export default function Home() {
                             <div
                               className="flex flex-col items-center justify-center rounded-lg p-6 transition-all duration-300"
                               style={{
-                                backgroundColor: (breathingPhase === 'hold1' || breathingPhase === 'hold2') ? '#E1AFD1' : '#E5E7EB',
+                                backgroundColor: (breathingPhase === 'hold1' || breathingPhase === 'hold2') ? '#E7AFDF' : '#E5E7EB',
                                 width: '112px',
                                 minHeight: '100px'
                               }}
@@ -2698,7 +2696,7 @@ export default function Home() {
                             <div
                               className="flex flex-col items-center justify-center rounded-lg p-6 transition-all duration-300"
                               style={{
-                                backgroundColor: breathingPhase === 'exhale' ? '#AD88C6' : '#E5E7EB',
+                                backgroundColor: breathingPhase === 'exhale' ? '#AD8FC6' : '#E5E7EB',
                                 width: '112px',
                                 minHeight: '100px'
                               }}
