@@ -2517,14 +2517,6 @@ export default function Home() {
                           {/* 16-Square Border Breathing Animation - Box Breathing Only */}
                           <div className="flex-1 flex flex-col items-center justify-center w-full">
                             <div className="relative" style={{ width: '360px', height: '240px' }}>
-                              {/* Background gradient */}
-                              <div
-                                className="absolute inset-0"
-                                style={{
-                                  background: 'linear-gradient(to bottom, rgba(255, 230, 247, 0.3) 0%, rgba(246, 208, 234, 0.25) 50%, rgba(225, 175, 209, 0.2) 100%)',
-                                  borderRadius: '15px'
-                                }}
-                              />
 
                               {(() => {
                                 // Calculate which squares should be highlighted
@@ -2534,8 +2526,10 @@ export default function Home() {
                                   const activeSquares = new Set();
 
                                   // Determine how many squares to light up in current phase
-                                  // Timer goes 0→4, we want to light up 0-4 squares progressively
-                                  const numSquares = Math.min(Math.max(timer, 0), 4);
+                                  // For exhale, timer goes 4→0, so invert it to get progressive lighting
+                                  const numSquares = breathingPhase === 'exhale'
+                                    ? Math.min(Math.max(4 - timer, 0), 4)
+                                    : Math.min(Math.max(timer, 0), 4);
 
                                   if (breathingPhase === 'inhale') {
                                     // Top row: light up squares 2, 3, 4, 5 progressively
@@ -2602,6 +2596,27 @@ export default function Home() {
                                   { id: 16, x: 0, y: squareSize + spacing },
                                 ];
 
+                                // Determine fill color based on breathing phase
+                                const getSquareColor = (squareId) => {
+                                  if (!activeSquares.has(squareId)) return '#E5E7EB'; // Inactive gray
+
+                                  // Determine which phase this square belongs to
+                                  if (squareId >= 2 && squareId <= 5) {
+                                    // Top row - lit during inhale
+                                    return '#746996'; // Blue Violet
+                                  } else if (squareId >= 6 && squareId <= 9) {
+                                    // Right side - lit during hold1
+                                    return '#E1AFD1'; // Light Orchid
+                                  } else if (squareId >= 10 && squareId <= 13) {
+                                    // Bottom row - lit during exhale
+                                    return '#AD88C6'; // African Violet
+                                  } else if (squareId === 14 || squareId === 15 || squareId === 16 || squareId === 1) {
+                                    // Left side - lit during hold2
+                                    return '#FFE6F7'; // Misty Rose
+                                  }
+                                  return '#E5E7EB';
+                                };
+
                                 return (
                                   <svg
                                     className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
@@ -2609,14 +2624,6 @@ export default function Home() {
                                     height="240"
                                     viewBox="0 0 360 240"
                                   >
-                                    <defs>
-                                      {/* Purple gradient for active squares */}
-                                      <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" stopColor="#AD88C6" stopOpacity="1" />
-                                        <stop offset="100%" stopColor="#7469B6" stopOpacity="1" />
-                                      </linearGradient>
-                                    </defs>
-
                                     {/* Render all 16 squares */}
                                     {squares.map((square) => (
                                       <rect
@@ -2626,7 +2633,7 @@ export default function Home() {
                                         width={squareSize}
                                         height={squareSize}
                                         rx="8"
-                                        fill={activeSquares.has(square.id) ? 'url(#purpleGradient)' : '#E5E7EB'}
+                                        fill={getSquareColor(square.id)}
                                         style={{
                                           transition: 'fill 0.3s ease-in-out'
                                         }}
