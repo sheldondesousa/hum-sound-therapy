@@ -3008,48 +3008,38 @@ export default function Home() {
                     {!exerciseCompleted && (
                     <div className="flex-[0.15] flex flex-col items-center justify-end pb-8">
                       <div className="flex items-center justify-center w-full max-w-md px-4">
-                      {/* Start/Pause Button - Centered with outer ring */}
-                      <div
-                        className="rounded-full p-1 flex items-center justify-center"
-                        style={{
-                          background: isPaused || exerciseCompleted
-                            ? 'black'
-                            : 'linear-gradient(135deg, #FFE6E6, #8A2BE2)',
-                          padding: '4px'
+                      {/* Start/Pause Button - Centered */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (exerciseCompleted) {
+                            // Restart exercise from beginning with countdown
+                            setExerciseCompleted(false);
+                            setCountdown(3);
+                            setIsPaused(false);
+                            setCurrentCycle(0);
+                            setBreathingPhase('inhale');
+                            setTimer(selectedExercise?.name === 'Physiological Sigh' ? 0 : 0);
+                            phaseHoldRef.current = false; // Reset phase hold flag
+                          } else if (isPaused) {
+                            // Resume from pause
+                            setIsPaused(false);
+                          } else if (countdown !== null && countdown > 0) {
+                            // Pause during countdown
+                            setIsPaused(true);
+                          } else if (isExercising) {
+                            // Pause during exercise
+                            setIsPaused(true);
+                          }
                         }}
+                        className={`w-20 h-20 rounded-full hover:opacity-90 transition-opacity font-medium text-sm border-2 flex items-center justify-center ${
+                          isPaused || exerciseCompleted
+                            ? 'bg-black text-white border-black'
+                            : 'bg-transparent text-black border-black'
+                        }`}
                       >
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (exerciseCompleted) {
-                              // Restart exercise from beginning with countdown
-                              setExerciseCompleted(false);
-                              setCountdown(3);
-                              setIsPaused(false);
-                              setCurrentCycle(0);
-                              setBreathingPhase('inhale');
-                              setTimer(selectedExercise?.name === 'Physiological Sigh' ? 0 : 0);
-                              phaseHoldRef.current = false; // Reset phase hold flag
-                            } else if (isPaused) {
-                              // Resume from pause
-                              setIsPaused(false);
-                            } else if (countdown !== null && countdown > 0) {
-                              // Pause during countdown
-                              setIsPaused(true);
-                            } else if (isExercising) {
-                              // Pause during exercise
-                              setIsPaused(true);
-                            }
-                          }}
-                          className={`w-20 h-20 rounded-full hover:opacity-90 transition-opacity font-medium text-sm border-2 flex items-center justify-center ${
-                            isPaused || exerciseCompleted
-                              ? 'bg-black text-white border-black'
-                              : 'bg-transparent text-black border-black'
-                          }`}
-                        >
-                          {exerciseCompleted || isPaused ? 'Start' : 'Pause'}
-                        </button>
-                      </div>
+                        {exerciseCompleted || isPaused ? 'Start' : 'Pause'}
+                      </button>
                       </div>
                     </div>
                     )}
