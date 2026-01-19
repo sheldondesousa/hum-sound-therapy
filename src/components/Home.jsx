@@ -1030,9 +1030,9 @@ export default function Home() {
 
   // Get smooth circle size for 4-7-8 Breathing
   const get478CircleSize = () => {
-    if (!isExercising || !animationReady) return 100;
+    if (!isExercising || !animationReady) return 0;
 
-    const minSize = 100;
+    const minSize = 0;
     const maxSize = 340;
 
     if (breathingPhase === 'inhale') {
@@ -2679,7 +2679,7 @@ export default function Home() {
                             )}
 
                             {/* Single Expanding/Compressing Circle with Radial Gradient */}
-                            {animationReady && breathingPhase !== 'exhale' && !(breathingPhase === 'inhale' && timer === 0) && (
+                            {animationReady && !(breathingPhase === 'inhale' && timer === 0) && !(breathingPhase === 'exhale' && timer === 0) && (
                               <div
                                 className="rounded-full absolute"
                                 style={{
