@@ -1186,11 +1186,11 @@ export default function Home() {
       // Last 1 second (30-39): Fill remaining 25% with Part 2 gradient
       if (timer <= 29) {
         // 0-3 seconds: progress from 0% to 75%
-        const progress = (timer / 30) * 0.75; // 0 to 0.75
+        const progress = ((timer + 1) / 30) * 0.75; // 0.025 to 0.75
         return { progress1: progress, progress2: 0 };
       } else {
         // 3-4 seconds: progress from 75% to 100%
-        const progress = ((timer - 30) / 10) * 0.25; // 0 to 0.25
+        const progress = ((timer - 29) / 10) * 0.25; // 0.025 to 0.25
         return { progress1: 0.75, progress2: progress };
       }
     } else if (breathingPhase === 'hold1') {
@@ -2896,7 +2896,7 @@ export default function Home() {
                                     {/* Part 1 Progress (0-75% of circle) */}
                                     {progress1 > 0 && (
                                       <path
-                                        d={createArcPath(0, progress1 * 360 / 0.75)}
+                                        d={createArcPath(0, progress1 * 360)}
                                         fill="url(#physiological-gradient-1)"
                                         style={{ transition: 'all 100ms linear' }}
                                       />
@@ -2905,7 +2905,7 @@ export default function Home() {
                                     {/* Part 2 Progress (75-100% of circle) */}
                                     {progress2 > 0 && (
                                       <path
-                                        d={createArcPath(270, 270 + (progress2 * 360 / 0.25))}
+                                        d={createArcPath(270, 270 + progress2 * 360)}
                                         fill="url(#physiological-gradient-2)"
                                         style={{ transition: 'all 100ms linear' }}
                                       />
