@@ -3144,12 +3144,12 @@ export default function Home() {
                         <div className="flex items-center justify-center gap-6">
                           {/* Part 1 Gradient Legend (75% - First 3 seconds) */}
                           <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full" style={{ background: 'linear-gradient(135deg, #FFE4E1 0%, #E6E6FA 50%, #FADADD 100%)' }}></div>
+                            <div className="w-4 h-4 rounded-full" style={{ background: 'linear-gradient(135deg, #FFE6E6 0%, #F6D0EA 50%, #E1AFD1 100%)' }}></div>
                             <span className="text-sm text-gray-700 font-medium">Long breath (0-3s)</span>
                           </div>
                           {/* Part 2 Gradient Legend (25% - Last 1 second) */}
                           <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full" style={{ background: 'linear-gradient(135deg, #B284BE 0%, #9D56A8 50%, #8A2BE2 100%)' }}></div>
+                            <div className="w-4 h-4 rounded-full" style={{ background: 'linear-gradient(135deg, #AD88C6 0%, #9179BE 50%, #7469B6 100%)' }}></div>
                             <span className="text-sm text-gray-700 font-medium">Quick short breath (1s)</span>
                           </div>
                         </div>
