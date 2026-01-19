@@ -1176,49 +1176,37 @@ export default function Home() {
     return { x: centerOffset, y: centerOffset };
   };
 
-  // Get smooth circle data for Physiological Sigh
-  const getPhysiologicalCircleSize = () => {
-    if (!isExercising || exerciseCompleted) return 0;
-
-    const minSize = 0; // Start and end at 0 (no circle)
-    const maxSize = 340;
+  // Get circular progress data for Physiological Sigh (clock-based animation)
+  const getPhysiologicalCircleProgress = () => {
+    if (!isExercising || exerciseCompleted) return { progress1: 0, progress2: 0 };
 
     if (breathingPhase === 'inhale') {
       // INHALE: timer goes from 0-39 (4 seconds total)
-      // First 3 seconds (0-29): Blue expands (long breath)
-      // Last 1 second (30-39): Blue stays at max, green flash (quick short breath)
+      // First 3 seconds (0-29): Fill 75% of circle with Part 1 gradient
+      // Last 1 second (30-39): Fill remaining 25% with Part 2 gradient
       if (timer <= 29) {
-        const progress = timer / 29; // 0 to 1 over 3 seconds
-
-        // Calculate current size with smooth easing
-        const easeProgress = progress < 0.5
-          ? 2 * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-
-        return minSize + (maxSize - minSize) * easeProgress;
+        // 0-3 seconds: progress from 0% to 75%
+        const progress = (timer / 29) * 0.75; // 0 to 0.75
+        return { progress1: progress, progress2: 0 };
       } else {
-        // Last second (30-39): Stay at max for quick short breath
-        return maxSize;
+        // 3-4 seconds: progress from 75% to 100%
+        const progress = ((timer - 30) / 9) * 0.25; // 0 to 0.25
+        return { progress1: 0.75, progress2: progress };
       }
     } else if (breathingPhase === 'hold1') {
-      // HOLD1: Stay at max size after INHALE completes
-      return maxSize;
+      // HOLD1: Stay at 100%
+      return { progress1: 0.75, progress2: 0.25 };
     } else if (breathingPhase === 'exhale') {
-      // EXHALE: timer goes from 79-0 (8 seconds) - shrinks from max to 0
+      // EXHALE: timer goes from 79-0 (8 seconds) - empty from 100% to 0%
       const progress = timer / 79; // 1 to 0
-
-      // Calculate current size with smooth easing
-      const easeProgress = progress < 0.5
-        ? 2 * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-
-      return minSize + (maxSize - minSize) * easeProgress;
+      // Show both parts proportionally during exhale
+      return { progress1: progress * 0.75, progress2: progress * 0.25 };
     } else if (breathingPhase === 'hold2') {
-      // HOLD2: Stay at min size after EXHALE completes - now returns 0
-      return 0;
+      // HOLD2: Stay at 0%
+      return { progress1: 0, progress2: 0 };
     }
 
-    return 0;
+    return { progress1: 0, progress2: 0 };
   };
 
   const handleLogout = async () => {
@@ -2840,17 +2828,32 @@ export default function Home() {
                           </div>
                         </>
                       ) : selectedExercise?.name === 'Physiological Sigh' ? (
-                        /* Physiological Sigh Animation - Coherent Style */
+                        /* Physiological Sigh Animation - Clock-based circular progress */
                         <>
                           {/* Breathing Circle Illustration - Physiological Sigh */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Gray Background Circle - Flashes green during last 1 second of INHALE */}
                             <svg
                               className="absolute"
                               width="363"
                               height="363"
                               style={{ transform: 'rotate(-90deg)' }}
                             >
+                              {/* Define gradients */}
+                              <defs>
+                                {/* Part 1 Gradient: Misty Rose, Light Orchid, Pale Pink */}
+                                <linearGradient id="physiological-gradient-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                  <stop offset="0%" stopColor="#FFE4E1" /> {/* Misty Rose */}
+                                  <stop offset="50%" stopColor="#E6E6FA" /> {/* Lavender (Light Orchid) */}
+                                  <stop offset="100%" stopColor="#FADADD" /> {/* Pale Pink */}
+                                </linearGradient>
+                                {/* Part 2 Gradient: African Violet, Blue Violet */}
+                                <linearGradient id="physiological-gradient-2" x1="0%" y1="0%" x2="100%" y2="100%">
+                                  <stop offset="0%" stopColor="#B284BE" /> {/* African Violet */}
+                                  <stop offset="100%" stopColor="#8A2BE2" /> {/* Blue Violet */}
+                                </linearGradient>
+                              </defs>
+
+                              {/* Gray Background Circle */}
                               <circle
                                 cx="181.5"
                                 cy="181.5"
@@ -2858,22 +2861,57 @@ export default function Home() {
                                 fill="none"
                                 stroke="#E5E7EB"
                                 strokeWidth="4"
-                                className={breathingPhase === 'inhale' && timer === 30 ? 'flash-green' : ''}
-                                key={breathingPhase === 'inhale' && timer === 30 ? 'green' : 'gray'}
                               />
-                            </svg>
 
-                            {/* Single Expanding/Compressing Circle with Radial Gradient */}
-                            <div
-                              className="rounded-full absolute"
-                              style={{
-                                width: `${getPhysiologicalCircleSize()}px`,
-                                height: `${getPhysiologicalCircleSize()}px`,
-                                background: 'radial-gradient(circle, rgba(6, 122, 195, 1) 0%, rgba(6, 122, 195, 0.6) 50%, rgba(6, 122, 195, 0.2) 100%)',
-                                boxShadow: '0 0 30px rgba(6, 122, 195, 0.5)',
-                                transition: 'all 100ms linear'
-                              }}
-                            />
+                              {/* Part 1 Progress Arc (0-75% of circle) */}
+                              {(() => {
+                                const { progress1 } = getPhysiologicalCircleProgress();
+                                if (progress1 > 0) {
+                                  const circumference = 2 * Math.PI * 175;
+                                  const strokeDashoffset = circumference * (1 - progress1);
+                                  return (
+                                    <circle
+                                      cx="181.5"
+                                      cy="181.5"
+                                      r="175"
+                                      fill="none"
+                                      stroke="url(#physiological-gradient-1)"
+                                      strokeWidth="8"
+                                      strokeDasharray={circumference}
+                                      strokeDashoffset={strokeDashoffset}
+                                      strokeLinecap="round"
+                                      style={{ transition: 'stroke-dashoffset 100ms linear' }}
+                                    />
+                                  );
+                                }
+                                return null;
+                              })()}
+
+                              {/* Part 2 Progress Arc (75-100% of circle) */}
+                              {(() => {
+                                const { progress1, progress2 } = getPhysiologicalCircleProgress();
+                                if (progress2 > 0) {
+                                  const circumference = 2 * Math.PI * 175;
+                                  const part1Offset = circumference * (1 - 0.75); // Where part 1 ends
+                                  const strokeDashoffset = part1Offset - (circumference * progress2);
+                                  return (
+                                    <circle
+                                      cx="181.5"
+                                      cy="181.5"
+                                      r="175"
+                                      fill="none"
+                                      stroke="url(#physiological-gradient-2)"
+                                      strokeWidth="8"
+                                      strokeDasharray={circumference}
+                                      strokeDashoffset={strokeDashoffset}
+                                      strokeLinecap="round"
+                                      style={{ transition: 'stroke-dashoffset 100ms linear' }}
+                                    />
+                                  );
+                                }
+                                return null;
+                              })()}
+                            </svg>
 
                             {/* Phase Text - At Center of Circle */}
                             <div className="absolute text-center">
@@ -3092,15 +3130,15 @@ export default function Home() {
                       {/* Legend for Physiological Sigh - Show after countdown completes with 150ms delay */}
                       {selectedExercise?.name === 'Physiological Sigh' && showLegend && (
                         <div className="flex items-center justify-center gap-6">
-                          {/* Blue Legend */}
+                          {/* Part 1 Gradient Legend (75% - First 3 seconds) */}
                           <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'rgba(6, 122, 195, 1)' }}></div>
-                            <span className="text-sm text-gray-700 font-medium">Long breath</span>
+                            <div className="w-4 h-4 rounded-full" style={{ background: 'linear-gradient(135deg, #FFE4E1 0%, #E6E6FA 50%, #FADADD 100%)' }}></div>
+                            <span className="text-sm text-gray-700 font-medium">Long breath (0-3s)</span>
                           </div>
-                          {/* Green Legend */}
+                          {/* Part 2 Gradient Legend (25% - Last 1 second) */}
                           <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#6EE7B7' }}></div>
-                            <span className="text-sm text-gray-700 font-medium">Quick short breath</span>
+                            <div className="w-4 h-4 rounded-full" style={{ background: 'linear-gradient(135deg, #B284BE 0%, #8A2BE2 100%)' }}></div>
+                            <span className="text-sm text-gray-700 font-medium">Quick short breath (3-4s)</span>
                           </div>
                         </div>
                       )}
