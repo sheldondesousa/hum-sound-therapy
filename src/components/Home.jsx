@@ -2737,21 +2737,70 @@ export default function Home() {
                                 height: `${getCoherentCircleSize()}px`,
                                 background: (() => {
                                   const size = getCoherentCircleSize();
-                                  const intensity = size / 340; // 0 to 1, lighter when smaller, darker when larger
-                                  const baseR = 116, baseG = 105, baseB = 187;
-                                  // Lighter at small size (higher values), darker at large size (base values)
-                                  const r = Math.round(baseR + (255 - baseR) * (1 - intensity));
-                                  const g = Math.round(baseG + (255 - baseG) * (1 - intensity));
-                                  const b = Math.round(baseB + (255 - baseB) * (1 - intensity));
+                                  const intensity = size / 340; // 0 to 1, from empty to full
+
+                                  // 4-color gradient sequence: blue-violet → african violet → light orchid → pale pink
+                                  const colors = [
+                                    { r: 138, g: 43, b: 226 },    // Blue-violet (empty)
+                                    { r: 178, g: 132, b: 190 },   // African violet (33%)
+                                    { r: 230, g: 168, b: 215 },   // Light orchid (66%)
+                                    { r: 255, g: 209, b: 220 }    // Pale pink (full)
+                                  ];
+
+                                  // Calculate which color segment we're in and interpolate
+                                  let r, g, b;
+                                  if (intensity <= 0.33) {
+                                    // Interpolate between blue-violet and african violet
+                                    const t = intensity / 0.33;
+                                    r = Math.round(colors[0].r + (colors[1].r - colors[0].r) * t);
+                                    g = Math.round(colors[0].g + (colors[1].g - colors[0].g) * t);
+                                    b = Math.round(colors[0].b + (colors[1].b - colors[0].b) * t);
+                                  } else if (intensity <= 0.66) {
+                                    // Interpolate between african violet and light orchid
+                                    const t = (intensity - 0.33) / 0.33;
+                                    r = Math.round(colors[1].r + (colors[2].r - colors[1].r) * t);
+                                    g = Math.round(colors[1].g + (colors[2].g - colors[1].g) * t);
+                                    b = Math.round(colors[1].b + (colors[2].b - colors[1].b) * t);
+                                  } else {
+                                    // Interpolate between light orchid and pale pink
+                                    const t = (intensity - 0.66) / 0.34;
+                                    r = Math.round(colors[2].r + (colors[3].r - colors[2].r) * t);
+                                    g = Math.round(colors[2].g + (colors[3].g - colors[2].g) * t);
+                                    b = Math.round(colors[2].b + (colors[3].b - colors[2].b) * t);
+                                  }
+
                                   return `radial-gradient(circle, rgba(${r}, ${g}, ${b}, 1) 0%, rgba(${r}, ${g}, ${b}, 0.6) 50%, rgba(${r}, ${g}, ${b}, 0.2) 100%)`;
                                 })(),
                                 boxShadow: (() => {
                                   const size = getCoherentCircleSize();
                                   const intensity = size / 340;
-                                  const baseR = 116, baseG = 105, baseB = 187;
-                                  const r = Math.round(baseR + (255 - baseR) * (1 - intensity));
-                                  const g = Math.round(baseG + (255 - baseG) * (1 - intensity));
-                                  const b = Math.round(baseB + (255 - baseB) * (1 - intensity));
+
+                                  // Use same color calculation for box shadow
+                                  const colors = [
+                                    { r: 138, g: 43, b: 226 },
+                                    { r: 178, g: 132, b: 190 },
+                                    { r: 230, g: 168, b: 215 },
+                                    { r: 255, g: 209, b: 220 }
+                                  ];
+
+                                  let r, g, b;
+                                  if (intensity <= 0.33) {
+                                    const t = intensity / 0.33;
+                                    r = Math.round(colors[0].r + (colors[1].r - colors[0].r) * t);
+                                    g = Math.round(colors[0].g + (colors[1].g - colors[0].g) * t);
+                                    b = Math.round(colors[0].b + (colors[1].b - colors[0].b) * t);
+                                  } else if (intensity <= 0.66) {
+                                    const t = (intensity - 0.33) / 0.33;
+                                    r = Math.round(colors[1].r + (colors[2].r - colors[1].r) * t);
+                                    g = Math.round(colors[1].g + (colors[2].g - colors[1].g) * t);
+                                    b = Math.round(colors[1].b + (colors[2].b - colors[1].b) * t);
+                                  } else {
+                                    const t = (intensity - 0.66) / 0.34;
+                                    r = Math.round(colors[2].r + (colors[3].r - colors[2].r) * t);
+                                    g = Math.round(colors[2].g + (colors[3].g - colors[2].g) * t);
+                                    b = Math.round(colors[2].b + (colors[3].b - colors[2].b) * t);
+                                  }
+
                                   return `0 0 30px rgba(${r}, ${g}, ${b}, 0.5)`;
                                 })(),
                                 transition: 'all 100ms linear'
