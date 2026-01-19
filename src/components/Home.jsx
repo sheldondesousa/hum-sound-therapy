@@ -1186,11 +1186,11 @@ export default function Home() {
       // Last 1 second (30-39): Fill remaining 25% with Part 2 gradient
       if (timer <= 29) {
         // 0-3 seconds: progress from 0% to 75%
-        const progress = (timer / 29) * 0.75; // 0 to 0.75
+        const progress = (timer / 30) * 0.75; // 0 to 0.75
         return { progress1: progress, progress2: 0 };
       } else {
         // 3-4 seconds: progress from 75% to 100%
-        const progress = ((timer - 30) / 9) * 0.25; // 0 to 0.25
+        const progress = ((timer - 30) / 10) * 0.25; // 0 to 0.25
         return { progress1: 0.75, progress2: progress };
       }
     } else if (breathingPhase === 'hold1') {
@@ -1198,7 +1198,7 @@ export default function Home() {
       return { progress1: 0.75, progress2: 0.25 };
     } else if (breathingPhase === 'exhale') {
       // EXHALE: timer goes from 79-0 (8 seconds) - empty from 100% to 0%
-      const progress = timer / 79; // 1 to 0
+      const progress = timer / 80; // 1 to 0
       // Show both parts proportionally during exhale
       return { progress1: progress * 0.75, progress2: progress * 0.25 };
     } else if (breathingPhase === 'hold2') {
@@ -2472,8 +2472,8 @@ export default function Home() {
                                       : `${Math.ceil(timer / 10)}s`)  // EXHALE: alternateNostrilBreathTime to 0s (e.g., 4s-0s)
                                   : selectedExercise?.name === 'Physiological Sigh'
                                     ? (breathingPhase === 'inhale'
-                                        ? `${Math.ceil((timer + 1) / 10)}s`  // INHALE: 0-39 → 1s-4s
-                                        : `${Math.ceil(timer / 10)}s`)       // EXHALE: 79-0 → 8s-0s
+                                        ? `${Math.round(timer / 10)}s`  // INHALE: 0-39 → 0s-4s
+                                        : `${Math.ceil(timer / 10)}s`)  // EXHALE: 79-0 → 8s-0s
                                     : selectedExercise?.name === '4-7-8 Breathing'
                                       ? (breathingPhase === 'inhale'
                                           ? `${Math.floor(timer / 10)}s`  // INHALE: 0-40 → 0s-4s
@@ -2828,7 +2828,7 @@ export default function Home() {
                           </div>
                         </>
                       ) : selectedExercise?.name === 'Physiological Sigh' ? (
-                        /* Physiological Sigh Animation - Clock-based circular progress */
+                        /* Physiological Sigh Animation - Filled circular progress */
                         <>
                           {/* Breathing Circle Illustration - Physiological Sigh */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
@@ -2836,7 +2836,7 @@ export default function Home() {
                               className="absolute"
                               width="363"
                               height="363"
-                              style={{ transform: 'rotate(-90deg)' }}
+                              viewBox="0 0 363 363"
                             >
                               {/* Define gradients */}
                               <defs>
@@ -2858,58 +2858,60 @@ export default function Home() {
                                 cx="181.5"
                                 cy="181.5"
                                 r="175"
-                                fill="none"
-                                stroke="#E5E7EB"
-                                strokeWidth="4"
+                                fill="#E5E7EB"
                               />
 
-                              {/* Part 1 Progress Arc (0-75% of circle) */}
-                              {(() => {
-                                const { progress1 } = getPhysiologicalCircleProgress();
-                                if (progress1 > 0) {
-                                  const circumference = 2 * Math.PI * 175;
-                                  const strokeDashoffset = circumference * (1 - progress1);
-                                  return (
-                                    <circle
-                                      cx="181.5"
-                                      cy="181.5"
-                                      r="175"
-                                      fill="none"
-                                      stroke="url(#physiological-gradient-1)"
-                                      strokeWidth="8"
-                                      strokeDasharray={circumference}
-                                      strokeDashoffset={strokeDashoffset}
-                                      strokeLinecap="round"
-                                      style={{ transition: 'stroke-dashoffset 100ms linear' }}
-                                    />
-                                  );
-                                }
-                                return null;
-                              })()}
-
-                              {/* Part 2 Progress Arc (75-100% of circle) */}
+                              {/* Progress Circle (filled) */}
                               {(() => {
                                 const { progress1, progress2 } = getPhysiologicalCircleProgress();
-                                if (progress2 > 0) {
-                                  const circumference = 2 * Math.PI * 175;
-                                  const part1Offset = circumference * (1 - 0.75); // Where part 1 ends
-                                  const strokeDashoffset = part1Offset - (circumference * progress2);
-                                  return (
-                                    <circle
-                                      cx="181.5"
-                                      cy="181.5"
-                                      r="175"
-                                      fill="none"
-                                      stroke="url(#physiological-gradient-2)"
-                                      strokeWidth="8"
-                                      strokeDasharray={circumference}
-                                      strokeDashoffset={strokeDashoffset}
-                                      strokeLinecap="round"
-                                      style={{ transition: 'stroke-dashoffset 100ms linear' }}
-                                    />
-                                  );
-                                }
-                                return null;
+                                const totalProgress = progress1 + progress2;
+
+                                if (totalProgress === 0) return null;
+
+                                // Helper function to create arc path
+                                const createArcPath = (startAngle, endAngle) => {
+                                  const cx = 181.5;
+                                  const cy = 181.5;
+                                  const r = 175;
+
+                                  // Convert to radians
+                                  const startRad = (startAngle - 90) * Math.PI / 180;
+                                  const endRad = (endAngle - 90) * Math.PI / 180;
+
+                                  // Calculate start and end points
+                                  const x1 = cx + r * Math.cos(startRad);
+                                  const y1 = cy + r * Math.sin(startRad);
+                                  const x2 = cx + r * Math.cos(endRad);
+                                  const y2 = cy + r * Math.sin(endRad);
+
+                                  // Determine if large arc
+                                  const largeArc = (endAngle - startAngle) > 180 ? 1 : 0;
+
+                                  // Create path: Move to center, line to start, arc to end, close back to center
+                                  return `M ${cx},${cy} L ${x1},${y1} A ${r},${r} 0 ${largeArc},1 ${x2},${y2} Z`;
+                                };
+
+                                return (
+                                  <>
+                                    {/* Part 1 Progress (0-75% of circle) */}
+                                    {progress1 > 0 && (
+                                      <path
+                                        d={createArcPath(0, progress1 * 360 / 0.75)}
+                                        fill="url(#physiological-gradient-1)"
+                                        style={{ transition: 'all 100ms linear' }}
+                                      />
+                                    )}
+
+                                    {/* Part 2 Progress (75-100% of circle) */}
+                                    {progress2 > 0 && (
+                                      <path
+                                        d={createArcPath(270, 270 + (progress2 * 360 / 0.25))}
+                                        fill="url(#physiological-gradient-2)"
+                                        style={{ transition: 'all 100ms linear' }}
+                                      />
+                                    )}
+                                  </>
+                                );
                               })()}
                             </svg>
 
