@@ -2542,16 +2542,16 @@ export default function Home() {
                         <>
                           {/* Phase Indicator - 4 Boxes in Square Pattern (Clockwise) */}
                           <div className="flex-1 flex items-center justify-center w-full relative px-4">
-                            <div className="flex flex-col items-center justify-center gap-4" style={{ maxWidth: '90vw', width: '100%', maxHeight: '80vh' }}>
+                            <div className="flex flex-col items-center justify-center gap-1" style={{ maxWidth: '90vw', width: '100%', maxHeight: '80vh' }}>
                               {/* Top Row - Breathe In and Hold 1 */}
-                              <div className="flex justify-center gap-4 w-full">
+                              <div className="flex justify-center gap-1 w-full">
                                 {/* Breathe In - Top Left */}
                                 <div
                                   className="flex flex-col items-center justify-center rounded-2xl transition-all duration-300 flex-1 aspect-square max-w-[45vw]"
                                   style={{
                                     backgroundColor: (isExercising && countdown === null && breathingPhase === 'inhale') ? '#746996' : '#E5E7EB',
-                                    minWidth: '140px',
-                                    minHeight: '140px'
+                                    minWidth: '178px',
+                                    minHeight: '178px'
                                   }}
                                 >
                                   <div className={`text-base font-semibold mb-2 text-center leading-tight ${(isExercising && countdown === null && breathingPhase === 'inhale') ? 'text-white' : 'text-gray-600'}`}>
@@ -2567,8 +2567,8 @@ export default function Home() {
                                   className="flex flex-col items-center justify-center rounded-2xl transition-all duration-300 flex-1 aspect-square max-w-[45vw]"
                                   style={{
                                     backgroundColor: (isExercising && countdown === null && breathingPhase === 'hold1') ? '#F7D6EC' : '#E5E7EB',
-                                    minWidth: '140px',
-                                    minHeight: '140px'
+                                    minWidth: '178px',
+                                    minHeight: '178px'
                                   }}
                                 >
                                   <div className={`text-base font-semibold mb-2 text-center ${(isExercising && countdown === null && breathingPhase === 'hold1') ? 'text-gray-800' : 'text-gray-600'}`}>
@@ -2588,14 +2588,14 @@ export default function Home() {
                               </div>
 
                               {/* Bottom Row - Hold 2 and Breathe Out */}
-                              <div className="flex justify-center gap-4 w-full">
+                              <div className="flex justify-center gap-1 w-full">
                                 {/* Hold 2 - Bottom Left */}
                                 <div
                                   className="flex flex-col items-center justify-center rounded-2xl transition-all duration-300 flex-1 aspect-square max-w-[45vw]"
                                   style={{
                                     backgroundColor: (isExercising && countdown === null && breathingPhase === 'hold2') ? '#F7D6EC' : '#E5E7EB',
-                                    minWidth: '140px',
-                                    minHeight: '140px'
+                                    minWidth: '178px',
+                                    minHeight: '178px'
                                   }}
                                 >
                                   <div className={`text-base font-semibold mb-2 text-center ${(isExercising && countdown === null && breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-600'}`}>
@@ -2618,8 +2618,8 @@ export default function Home() {
                                   className="flex flex-col items-center justify-center rounded-2xl transition-all duration-300 flex-1 aspect-square max-w-[45vw]"
                                   style={{
                                     backgroundColor: (isExercising && countdown === null && breathingPhase === 'exhale') ? '#AD8FC6' : '#E5E7EB',
-                                    minWidth: '140px',
-                                    minHeight: '140px'
+                                    minWidth: '178px',
+                                    minHeight: '178px'
                                   }}
                                 >
                                   <div className={`text-base font-semibold mb-2 text-center ${(isExercising && countdown === null && breathingPhase === 'exhale') ? 'text-white' : 'text-gray-600'}`}>
