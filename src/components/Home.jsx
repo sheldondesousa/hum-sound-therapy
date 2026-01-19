@@ -12,6 +12,7 @@ export default function Home() {
   const [selectedOption, setSelectedOption] = useState('breathe');
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [currentView, setCurrentView] = useState('interactive'); // 'interactive', 'about', 'support', 'faqs', 'privacy', 'terms', 'breathing-info'
+  const [profileImageError, setProfileImageError] = useState(false);
   const completionTrackedRef = useRef(false);
   const phaseHoldRef = useRef(false); // Track if we've held at final timer value for animation completion
   const nextPhaseRef = useRef(null); // Track target phase for Box Breathing transitions
@@ -107,6 +108,8 @@ export default function Home() {
     if (!selectedExercise) {
       const randomIndex = Math.floor(Math.random() * visuals.length);
       setCurrentVisual(visuals[randomIndex]);
+      // Reset profile image error state to retry loading image
+      setProfileImageError(false);
     }
   }, [selectedExercise]);
 
@@ -1701,11 +1704,15 @@ export default function Home() {
                   {/* Profile Section */}
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
-                      {currentUser?.photoURL ? (
+                      {currentUser?.photoURL && !profileImageError ? (
                         <img
+                          key={currentUser.photoURL}
                           src={currentUser.photoURL}
                           alt="Profile"
                           className="w-full h-full object-cover"
+                          onError={() => {
+                            setProfileImageError(true);
+                          }}
                         />
                       ) : (
                         <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
