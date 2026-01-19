@@ -3137,7 +3137,7 @@ export default function Home() {
                     {selectedOption === 'breathe' && (
                       <div className="mt-1 mb-4 flex-shrink-0">
                         <h3 className="font-semibold text-2xl text-black">
-                          Select from 6 proven techniques
+                          Select a breathing technique
                         </h3>
                       </div>
                     )}
