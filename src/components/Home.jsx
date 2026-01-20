@@ -546,7 +546,8 @@ export default function Home() {
     getHummingBeeCircleSize,
     getBoxBreathingOrbPosition,
     getBoxBreathingIndicatorPosition,
-    getPhysiologicalCircleProgress
+    getPhysiologicalCircleProgress,
+    getPhysiologicalSighCircleSizes
   } = animations;
 
   const handleLogout = async () => {
@@ -2145,7 +2146,7 @@ export default function Home() {
                           </div>
                         </>
                       ) : selectedExercise?.name === 'Physiological Sigh' ? (
-                        /* Physiological Sigh Animation - Same as Coherent Breathing */
+                        /* Physiological Sigh Animation - Two-circle expanding effect */
                         <>
                           {/* Breathing Circle Illustration - Physiological Sigh */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
@@ -2166,94 +2167,46 @@ export default function Home() {
                               />
                             </svg>
 
-                            {/* Single Expanding/Compressing Circle with Radial Gradient */}
-                            <div
-                              className="rounded-full absolute"
-                              style={{
-                                width: `${getCoherentCircleSize()}px`,
-                                height: `${getCoherentCircleSize()}px`,
-                                background: (() => {
-                                  const size = getCoherentCircleSize();
-                                  const intensity = size / 340; // 0 to 1, from empty to full
+                            {(() => {
+                              const { circle1Size, circle2Size } = getPhysiologicalSighCircleSizes();
 
-                                  // 5-color gradient sequence using all app colors
-                                  const colors = [
-                                    { r: 116, g: 105, b: 182 },   // Deep Purple/Blue-Violet (empty)
-                                    { r: 173, g: 136, b: 198 },   // Medium Purple/African Violet (25%)
-                                    { r: 225, g: 175, b: 209 },   // Light Purple/Light Orchid (50%)
-                                    { r: 246, g: 208, b: 234 },   // Pale Orchid (75%)
-                                    { r: 255, g: 230, b: 230 }    // Pale Pink/Misty Rose (full)
-                                  ];
+                              return (
+                                <>
+                                  {/* Circle 2 - Lighter gradient (behind, larger) - Misty Rose to Pale Pink */}
+                                  {circle2Size > 0 && (
+                                    <div
+                                      className="rounded-full absolute"
+                                      style={{
+                                        width: `${circle2Size}px`,
+                                        height: `${circle2Size}px`,
+                                        background: 'radial-gradient(circle, rgba(255, 230, 230, 1) 0%, rgba(246, 208, 234, 0.7) 50%, rgba(246, 208, 234, 0.3) 100%)',
+                                        boxShadow: '0 0 30px rgba(246, 208, 234, 0.5)',
+                                        transition: 'all 100ms linear',
+                                        zIndex: 1
+                                      }}
+                                    />
+                                  )}
 
-                                  // Calculate which color segment we're in and interpolate
-                                  let r, g, b;
-                                  if (intensity <= 0.25) {
-                                    const t = intensity / 0.25;
-                                    r = Math.round(colors[0].r + (colors[1].r - colors[0].r) * t);
-                                    g = Math.round(colors[0].g + (colors[1].g - colors[0].g) * t);
-                                    b = Math.round(colors[0].b + (colors[1].b - colors[0].b) * t);
-                                  } else if (intensity <= 0.5) {
-                                    const t = (intensity - 0.25) / 0.25;
-                                    r = Math.round(colors[1].r + (colors[2].r - colors[1].r) * t);
-                                    g = Math.round(colors[1].g + (colors[2].g - colors[1].g) * t);
-                                    b = Math.round(colors[1].b + (colors[2].b - colors[1].b) * t);
-                                  } else if (intensity <= 0.75) {
-                                    const t = (intensity - 0.5) / 0.25;
-                                    r = Math.round(colors[2].r + (colors[3].r - colors[2].r) * t);
-                                    g = Math.round(colors[2].g + (colors[3].g - colors[2].g) * t);
-                                    b = Math.round(colors[2].b + (colors[3].b - colors[2].b) * t);
-                                  } else {
-                                    const t = (intensity - 0.75) / 0.25;
-                                    r = Math.round(colors[3].r + (colors[4].r - colors[3].r) * t);
-                                    g = Math.round(colors[3].g + (colors[4].g - colors[3].g) * t);
-                                    b = Math.round(colors[3].b + (colors[4].b - colors[3].b) * t);
-                                  }
-
-                                  return `radial-gradient(circle, rgba(${r}, ${g}, ${b}, 1) 0%, rgba(${r}, ${g}, ${b}, 0.6) 50%, rgba(${r}, ${g}, ${b}, 0.2) 100%)`;
-                                })(),
-                                boxShadow: (() => {
-                                  const size = getCoherentCircleSize();
-                                  const intensity = size / 340;
-
-                                  const colors = [
-                                    { r: 116, g: 105, b: 182 },
-                                    { r: 173, g: 136, b: 198 },
-                                    { r: 225, g: 175, b: 209 },
-                                    { r: 247, g: 214, b: 236 },
-                                    { r: 255, g: 230, b: 230 }
-                                  ];
-
-                                  let r, g, b;
-                                  if (intensity <= 0.25) {
-                                    const t = intensity / 0.25;
-                                    r = Math.round(colors[0].r + (colors[1].r - colors[0].r) * t);
-                                    g = Math.round(colors[0].g + (colors[1].g - colors[0].g) * t);
-                                    b = Math.round(colors[0].b + (colors[1].b - colors[0].b) * t);
-                                  } else if (intensity <= 0.5) {
-                                    const t = (intensity - 0.25) / 0.25;
-                                    r = Math.round(colors[1].r + (colors[2].r - colors[1].r) * t);
-                                    g = Math.round(colors[1].g + (colors[2].g - colors[1].g) * t);
-                                    b = Math.round(colors[1].b + (colors[2].b - colors[1].b) * t);
-                                  } else if (intensity <= 0.75) {
-                                    const t = (intensity - 0.5) / 0.25;
-                                    r = Math.round(colors[2].r + (colors[3].r - colors[2].r) * t);
-                                    g = Math.round(colors[2].g + (colors[3].g - colors[2].g) * t);
-                                    b = Math.round(colors[2].b + (colors[3].b - colors[2].b) * t);
-                                  } else {
-                                    const t = (intensity - 0.75) / 0.25;
-                                    r = Math.round(colors[3].r + (colors[4].r - colors[3].r) * t);
-                                    g = Math.round(colors[3].g + (colors[4].g - colors[3].g) * t);
-                                    b = Math.round(colors[3].b + (colors[4].b - colors[3].b) * t);
-                                  }
-
-                                  return `0 0 30px rgba(${r}, ${g}, ${b}, 0.5)`;
-                                })(),
-                                transition: 'all 100ms linear'
-                              }}
-                            />
+                                  {/* Circle 1 - Darker gradient (front, smaller) - African Violet to Blue Violet */}
+                                  {circle1Size > 0 && (
+                                    <div
+                                      className="rounded-full absolute"
+                                      style={{
+                                        width: `${circle1Size}px`,
+                                        height: `${circle1Size}px`,
+                                        background: 'radial-gradient(circle, rgba(173, 136, 198, 1) 0%, rgba(116, 105, 182, 0.8) 50%, rgba(116, 105, 182, 0.4) 100%)',
+                                        boxShadow: '0 0 30px rgba(116, 105, 182, 0.5)',
+                                        transition: 'all 100ms linear',
+                                        zIndex: 2
+                                      }}
+                                    />
+                                  )}
+                                </>
+                              );
+                            })()}
 
                             {/* Phase Text - At Center of Circle */}
-                            <div className="absolute text-center">
+                            <div className="absolute text-center" style={{ zIndex: 3 }}>
                               <div
                                 className={`text-lg font-semibold text-black uppercase tracking-wider`}
                               >

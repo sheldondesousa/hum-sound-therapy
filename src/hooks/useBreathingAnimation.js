@@ -255,7 +255,7 @@ export const useBreathingAnimation = ({
     return { x: centerOffset, y: centerOffset };
   };
 
-  // Get circular progress data for Physiological Sigh (clock-based animation)
+  // Get circular progress data for Physiological Sigh (two-circle animation)
   const getPhysiologicalCircleProgress = () => {
     if (!isExercising || exerciseCompleted) return { progress1: 0, progress2: 0 };
 
@@ -284,6 +284,54 @@ export const useBreathingAnimation = ({
     return { progress1: 0, progress2: 0 };
   };
 
+  // Get Physiological Sigh circle sizes for two-circle animation
+  const getPhysiologicalSighCircleSizes = () => {
+    if (!isExercising || exerciseCompleted) return { circle1Size: 0, circle2Size: 0 };
+
+    const maxSize = 340; // Full size to fill gray border
+    const circle1MaxSize = maxSize * 0.75; // Circle 1 stops at 75% (3 seconds out of 4)
+
+    if (breathingPhase === 'inhale') {
+      // INHALE: 4 seconds total (timer 0-39 in 100ms intervals)
+      const seconds = timer / 10; // Convert to seconds
+
+      if (seconds <= 3) {
+        // 0-3 seconds: Both circles grow equally
+        const progress = seconds / 3; // 0 to 1
+        const currentSize = circle1MaxSize * progress;
+        return { circle1Size: currentSize, circle2Size: currentSize };
+      } else {
+        // 3-4 seconds: Circle 1 stops, Circle 2 continues to full size
+        const progress = (seconds - 3) / 1; // 0 to 1 for the last second
+        const circle2Size = circle1MaxSize + (maxSize - circle1MaxSize) * progress;
+        return { circle1Size: circle1MaxSize, circle2Size: circle2Size };
+      }
+    } else if (breathingPhase === 'hold1') {
+      // HOLD: Stay at final inhale sizes
+      return { circle1Size: circle1MaxSize, circle2Size: maxSize };
+    } else if (breathingPhase === 'exhale') {
+      // EXHALE: 8 seconds total (timer 79-0, decrementing)
+      const seconds = timer / 10; // Convert to seconds (7.9 to 0)
+
+      if (seconds > 5) {
+        // First ~3 seconds: Circle 2 decrements to Circle 1 size
+        const progress = (8 - seconds) / 3; // 0 to 1
+        const circle2Size = maxSize - (maxSize - circle1MaxSize) * progress;
+        return { circle1Size: circle1MaxSize, circle2Size: circle2Size };
+      } else {
+        // Last 5 seconds: Both circles decrement together to empty
+        const progress = seconds / 5; // 1 to 0
+        const currentSize = circle1MaxSize * progress;
+        return { circle1Size: currentSize, circle2Size: currentSize };
+      }
+    } else if (breathingPhase === 'hold2') {
+      // HOLD2: Stay at empty
+      return { circle1Size: 0, circle2Size: 0 };
+    }
+
+    return { circle1Size: 0, circle2Size: 0 };
+  };
+
   return {
     getCircleSize,
     getVisibleCircleCount,
@@ -295,6 +343,7 @@ export const useBreathingAnimation = ({
     getHummingBeeCircleSize,
     getBoxBreathingOrbPosition,
     getBoxBreathingIndicatorPosition,
-    getPhysiologicalCircleProgress
+    getPhysiologicalCircleProgress,
+    getPhysiologicalSighCircleSizes
   };
 };
