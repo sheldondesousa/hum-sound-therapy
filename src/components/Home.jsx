@@ -2145,7 +2145,7 @@ export default function Home() {
                           </div>
                         </>
                       ) : selectedExercise?.name === 'Physiological Sigh' ? (
-                        /* Physiological Sigh Animation - Same as Coherent Breathing */}
+                        /* Physiological Sigh Animation - Same as Coherent Breathing */
                         <>
                           {/* Breathing Circle Illustration - Physiological Sigh */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
