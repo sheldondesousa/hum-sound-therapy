@@ -15,6 +15,7 @@ export const tracksByOption = {
     { id: 9, name: 'Coherent Breathing', duration: '6:00' },
     { id: 10, name: 'Physiological Sigh', duration: '3:45' },
     { id: 11, name: 'Alternate Nostril', duration: '5:30' },
-    { id: 12, name: 'Humming Bee', duration: '4:00' }
+    { id: 12, name: 'Humming Bee', duration: '4:00' },
+    { id: 13, name: 'Neumorphism Trial', duration: '6:00' }
   ]
 };

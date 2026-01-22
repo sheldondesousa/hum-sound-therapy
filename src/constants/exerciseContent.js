@@ -191,5 +191,36 @@ export const exerciseContent = {
       { label: 'Avoid Strain:', text: 'Keep the humming gentle and comfortable. Never strain your voice or breath.' },
       { label: 'Listen to Your Body:', text: 'Stop immediately if you feel dizzy, short of breath, or experience any discomfort.' }
     ]
+  },
+  'Neumorphism Trial': {
+    description: 'Coherent breathing (or resonance breathing) is a slow, rhythmic breathing technique, typically inhaling for 5-6 seconds and exhaling for 5-6 seconds (5-6 breaths per minute), designed to sync your heart rate with your breath for optimal nervous system balance, reducing stress and anxiety while promoting calm and focus.',
+    sectionTitle: 'Tips',
+    sectionContent: [
+      { label: 'Focus on the Transition:', text: 'Avoid holding your breath at the top or bottom; make the switch between inhaling and exhaling smooth and continuous.' },
+      { label: 'Nasal Breathing:', text: 'Always breathe through your nose to better regulate airflow and filter the air entering your lungs.' },
+      { label: 'Stay Relaxed:', text: 'Keep your jaw, shoulders, and face soft; tension in these areas can inhibit deep diaphragmatic movement.' },
+      { label: 'Consistency Over Duration:', text: 'Practicing for five minutes every day is more effective for your nervous system than practicing for an hour once a week.' }
+    ],
+    preparationTitle: 'Preparation',
+    preparationContent: [
+      { label: 'Find a Quiet Space:', text: 'Choose a location where you won\'t be interrupted for a few minutes.' },
+      { label: 'Optimize Posture:', text: 'Sit upright in a chair with feet flat on the floor or lie flat on your back to allow the diaphragm to move freely.' },
+      { label: 'Loosen Clothing:', text: 'Ensure your waistband or belt is not restrictive, as your abdomen needs to expand fully.' },
+      { label: 'Hand Placement:', text: 'Place one hand on your belly and one on your chest to ensure only the belly hand moves significantly during the breath.' }
+    ],
+    whenToUseTitle: 'Try this when',
+    whenToUseContent: [
+      { label: 'Commuting:', text: 'It is an effective "eyes-open" meditation for use on public transit or while sitting in traffic to stay calm.' },
+      { label: 'Post-Exercise:', text: 'Use it as part of a workout cool-down to shift the body from an active to a recovery state.' },
+      { label: 'Morning Routine:', text: 'Start your day with 5 minutes of practice to set a baseline of emotional stability.' },
+      { label: 'Before Sleep:', text: 'Practice while lying in bed to lower your heart rate and prepare the body for deep rest.' }
+    ],
+    safetyTitle: 'Safety First',
+    safetyContent: [
+      { label: 'Don\'t Overdo It:', text: 'Stick to fewer cycles or shorter time ranges initially. Build momentum as you gain experience.' },
+      { label: 'Consult Professionals:', text: 'If you have respiratory conditions or cardiovascular issues or a history of hyperventilation, consult a doctor before trying.' },
+      { label: 'Avoid Focus Tasks:', text: 'Do not practice this while driving or performing any task that requires your full, alert attention.' },
+      { label: 'Listen to Your Body:', text: 'Stop immediately if you feel short of breath or distressed; your comfort dictates the correct pace.' }
+    ]
   }
 };

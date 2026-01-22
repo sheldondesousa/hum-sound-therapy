@@ -117,7 +117,7 @@ export const useBreathingAnimation = ({
     const maxTimer = coherentBreathTime * 10;
     const progress = timer / maxTimer;
     const minSize = 0;
-    const maxSize = 340;
+    const maxSize = 280; // Reduced from 340 to fit smaller container
 
     const easeProgress = progress < 0.5
       ? 2 * progress * progress

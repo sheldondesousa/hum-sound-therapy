@@ -91,7 +91,7 @@ export default function Home() {
     if (exerciseCompleted && selectedExercise && !completionTrackedRef.current) {
       completionTrackedRef.current = true;
       const userId = currentUser?.uid;
-      const totalCycles = selectedExercise?.name === 'Coherent Breathing' ? coherentCycles :
+      const totalCycles = (selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Neumorphism Trial') ? coherentCycles :
                           selectedExercise?.name === 'Alternate Nostril' ? alternateNostrilCycles :
                           selectedCycles;
       trackBreathingExercise(selectedExercise?.name || selectedExercise, 'complete', userId, {
@@ -126,6 +126,7 @@ export default function Home() {
           setSelectedCycles(4);
           break;
         case 'Coherent Breathing':
+        case 'Neumorphism Trial':
           setSelectedCycles(6);
           setCoherentCycles(6);
           setCoherentBreathTime(5); // Reset to default 5s
@@ -182,10 +183,10 @@ export default function Home() {
     }
   }, [isExercising, countdown, exerciseCompleted]);
 
-  // Show animation with 300ms delay after countdown completes for 4-7-8 Breathing and Coherent Breathing
+  // Show animation with 300ms delay after countdown completes for 4-7-8 Breathing, Coherent Breathing, and Neumorphism Trial
   useEffect(() => {
     const is478 = selectedExercise?.name === '4-7-8 Breathing';
-    const isCoherent = selectedExercise?.name === 'Coherent Breathing';
+    const isCoherent = selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Neumorphism Trial';
     const isPhysiological = selectedExercise?.name === 'Physiological Sigh';
     if ((is478 || isCoherent || isPhysiological) && isExercising && countdown === null && !exerciseCompleted) {
       const timer = setTimeout(() => {
@@ -203,7 +204,7 @@ export default function Home() {
 
     // Exercise-specific timing configurations
     const is478 = selectedExercise?.name === '4-7-8 Breathing';
-    const isCoherent = selectedExercise?.name === 'Coherent Breathing';
+    const isCoherent = selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Neumorphism Trial';
     const isPhysiological = selectedExercise?.name === 'Physiological Sigh';
     const isAlternateNostril = selectedExercise?.name === 'Alternate Nostril';
     const isHummingBee = selectedExercise?.name === 'Humming Bee';
@@ -603,7 +604,7 @@ export default function Home() {
         @media (min-width: 1024px) {
           .music-player-desktop {
             width: 430px !important;
-            height: 932px !important;
+            height: min(932px, 90vh) !important;
           }
         }
         .music-player-frame {
@@ -1000,8 +1001,13 @@ export default function Home() {
               <div
                 className="music-player-desktop music-player-frame border-2 border-white rounded-3xl p-6 flex flex-col w-full lg:flex-shrink-0 relative overflow-hidden"
                 style={
-                  selectedExercise?.name === 'Box Breathing (4-4-4-4)'
-                    ? { background: 'white' }
+                  selectedOption === 'breathe' && selectedExercise
+                    ? {
+                        backgroundColor: '#36393B',
+                        backgroundImage: selectedExercise?.name === 'Neumorphism Trial'
+                          ? `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E")`
+                          : 'none'
+                      }
                     : { backgroundColor: 'white' }
                 }
               >
@@ -1143,7 +1149,17 @@ export default function Home() {
               <div className={`flex-1 overflow-hidden min-h-0 ${selectedOption === 'breathe' && selectedExercise ? 'flex' : 'flex flex-col'}`}>
                 {selectedOption === 'breathe' && selectedExercise && showingInfo ? (
                   /* Breathing Exercise Info Screen */
-                  <div className="flex flex-col h-full w-full">
+                  <div
+                    className="flex flex-col h-full w-full"
+                    style={{
+                      background: selectedExercise?.name === 'Neumorphism Trial'
+                        ? '#36393B'
+                        : '#36393B',
+                      backgroundImage: selectedExercise?.name === 'Neumorphism Trial'
+                        ? `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E")`
+                        : 'none'
+                    }}
+                  >
                     {/* Header */}
                     <div className="flex-[0.1] flex items-center justify-between px-2 mb-4">
                       <button
@@ -1151,7 +1167,8 @@ export default function Home() {
                           setSelectedExercise(null);
                           setShowingInfo(false);
                         }}
-                        className="flex items-center gap-2 text-sm text-gray-700 hover:text-black transition-colors"
+                        className="flex items-center gap-2 text-sm transition-colors"
+                        style={{ color: '#FFFFFF' }}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
@@ -1161,203 +1178,151 @@ export default function Home() {
                       <div className="w-14"></div>
                     </div>
 
-                    {/* Scrollable Content */}
+                    {/* Scrollable Content with Flexbox Gap - All Exercises */}
                     <div className="flex-1 overflow-y-auto px-2 hide-scrollbar">
-                      {/* Title */}
-                      <h1 className="text-4xl font-bold mb-4 text-black">
-                        {selectedExercise.name.replace(/\s*\([^)]*\)/, '')}
-                      </h1>
-
-                      {/* Description */}
-                      <p className="text-base text-gray-700 mb-6 leading-relaxed whitespace-pre-line">
-                        {(exerciseContent[selectedExercise.name]?.description || 'Exercise description not available.').split('\n').map((line, index) => (
-                          <span key={index}>
-                            {line.trim().startsWith('Suggested:') ? (
-                              <span className="text-[15px]">
-                                <span className="font-semibold">Suggested:</span> {line.trim().substring(10)}
-                              </span>
-                            ) : line}
-                            {index < (exerciseContent[selectedExercise.name]?.description || '').split('\n').length - 1 && '\n'}
-                          </span>
-                        ))}
-                      </p>
-
-                      {/* Tips Tile */}
-                      <button
-                        onClick={() => setShowTipsSheet(true)}
-                        className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="flex items-center gap-3">
-                          <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                          </svg>
-                          <span className="text-base font-semibold text-black">Tips</span>
-                        </div>
-                        <span className="text-2xl font-light text-gray-700">+</span>
-                      </button>
-
-                      {/* Preparation Tile - For all breathing exercises */}
-                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
-                        <button
-                          onClick={() => setShowPreparationSheet(true)}
-                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
+                      <div className="flex flex-col gap-6 min-h-full">
+                        {/* Title */}
+                        <h1
+                          className="text-4xl font-bold"
+                          style={{ color: '#FFFFFF' }}
                         >
-                          <div className="flex items-center gap-3">
-                            <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                            </svg>
-                            <span className="text-base font-semibold text-black">Preparation</span>
-                          </div>
-                          <span className="text-2xl font-light text-gray-700">+</span>
-                        </button>
-                      )}
+                          {selectedExercise.name.replace(/\s*\([^)]*\)/, '')}
+                        </h1>
 
-                      {/* Try this when Tile - For all breathing exercises */}
-                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
-                        <button
-                          onClick={() => setShowWhenToUseSheet(true)}
-                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
+                        {/* Description */}
+                        <p
+                          className="text-base leading-snug whitespace-pre-line"
+                          style={{ color: '#FFFFFF' }}
                         >
-                          <div className="flex items-center gap-3">
-                            <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span className="text-base font-semibold text-black">Try this when</span>
-                          </div>
-                          <span className="text-2xl font-light text-gray-700">+</span>
-                        </button>
-                      )}
+                          {(exerciseContent[selectedExercise.name]?.description || 'Exercise description not available.').split('\n').map((line, index) => (
+                            <span key={index}>
+                              {line.trim().startsWith('Suggested:') ? (
+                                <span className="text-[15px]">
+                                  <span className="font-semibold">Suggested:</span> {line.trim().substring(10)}
+                                </span>
+                              ) : line}
+                              {index < (exerciseContent[selectedExercise.name]?.description || '').split('\n').length - 1 && '\n'}
+                            </span>
+                          ))}
+                        </p>
 
-                      {/* Precautions Tile - For all breathing exercises */}
-                      {(selectedExercise?.name === 'Box Breathing (4-4-4-4)' || selectedExercise?.name === '4-7-8 Breathing' || selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Physiological Sigh' || selectedExercise?.name === 'Alternate Nostril' || selectedExercise?.name === 'Humming Bee') && (
-                        <button
-                          onClick={() => setShowSafetySheet(true)}
-                          className="w-full flex items-center justify-between p-4 border-2 border-gray-300 rounded-xl mb-5 hover:bg-gray-50 transition-colors"
-                        >
-                          <div className="flex items-center gap-3">
-                            <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                            <span className="text-base font-semibold text-black">Precautions</span>
-                          </div>
-                          <span className="text-2xl font-light text-gray-700">+</span>
-                        </button>
-                      )}
-                    </div>
+                        {/* 2x2 Grid Layout */}
+                        <div className="grid grid-cols-2 gap-4 px-4">
+                            {/* Tips Tile */}
+                            <button
+                              onClick={() => setShowTipsSheet(true)}
+                              className="flex flex-col items-center justify-center gap-2 p-4 transition-all hover:brightness-110 active:brightness-90 aspect-square"
+                              style={{
+                                borderRadius: '13px',
+                                background: '#333',
+                                boxShadow: '-10px -10px 20px 0 #3C3C3C, 10px 10px 20px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                              }}
+                            >
+                              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                              </svg>
+                              <span className="text-sm font-semibold text-white text-center">Tips</span>
+                            </button>
 
-                    {/* Cycle Selector - Static position */}
-                    {selectedExercise?.name !== 'Physiological Sigh' && (
-                      <div className="px-2 mb-[50px]">
-                        <div className="flex flex-col items-center gap-2">
-                          <span className="text-sm text-gray-600 font-medium">Select Cycles</span>
-                          <div className="flex gap-3">
-                            {selectedExercise?.name === 'Coherent Breathing' ? (
-                              // Cycle options for Coherent Breathing + Personalize button
-                              <>
-                                {[3, 6, 9].map((cycles) => (
-                                  <button
-                                    key={cycles}
-                                    onClick={() => {
-                                      setSelectedCycles(cycles);
-                                      setCoherentCycles(cycles);
-                                      const userId = currentUser?.uid;
-                                      trackEvent('cycle_selected', {
-                                        exercise: 'Coherent Breathing',
-                                        cycles
-                                      }, userId);
-                                    }}
-                                    className={`w-12 h-12 rounded-full text-base font-bold transition-all ${
-                                      selectedCycles === cycles
-                                        ? 'bg-black text-white shadow-lg'
-                                        : 'bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50'
-                                    }`}
-                                  >
-                                    {cycles}
-                                  </button>
-                                ))}
-                                {/* Personalize button - icon only */}
-                                <button
-                                  onClick={() => setShowCustomizationSheet(true)}
-                                  className="w-12 h-12 rounded-full flex items-center justify-center transition-all bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50"
-                                >
-                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                                  </svg>
-                                </button>
-                              </>
-                            ) : selectedExercise?.name === 'Alternate Nostril' ? (
-                              // Cycle options for Alternate Nostril + Personalize button
-                              <>
-                                {[3, 6, 9].map((cycles) => (
-                                  <button
-                                    key={cycles}
-                                    onClick={() => {
-                                      setSelectedCycles(cycles);
-                                      setAlternateNostrilCycles(cycles);
-                                      const userId = currentUser?.uid;
-                                      trackEvent('cycle_selected', {
-                                        exercise: 'Alternate Nostril',
-                                        cycles
-                                      }, userId);
-                                    }}
-                                    className={`w-12 h-12 rounded-full text-base font-bold transition-all ${
-                                      selectedCycles === cycles
-                                        ? 'bg-black text-white shadow-lg'
-                                        : 'bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50'
-                                    }`}
-                                  >
-                                    {cycles}
-                                  </button>
-                                ))}
-                                {/* Personalize button - icon only */}
-                                <button
-                                  onClick={() => setShowCustomizationSheet(true)}
-                                  className="w-12 h-12 rounded-full flex items-center justify-center transition-all bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50"
-                                >
-                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                                  </svg>
-                                </button>
-                              </>
-                            ) : (
-                              // Cycle options for other exercises
-                              [4, 8, 12].map((cycles) => (
-                                <button
-                                  key={cycles}
-                                  onClick={() => {
-                                    setSelectedCycles(cycles);
-                                    const userId = currentUser?.uid;
-                                    trackEvent('cycle_selected', {
-                                      exercise: selectedExercise,
-                                      cycles
-                                    }, userId);
-                                  }}
-                                  className={`w-12 h-12 rounded-full text-base font-bold transition-all ${
-                                    selectedCycles === cycles
-                                      ? 'bg-black text-white shadow-lg'
-                                      : 'bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50'
-                                  }`}
-                                >
-                                  {cycles}
-                                </button>
-                              ))
-                            )}
+                            {/* Preparation Tile */}
+                            <button
+                              onClick={() => setShowPreparationSheet(true)}
+                              className="flex flex-col items-center justify-center gap-2 p-4 transition-all hover:brightness-110 active:brightness-90 aspect-square"
+                              style={{
+                                borderRadius: '13px',
+                                background: '#333',
+                                boxShadow: '-10px -10px 20px 0 #3C3C3C, 10px 10px 20px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                              }}
+                            >
+                              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                              </svg>
+                              <span className="text-sm font-semibold text-white text-center">Preparation</span>
+                            </button>
+
+                            {/* Try this when Tile */}
+                            <button
+                              onClick={() => setShowWhenToUseSheet(true)}
+                              className="flex flex-col items-center justify-center gap-2 p-4 transition-all hover:brightness-110 active:brightness-90 aspect-square"
+                              style={{
+                                borderRadius: '13px',
+                                background: '#333',
+                                boxShadow: '-10px -10px 20px 0 #3C3C3C, 10px 10px 20px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                              }}
+                            >
+                              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <span className="text-sm font-semibold text-white text-center">Try this when</span>
+                            </button>
+
+                            {/* Precautions Tile */}
+                            <button
+                              onClick={() => setShowSafetySheet(true)}
+                              className="flex flex-col items-center justify-center gap-2 p-4 transition-all hover:brightness-110 active:brightness-90 aspect-square"
+                              style={{
+                                borderRadius: '13px',
+                                background: '#333',
+                                boxShadow: '-10px -10px 20px 0 #3C3C3C, 10px 10px 20px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                              }}
+                            >
+                              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                              </svg>
+                              <span className="text-sm font-semibold text-white text-center">Precautions</span>
+                            </button>
                           </div>
+
+                        {/* Spacer to push buttons to bottom */}
+                        <div className="flex-grow"></div>
+
+                        {/* Customization Button + Start Exercise Button (same line) */}
+                        <div className="flex items-center gap-3 pb-4 px-4">
+                          {/* Customization Button - Only show when applicable */}
+                          {selectedExercise?.name !== 'Physiological Sigh' && (
+                            <button
+                              onClick={() => setShowCustomizationSheet(true)}
+                              className="rounded-full flex items-center justify-center transition-all hover:brightness-110 active:brightness-90 flex-shrink-0"
+                              style={{
+                                width: '50px',
+                                height: '50px',
+                                background: '#36393B',
+                                boxShadow: '-6px -6px 12px 0 rgba(255, 255, 255, 0.15)'
+                              }}
+                            >
+                              <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                                style={{ color: '#FFFFFF' }}
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                              </svg>
+                            </button>
+                          )}
+
+                          {/* Start Exercise Button - Takes remaining space or centered when no customization */}
+                          <button
+                            onClick={() => {
+                              // Start the exercise by hiding the info screen
+                              setShowingInfo(false);
+                            }}
+                            className="text-white text-base font-bold transition-all hover:brightness-110 active:brightness-90"
+                            style={{
+                              flex: selectedExercise?.name !== 'Physiological Sigh' ? '1' : 'none',
+                              width: selectedExercise?.name === 'Physiological Sigh' ? '100%' : 'auto',
+                              height: '50px',
+                              borderRadius: '25px',
+                              background: '#36393B',
+                              boxShadow: '-6px -6px 12px 0 rgba(255, 255, 255, 0.15)'
+                            }}
+                          >
+                            Start Exercise
+                          </button>
                         </div>
                       </div>
-                    )}
-
-                    {/* Start Exercise Button - Static position */}
-                    <div className="px-2 pb-4">
-                      <button
-                        onClick={() => {
-                          // Start the exercise by hiding the info screen
-                          setShowingInfo(false);
-                        }}
-                        className="w-full py-3 bg-black text-white text-base font-bold rounded-xl hover:bg-gray-800 transition-colors"
-                      >
-                        Start Exercise
-                      </button>
                     </div>
 
                     {/* Tips Bottom Sheet */}
@@ -1574,7 +1539,7 @@ export default function Home() {
                       </div>
                     )}
 
-                    {/* Customization Bottom Sheet - Only for Coherent Breathing */}
+                    {/* Customization Bottom Sheet - For Coherent Breathing */}
                     {showCustomizationSheet && selectedExercise?.name === 'Coherent Breathing' && (
                       <div
                         className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-end"
@@ -1642,6 +1607,292 @@ export default function Home() {
                             <button
                               onClick={() => setShowCustomizationSheet(false)}
                               className="w-full py-3 bg-gray-100 text-black text-base font-bold rounded-xl hover:bg-gray-200 transition-colors"
+                            >
+                              Done
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Customization Bottom Sheet - For Neumorphism Trial */}
+                    {showCustomizationSheet && selectedExercise?.name === 'Neumorphism Trial' && (
+                      <div
+                        className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-end"
+                        onClick={() => setShowCustomizationSheet(false)}
+                      >
+                        <div
+                          className="rounded-t-3xl w-full max-h-[70vh] overflow-y-auto animate-slide-up"
+                          style={{ background: '#36393B' }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="p-6">
+                            {/* Sheet Handle */}
+                            <div className="w-12 h-1 rounded-full mx-auto mb-6" style={{ background: '#4B5563' }}></div>
+
+                            {/* Section Title */}
+                            <h2 className="text-2xl font-bold mb-6 text-white">Personalize</h2>
+
+                            {/* Cycles Slider */}
+                            <div className="mb-8">
+                              <label className="text-base font-semibold text-white mb-4 block">Cycles</label>
+                              <div className="flex flex-col items-center gap-4">
+                                {/* Numeric Display */}
+                                <div
+                                  className="text-white text-3xl font-bold flex items-center justify-center rounded-full"
+                                  style={{
+                                    width: '80px',
+                                    height: '80px',
+                                    background: '#36393B',
+                                    boxShadow: '6px 6px 15px 0 #000 inset, -6px -6px 12px 0 rgba(255, 255, 255, 0.15) inset'
+                                  }}
+                                >
+                                  {coherentCycles}
+                                </div>
+                                {/* Slider Track */}
+                                <div className="w-full px-4">
+                                  <div
+                                    className="relative h-3 rounded-full mb-3"
+                                    style={{
+                                      background: '#36393B',
+                                      boxShadow: '4px 4px 10px 0 #000 inset, -4px -4px 8px 0 rgba(255, 255, 255, 0.15) inset'
+                                    }}
+                                  >
+                                    {/* Slider Input */}
+                                    <input
+                                      type="range"
+                                      min="3"
+                                      max="24"
+                                      step="3"
+                                      value={coherentCycles}
+                                      onChange={(e) => {
+                                        const newValue = parseInt(e.target.value);
+                                        setCoherentCycles(newValue);
+                                        setSelectedCycles(newValue);
+                                        const userId = currentUser?.uid;
+                                        trackEvent('cycle_selected', {
+                                          exercise: 'Neumorphism Trial',
+                                          cycles: newValue
+                                        }, userId);
+                                      }}
+                                      className="absolute w-full h-full opacity-0 cursor-pointer"
+                                      style={{ top: 0, left: 0, zIndex: 10 }}
+                                    />
+                                    {/* Slider Thumb */}
+                                    <div
+                                      className="absolute rounded-full pointer-events-none transition-all duration-200 ease-out"
+                                      style={{
+                                        width: '38px',
+                                        height: '38px',
+                                        top: '50%',
+                                        left: `calc(${((coherentCycles - 3) / (24 - 3)) * 100}% - 19px)`,
+                                        transform: 'translateY(-50%)',
+                                        background: '#36393B',
+                                        boxShadow: '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
+                                      }}
+                                    />
+                                  </div>
+                                  {/* Tick Marks with Labels */}
+                                  <div className="flex justify-between px-1">
+                                    {[3, 6, 9, 12, 15, 18, 21, 24].map((value) => (
+                                      <div key={value} className="flex flex-col items-center" style={{ width: '1px' }}>
+                                        <span className="text-xs font-medium" style={{ color: coherentCycles === value ? '#FFFFFF' : '#6B7280' }}>
+                                          {value}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Inhale-Exhale Timer Slider */}
+                            <div style={{ marginBottom: '50px' }}>
+                              <label className="text-base font-semibold text-white mb-4 block">Inhale-Exhale Timer</label>
+                              <div className="flex flex-col items-center gap-4">
+                                {/* Numeric Display */}
+                                <div
+                                  className="text-white text-3xl font-bold flex items-center justify-center rounded-full"
+                                  style={{
+                                    width: '80px',
+                                    height: '80px',
+                                    background: '#36393B',
+                                    boxShadow: '6px 6px 15px 0 #000 inset, -6px -6px 12px 0 rgba(255, 255, 255, 0.15) inset'
+                                  }}
+                                >
+                                  {coherentBreathTime}s
+                                </div>
+                                {/* Slider Track */}
+                                <div className="w-full px-4">
+                                  <div
+                                    className="relative h-3 rounded-full mb-3"
+                                    style={{
+                                      background: '#36393B',
+                                      boxShadow: '4px 4px 10px 0 #000 inset, -4px -4px 8px 0 rgba(255, 255, 255, 0.15) inset'
+                                    }}
+                                  >
+                                    {/* Slider Input */}
+                                    <input
+                                      type="range"
+                                      min="4"
+                                      max="6"
+                                      step="1"
+                                      value={coherentBreathTime}
+                                      onChange={(e) => {
+                                        const newValue = parseInt(e.target.value);
+                                        setCoherentBreathTime(newValue);
+                                      }}
+                                      className="absolute w-full h-full opacity-0 cursor-pointer"
+                                      style={{ top: 0, left: 0, zIndex: 10 }}
+                                    />
+                                    {/* Slider Thumb */}
+                                    <div
+                                      className="absolute rounded-full pointer-events-none transition-all duration-200 ease-out"
+                                      style={{
+                                        width: '38px',
+                                        height: '38px',
+                                        top: '50%',
+                                        left: `calc(${((coherentBreathTime - 4) / (6 - 4)) * 100}% - 19px)`,
+                                        transform: 'translateY(-50%)',
+                                        background: '#36393B',
+                                        boxShadow: '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
+                                      }}
+                                    />
+                                  </div>
+                                  {/* Tick Marks with Labels */}
+                                  <div className="flex justify-between px-1">
+                                    {[4, 5, 6].map((value) => (
+                                      <div key={value} className="flex flex-col items-center" style={{ width: '1px' }}>
+                                        <span className="text-xs font-medium" style={{ color: coherentBreathTime === value ? '#FFFFFF' : '#6B7280' }}>
+                                          {value}s
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Close Button */}
+                            <button
+                              onClick={() => setShowCustomizationSheet(false)}
+                              className="text-white font-semibold transition-all hover:brightness-110 active:brightness-90 flex items-center justify-center mx-auto"
+                              style={{
+                                width: '80%',
+                                height: '50px',
+                                borderRadius: '25px',
+                                background: '#36393B',
+                                boxShadow: '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
+                              }}
+                            >
+                              Done
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Customization Bottom Sheet - For Box Breathing */}
+                    {showCustomizationSheet && selectedExercise?.name === 'Box Breathing (4-4-4-4)' && (
+                      <div
+                        className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-end"
+                        onClick={() => setShowCustomizationSheet(false)}
+                      >
+                        <div
+                          className="rounded-t-3xl w-full max-h-[70vh] overflow-y-auto animate-slide-up"
+                          style={{ background: '#36393B' }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="p-6">
+                            {/* Sheet Handle */}
+                            <div className="w-12 h-1 rounded-full mx-auto mb-6" style={{ background: '#4B5563' }}></div>
+
+                            {/* Section Title */}
+                            <h2 className="text-2xl font-bold mb-6 text-white">Personalize</h2>
+
+                            {/* Cycles Slider */}
+                            <div style={{ marginBottom: '50px' }}>
+                              <label className="text-base font-semibold text-white mb-4 block">Cycles</label>
+                              <div className="flex flex-col items-center gap-4">
+                                {/* Numeric Display */}
+                                <div
+                                  className="text-white text-3xl font-bold flex items-center justify-center rounded-full"
+                                  style={{
+                                    width: '80px',
+                                    height: '80px',
+                                    background: '#36393B',
+                                    boxShadow: '6px 6px 15px 0 #000 inset, -6px -6px 12px 0 rgba(255, 255, 255, 0.15) inset'
+                                  }}
+                                >
+                                  {selectedCycles}
+                                </div>
+                                {/* Slider Track */}
+                                <div className="w-full px-4">
+                                  <div
+                                    className="relative h-3 rounded-full mb-3"
+                                    style={{
+                                      background: '#36393B',
+                                      boxShadow: '4px 4px 10px 0 #000 inset, -4px -4px 8px 0 rgba(255, 255, 255, 0.15) inset'
+                                    }}
+                                  >
+                                    {/* Slider Input */}
+                                    <input
+                                      type="range"
+                                      min="4"
+                                      max="12"
+                                      step="4"
+                                      value={selectedCycles}
+                                      onChange={(e) => {
+                                        const newValue = parseInt(e.target.value);
+                                        setSelectedCycles(newValue);
+                                        const userId = currentUser?.uid;
+                                        trackEvent('cycle_selected', {
+                                          exercise: 'Box Breathing (4-4-4-4)',
+                                          cycles: newValue
+                                        }, userId);
+                                      }}
+                                      className="absolute w-full h-full opacity-0 cursor-pointer"
+                                      style={{ top: 0, left: 0, zIndex: 10 }}
+                                    />
+                                    {/* Slider Thumb */}
+                                    <div
+                                      className="absolute rounded-full pointer-events-none transition-all duration-200 ease-out"
+                                      style={{
+                                        width: '38px',
+                                        height: '38px',
+                                        top: '50%',
+                                        left: `calc(${((selectedCycles - 4) / (12 - 4)) * 100}% - 19px)`,
+                                        transform: 'translateY(-50%)',
+                                        background: '#36393B',
+                                        boxShadow: '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
+                                      }}
+                                    />
+                                  </div>
+                                  {/* Tick Marks with Labels */}
+                                  <div className="flex justify-between px-1">
+                                    {[4, 8, 12].map((value) => (
+                                      <div key={value} className="flex flex-col items-center" style={{ width: '1px' }}>
+                                        <span className="text-xs font-medium" style={{ color: selectedCycles === value ? '#FFFFFF' : '#6B7280' }}>
+                                          {value}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Close Button */}
+                            <button
+                              onClick={() => setShowCustomizationSheet(false)}
+                              className="text-white font-semibold transition-all hover:brightness-110 active:brightness-90 flex items-center justify-center mx-auto"
+                              style={{
+                                width: '80%',
+                                height: '50px',
+                                borderRadius: '25px',
+                                background: '#36393B',
+                                boxShadow: '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
+                              }}
                             >
                               Done
                             </button>
@@ -1728,7 +1979,10 @@ export default function Home() {
                   </div>
                 ) : selectedOption === 'breathe' && selectedExercise ? (
                   /* Breathing Exercise Detail View */
-                  <div className="flex flex-col h-full w-full justify-between">
+                  <div
+                    className="flex flex-col h-full w-full justify-between"
+                    style={{ background: '#36393B' }}
+                  >
                     {/* Header - 15% */}
                     <div className="flex-[0.15] flex items-center justify-center px-2">
                       <div className="flex items-center justify-between w-full max-w-md">
@@ -1750,7 +2004,8 @@ export default function Home() {
                           setAlternateNostrilCycles(3);
                           setAlternateNostrilBreathTime(5);
                         }}
-                        className="flex items-center gap-2 text-sm text-gray-700 hover:text-black transition-colors"
+                        className="flex items-center gap-2 text-sm transition-colors"
+                        style={{ color: '#FFFFFF' }}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
@@ -1758,7 +2013,12 @@ export default function Home() {
                         <span>Back</span>
                       </button>
 
-                      <h3 className="text-base font-semibold text-black text-center flex-1 px-4">{selectedExercise.name}</h3>
+                      <h3
+                        className="text-base font-semibold text-center flex-1 px-4"
+                        style={{ color: '#FFFFFF' }}
+                      >
+                        {selectedExercise.name}
+                      </h3>
 
                       {/* Spacer to balance layout */}
                       <div className="w-14"></div>
@@ -1772,18 +2032,30 @@ export default function Home() {
                         selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
                           /* Box Breathing: Show timer for ALL phases including HOLD */
                           <div className="text-center">
-                            <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
+                            <div
+                              className="font-bold"
+                              style={{
+                                fontSize: '4.32rem',
+                                color: '#FFFFFF'
+                              }}
+                            >
                               {timer}
                             </div>
                           </div>
                         ) : (breathingPhase === 'inhale' || breathingPhase === 'exhale') ? (
                           /* Other exercises: Show timer only during INHALE and EXHALE */
                           <div className="text-center">
-                            <div className="font-bold text-gray-900" style={{ fontSize: '4.32rem' }}>
-                              {selectedExercise?.name === 'Coherent Breathing'
+                            <div
+                              className="font-bold"
+                              style={{
+                                fontSize: '4.32rem',
+                                color: '#FFFFFF'
+                              }}
+                            >
+                              {selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Neumorphism Trial'
                                 ? (breathingPhase === 'inhale'
-                                    ? `${Math.floor(timer / 10)}s`  // INHALE: 0s to coherentBreathTime (e.g., 0s-6s)
-                                    : `${Math.ceil(timer / 10)}s`)  // EXHALE: coherentBreathTime to 0s (e.g., 6s-0s)
+                                    ? `${Math.ceil(timer / 10)}s`  // INHALE: 0s to coherentBreathTime (e.g., 0s-5s)
+                                    : `${Math.ceil(timer / 10)}s`)  // EXHALE: coherentBreathTime to 0s (e.g., 5s-0s)
                                 : selectedExercise?.name === 'Alternate Nostril'
                                   ? (breathingPhase === 'inhale'
                                       ? `${Math.floor(timer / 10)}s`  // INHALE: 0s to alternateNostrilBreathTime (e.g., 0s-4s)
@@ -1813,7 +2085,15 @@ export default function Home() {
                       {/* Show completion screen when exercise is completed */}
                       {exerciseCompleted ? (
                         <div className="flex flex-col items-center justify-center text-center gap-6">
-                          <h2 className="font-bold text-black mb-6" style={{ fontSize: '1.59rem' }}>Completed</h2>
+                          <h2
+                            className="font-bold mb-6"
+                            style={{
+                              fontSize: '1.59rem',
+                              color: '#FFFFFF'
+                            }}
+                          >
+                            Completed
+                          </h2>
                           <div className="flex flex-col gap-3 w-full max-w-xs">
                             <button
                               onClick={() => {
@@ -1830,7 +2110,19 @@ export default function Home() {
                                 setAlternateNostrilCycles(3);
                                 setAlternateNostrilBreathTime(5);
                               }}
-                              className="bg-black text-white py-3 px-6 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+                              className={(selectedExercise?.name === 'Neumorphism Trial' || selectedExercise?.name === 'Box Breathing (4-4-4-4)')
+                                ? "text-white font-semibold transition-all hover:brightness-110 active:brightness-90 flex items-center justify-center"
+                                : "bg-black text-white py-3 px-6 rounded-lg font-semibold hover:opacity-90 transition-opacity"}
+                              style={(selectedExercise?.name === 'Neumorphism Trial' || selectedExercise?.name === 'Box Breathing (4-4-4-4)')
+                                ? {
+                                    width: '100%',
+                                    height: '56px',
+                                    padding: '0 24px',
+                                    borderRadius: '28px',
+                                    background: '#36393B',
+                                    boxShadow: '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
+                                  }
+                                : {}}
                             >
                               Return to Main Menu
                             </button>
@@ -1843,7 +2135,19 @@ export default function Home() {
                                 setBreathingPhase('inhale');
                                 setIsExercising(true);
                               }}
-                              className="bg-white border-2 border-black text-black py-3 px-6 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                              className={(selectedExercise?.name === 'Neumorphism Trial' || selectedExercise?.name === 'Box Breathing (4-4-4-4)')
+                                ? "text-white font-semibold transition-all hover:brightness-110 active:brightness-90 flex items-center justify-center"
+                                : "bg-white border-2 border-black text-black py-3 px-6 rounded-lg font-semibold hover:bg-gray-50 transition-colors"}
+                              style={(selectedExercise?.name === 'Neumorphism Trial' || selectedExercise?.name === 'Box Breathing (4-4-4-4)')
+                                ? {
+                                    width: '100%',
+                                    height: '56px',
+                                    padding: '0 24px',
+                                    borderRadius: '28px',
+                                    background: '#36393B',
+                                    boxShadow: '6px 6px 15px 0 #000 inset, -6px -6px 12px 0 rgba(255, 255, 255, 0.15) inset'
+                                  }
+                                : {}}
                             >
                               Restart
                             </button>
@@ -1855,92 +2159,104 @@ export default function Home() {
                       {selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
                         <>
                           {/* Phase Indicator - 4 Boxes in Square Pattern (Clockwise) */}
-                          <div className="flex-1 flex items-center justify-center w-full relative px-4">
-                            <div className="flex flex-col items-center justify-center gap-1" style={{ maxWidth: '90vw', width: '100%', maxHeight: '80vh' }}>
-                              {/* Top Row - Breathe In and Hold 1 */}
-                              <div className="flex justify-center gap-1 w-full">
-                                {/* Breathe In - Top Left */}
-                                <div
-                                  className="flex flex-col items-center justify-center rounded-2xl transition-all duration-300 flex-1 aspect-square max-w-[45vw]"
-                                  style={{
-                                    backgroundColor: (isExercising && countdown === null && breathingPhase === 'inhale') ? '#746996' : '#E5E7EB',
-                                    minWidth: '178px',
-                                    minHeight: '178px'
-                                  }}
-                                >
-                                  <div className={`text-base font-semibold mb-2 text-center leading-tight ${(isExercising && countdown === null && breathingPhase === 'inhale') ? 'text-white' : 'text-gray-600'}`}>
-                                    Breathe In
-                                  </div>
-                                  <div className={`text-2xl text-center ${(isExercising && countdown === null && breathingPhase === 'inhale') ? 'text-white' : 'text-gray-400'}`}>
-                                    ↑
-                                  </div>
-                                </div>
-
-                                {/* Hold 1 - Top Right */}
-                                <div
-                                  className="flex flex-col items-center justify-center rounded-2xl transition-all duration-300 flex-1 aspect-square max-w-[45vw]"
-                                  style={{
-                                    backgroundColor: (isExercising && countdown === null && breathingPhase === 'hold1') ? '#F6D0EA' : '#E5E7EB',
-                                    minWidth: '178px',
-                                    minHeight: '178px'
-                                  }}
-                                >
-                                  <div className={`text-base font-semibold mb-2 text-center ${(isExercising && countdown === null && breathingPhase === 'hold1') ? 'text-gray-800' : 'text-gray-600'}`}>
-                                    Hold Breath
-                                  </div>
-                                  <svg
-                                    className={`${(isExercising && countdown === null && breathingPhase === 'hold1') ? 'text-gray-800' : 'text-gray-400'}`}
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
+                          <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Neumorphic Container */}
+                            <div
+                              className="flex items-center justify-center p-4"
+                              style={{
+                                borderRadius: '13px',
+                                background: '#333',
+                                boxShadow: '-5px -5px 10px 0 #3C3C3C, 5px 5px 10px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset',
+                                width: '340px',
+                                height: '340px'
+                              }}
+                            >
+                              <div className="flex flex-col items-center justify-center gap-3 w-full h-full">
+                                {/* Top Row - Breathe In and Hold 1 */}
+                                <div className="flex justify-center gap-3 w-full">
+                                  {/* Breathe In - Top Left */}
+                                  <div
+                                    className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
+                                    style={{
+                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'inhale') ? '#746996' : '#444',
+                                      width: '148px',
+                                      height: '148px'
+                                    }}
                                   >
-                                    <rect x="6" y="4" width="4" height="16" rx="1"/>
-                                    <rect x="14" y="4" width="4" height="16" rx="1"/>
-                                  </svg>
-                                </div>
-                              </div>
-
-                              {/* Bottom Row - Hold 2 and Breathe Out */}
-                              <div className="flex justify-center gap-1 w-full">
-                                {/* Hold 2 - Bottom Left */}
-                                <div
-                                  className="flex flex-col items-center justify-center rounded-2xl transition-all duration-300 flex-1 aspect-square max-w-[45vw]"
-                                  style={{
-                                    backgroundColor: (isExercising && countdown === null && breathingPhase === 'hold2') ? '#F6D0EA' : '#E5E7EB',
-                                    minWidth: '178px',
-                                    minHeight: '178px'
-                                  }}
-                                >
-                                  <div className={`text-base font-semibold mb-2 text-center ${(isExercising && countdown === null && breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-600'}`}>
-                                    Hold Breath
+                                    <div className={`text-sm font-semibold mb-1 text-center leading-tight ${(isExercising && countdown === null && breathingPhase === 'inhale') ? 'text-white' : 'text-gray-400'}`}>
+                                      Breathe In
+                                    </div>
+                                    <div className={`text-2xl text-center ${(isExercising && countdown === null && breathingPhase === 'inhale') ? 'text-white' : 'text-gray-500'}`}>
+                                      ↑
+                                    </div>
                                   </div>
-                                  <svg
-                                    className={`${(isExercising && countdown === null && breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-400'}`}
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
+
+                                  {/* Hold 1 - Top Right */}
+                                  <div
+                                    className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
+                                    style={{
+                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'hold1') ? '#F6D0EA' : '#444',
+                                      width: '148px',
+                                      height: '148px'
+                                    }}
                                   >
-                                    <rect x="6" y="4" width="4" height="16" rx="1"/>
-                                    <rect x="14" y="4" width="4" height="16" rx="1"/>
-                                  </svg>
+                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && breathingPhase === 'hold1') ? 'text-gray-800' : 'text-gray-400'}`}>
+                                      Hold Breath
+                                    </div>
+                                    <svg
+                                      className={`${(isExercising && countdown === null && breathingPhase === 'hold1') ? 'text-gray-800' : 'text-gray-500'}`}
+                                      width="24"
+                                      height="24"
+                                      viewBox="0 0 24 24"
+                                      fill="currentColor"
+                                    >
+                                      <rect x="6" y="4" width="4" height="16" rx="1"/>
+                                      <rect x="14" y="4" width="4" height="16" rx="1"/>
+                                    </svg>
+                                  </div>
                                 </div>
 
-                                {/* Breathe Out - Bottom Right */}
-                                <div
-                                  className="flex flex-col items-center justify-center rounded-2xl transition-all duration-300 flex-1 aspect-square max-w-[45vw]"
-                                  style={{
-                                    backgroundColor: (isExercising && countdown === null && breathingPhase === 'exhale') ? '#AD8FC6' : '#E5E7EB',
-                                    minWidth: '178px',
-                                    minHeight: '178px'
-                                  }}
-                                >
-                                  <div className={`text-base font-semibold mb-2 text-center ${(isExercising && countdown === null && breathingPhase === 'exhale') ? 'text-white' : 'text-gray-600'}`}>
-                                    Breathe Out
+                                {/* Bottom Row - Hold 2 and Breathe Out */}
+                                <div className="flex justify-center gap-3 w-full">
+                                  {/* Hold 2 - Bottom Left */}
+                                  <div
+                                    className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
+                                    style={{
+                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'hold2') ? '#F6D0EA' : '#444',
+                                      width: '148px',
+                                      height: '148px'
+                                    }}
+                                  >
+                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-400'}`}>
+                                      Hold Breath
+                                    </div>
+                                    <svg
+                                      className={`${(isExercising && countdown === null && breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-500'}`}
+                                      width="24"
+                                      height="24"
+                                      viewBox="0 0 24 24"
+                                      fill="currentColor"
+                                    >
+                                      <rect x="6" y="4" width="4" height="16" rx="1"/>
+                                      <rect x="14" y="4" width="4" height="16" rx="1"/>
+                                    </svg>
                                   </div>
-                                  <div className={`text-2xl text-center ${(isExercising && countdown === null && breathingPhase === 'exhale') ? 'text-white' : 'text-gray-400'}`}>
-                                    ↓
+
+                                  {/* Breathe Out - Bottom Right */}
+                                  <div
+                                    className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
+                                    style={{
+                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'exhale') ? '#AD8FC6' : '#444',
+                                      width: '148px',
+                                      height: '148px'
+                                    }}
+                                  >
+                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && breathingPhase === 'exhale') ? 'text-white' : 'text-gray-400'}`}>
+                                      Breathe Out
+                                    </div>
+                                    <div className={`text-2xl text-center ${(isExercising && countdown === null && breathingPhase === 'exhale') ? 'text-white' : 'text-gray-500'}`}>
+                                      ↓
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -1952,70 +2268,84 @@ export default function Home() {
                         <>
                           {/* Breathing Circle Illustration - 4-7-8 */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Gray Background Circle - Always visible */}
-                            <svg
-                              className="absolute"
-                              width="363"
-                              height="363"
-                              style={{ transform: 'rotate(-90deg)' }}
+                            {/* Neumorphic Circular Container */}
+                            <div
+                              className="rounded-full flex items-center justify-center aspect-square"
+                              style={{
+                                background: '#36393B',
+                                boxShadow: '-6px -6px 24px 0 rgba(255, 255, 255, 0.30) inset, 12px 12px 30px 0 #000 inset',
+                                width: '100%',
+                                maxWidth: '340px',
+                                maxHeight: '340px',
+                                position: 'relative'
+                              }}
                             >
-                              <circle
-                                cx="181.5"
-                                cy="181.5"
-                                r="180"
-                                fill="none"
-                                stroke="#E5E7EB"
-                                strokeWidth="4"
-                              />
-                            </svg>
-
-                            {/* Blue-Violet Progress Circle - Shows during HOLD phase (7 seconds) */}
-                            {breathingPhase === 'hold1' && animationReady && (
+                              {/* Gray Background Circle - Always visible */}
                               <svg
                                 className="absolute"
-                                width="363"
-                                height="363"
+                                width="300"
+                                height="300"
                                 style={{ transform: 'rotate(-90deg)' }}
                               >
                                 <circle
-                                  cx="181.5"
-                                  cy="181.5"
-                                  r="180"
+                                  cx="150"
+                                  cy="150"
+                                  r="145"
                                   fill="none"
-                                  stroke="#7469BB"
+                                  stroke="#4B5563"
                                   strokeWidth="4"
-                                  strokeDasharray="1131"
-                                  strokeDashoffset={1131 - (1131 * (timer / 10) / 7)}
-                                  style={{ transition: 'stroke-dashoffset 100ms linear' }}
-                                  strokeLinecap="round"
                                 />
                               </svg>
-                            )}
 
-                            {/* Single Expanding/Compressing Circle with Radial Gradient */}
-                            {animationReady && !(breathingPhase === 'inhale' && timer === 0) && !(breathingPhase === 'exhale' && timer === 0) && (
-                              <div
-                                className="rounded-full absolute"
-                                style={{
-                                  width: `${get478CircleSize()}px`,
-                                  height: `${get478CircleSize()}px`,
-                                  background: 'radial-gradient(circle, rgba(116, 105, 187, 1) 0%, rgba(116, 105, 187, 0.6) 50%, rgba(116, 105, 187, 0.2) 100%)',
-                                  boxShadow: '0 0 30px rgba(116, 105, 187, 0.5)',
-                                  transition: 'all 100ms linear'
-                                }}
-                              />
-                            )}
+                              {/* Blue-Violet Progress Circle - Shows during HOLD phase (7 seconds) */}
+                              {breathingPhase === 'hold1' && animationReady && (
+                                <svg
+                                  className="absolute"
+                                  width="300"
+                                  height="300"
+                                  style={{ transform: 'rotate(-90deg)' }}
+                                >
+                                  <circle
+                                    cx="150"
+                                    cy="150"
+                                    r="145"
+                                    fill="none"
+                                    stroke="#7469BB"
+                                    strokeWidth="4"
+                                    strokeDasharray="911"
+                                    strokeDashoffset={911 - (911 * (timer / 10) / 7)}
+                                    style={{ transition: 'stroke-dashoffset 100ms linear' }}
+                                    strokeLinecap="round"
+                                  />
+                                </svg>
+                              )}
 
-                            {/* Phase Text - At Center of Circles */}
-                            <div className="absolute text-center">
-                              <div
-                                className={`text-lg font-semibold text-gray-800 uppercase tracking-wider ${
-                                  breathingPhase === 'hold1' && animationReady ? 'pulse-hold' : ''
-                                }`}
-                              >
-                                {breathingPhase === 'inhale' && animationReady && 'Breathe In'}
-                                {breathingPhase === 'hold1' && animationReady && 'HOLD'}
-                                {breathingPhase === 'exhale' && animationReady && 'Breathe Out'}
+                              {/* Single Expanding/Compressing Circle with Radial Gradient */}
+                              {animationReady && !(breathingPhase === 'inhale' && timer === 0) && !(breathingPhase === 'exhale' && timer === 0) && (
+                                <div
+                                  className="rounded-full absolute"
+                                  style={{
+                                    width: `${get478CircleSize() * 0.824}px`,
+                                    height: `${get478CircleSize() * 0.824}px`,
+                                    background: 'radial-gradient(circle, rgba(116, 105, 187, 1) 0%, rgba(116, 105, 187, 0.6) 50%, rgba(116, 105, 187, 0.2) 100%)',
+                                    boxShadow: '0 0 30px rgba(116, 105, 187, 0.5)',
+                                    transition: 'all 100ms linear'
+                                  }}
+                                />
+                              )}
+
+                              {/* Phase Text - At Center of Circles */}
+                              <div className="absolute text-center">
+                                <div
+                                  className={`text-lg font-semibold uppercase tracking-wider ${
+                                    breathingPhase === 'hold1' && animationReady ? 'pulse-hold' : ''
+                                  }`}
+                                  style={{ color: '#FFFFFF' }}
+                                >
+                                  {breathingPhase === 'inhale' && animationReady && 'Breathe In'}
+                                  {breathingPhase === 'hold1' && animationReady && 'HOLD'}
+                                  {breathingPhase === 'exhale' && animationReady && 'Breathe Out'}
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -2025,33 +2355,45 @@ export default function Home() {
                         <>
                           {/* Breathing Circle Illustration - Coherent */}
                           <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Gray Background Circle - Blinks purple at transitions */}
-                            <svg
-                              className="absolute"
-                              width="363"
-                              height="363"
-                              style={{ transform: 'rotate(-90deg)' }}
-                            >
-                              <circle
-                                cx="181.5"
-                                cy="181.5"
-                                r="175"
-                                fill="none"
-                                stroke="#E5E7EB"
-                                strokeWidth="4"
-                                className={timer === (coherentBreathTime * 10) || (timer === 0 && currentCycle > 0) ? 'blink-purple' : ''}
-                              />
-                            </svg>
-
-                            {/* Single Expanding/Compressing Circle with Radial Gradient */}
+                            {/* Neumorphic Circular Container */}
                             <div
-                              className="rounded-full absolute"
+                              className="rounded-full flex items-center justify-center aspect-square"
                               style={{
-                                width: `${getCoherentCircleSize()}px`,
-                                height: `${getCoherentCircleSize()}px`,
+                                background: '#36393B',
+                                boxShadow: '-6px -6px 24px 0 rgba(255, 255, 255, 0.30) inset, 12px 12px 30px 0 #000 inset',
+                                width: '100%',
+                                maxWidth: '340px',
+                                maxHeight: '340px',
+                                position: 'relative'
+                              }}
+                            >
+                              {/* Gray Background Circle - Blinks purple at transitions */}
+                              <svg
+                                className="absolute"
+                                width="300"
+                                height="300"
+                                style={{ transform: 'rotate(-90deg)' }}
+                              >
+                                <circle
+                                  cx="150"
+                                  cy="150"
+                                  r="145"
+                                  fill="none"
+                                  stroke="#4B5563"
+                                  strokeWidth="4"
+                                  className={timer === (coherentBreathTime * 10) || (timer === 0 && currentCycle > 0) ? 'blink-purple' : ''}
+                                />
+                              </svg>
+
+                              {/* Single Expanding/Compressing Circle with Radial Gradient */}
+                              <div
+                                className="rounded-full absolute"
+                                style={{
+                                  width: `${getCoherentCircleSize()}px`,
+                                  height: `${getCoherentCircleSize()}px`,
                                 background: (() => {
                                   const size = getCoherentCircleSize();
-                                  const intensity = size / 340; // 0 to 1, from empty to full
+                                  const intensity = size / 280; // 0 to 1, from empty to full (updated for smaller container)
 
                                   // 5-color gradient sequence using all app colors: deep purple → medium purple → light purple → pale orchid → pale pink
                                   const colors = [
@@ -2134,13 +2476,152 @@ export default function Home() {
                               }}
                             />
 
-                            {/* Phase Text - At Center of Circle */}
-                            <div className="absolute text-center">
-                              <div
-                                className={`text-lg font-semibold text-black uppercase tracking-wider`}
+                              {/* Phase Text - At Center of Circle */}
+                              <div className="absolute text-center">
+                                <div
+                                  className={`text-lg font-semibold uppercase tracking-wider`}
+                                  style={{ color: '#FFFFFF' }}
+                                >
+                                  {breathingPhase === 'inhale' && animationReady && 'Breathe In'}
+                                  {breathingPhase === 'exhale' && animationReady && 'Breathe Out'}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : selectedExercise?.name === 'Neumorphism Trial' ? (
+                        /* Neumorphism Trial Animation - Same as Coherent Breathing */
+                        <>
+                          {/* Breathing Circle Illustration - Neumorphism Trial */}
+                          <div className="flex-1 flex items-center justify-center w-full relative px-4">
+                            {/* Circular Container with Inset Shadow */}
+                            <div
+                              className="rounded-full flex items-center justify-center relative aspect-square"
+                              style={{
+                                width: '100%',
+                                maxWidth: '340px',
+                                maxHeight: '340px',
+                                background: '#36393B',
+                                boxShadow: '-6px -6px 24px 0 rgba(255, 255, 255, 0.30) inset, 12px 12px 30px 0 #000 inset'
+                              }}
+                            >
+                              {/* Background Circle - Darker stroke for visibility on dark background */}
+                              <svg
+                                className="absolute"
+                                width="300"
+                                height="300"
+                                style={{ transform: 'rotate(-90deg)' }}
                               >
-                                {breathingPhase === 'inhale' && animationReady && 'Breathe In'}
-                                {breathingPhase === 'exhale' && animationReady && 'Breathe Out'}
+                                <circle
+                                  cx="150"
+                                  cy="150"
+                                  r="145"
+                                  fill="none"
+                                  stroke="#4B5563"
+                                  strokeWidth="3"
+                                  className={timer === (coherentBreathTime * 10) || (timer === 0 && currentCycle > 0) ? 'blink-purple' : ''}
+                                />
+                              </svg>
+
+                              {/* Single Expanding/Compressing Circle with Radial Gradient */}
+                              <div
+                                className="rounded-full absolute"
+                                style={{
+                                  width: `${getCoherentCircleSize()}px`,
+                                  height: `${getCoherentCircleSize()}px`,
+                                background: (() => {
+                                  const size = getCoherentCircleSize();
+                                  const intensity = size / 280; // 0 to 1, from empty to full (updated for smaller container)
+
+                                  // 5-color gradient sequence using all app colors: deep purple → medium purple → light purple → pale orchid → pale pink
+                                  const colors = [
+                                    { r: 116, g: 105, b: 182 },   // Deep Purple/Blue-Violet (empty)
+                                    { r: 173, g: 136, b: 198 },   // Medium Purple/African Violet (25%)
+                                    { r: 225, g: 175, b: 209 },   // Light Purple/Light Orchid (50%)
+                                    { r: 246, g: 208, b: 234 },   // Pale Orchid (75%)
+                                    { r: 255, g: 230, b: 230 }    // Pale Pink/Misty Rose (full)
+                                  ];
+
+                                  // Calculate which color segment we're in and interpolate
+                                  let r, g, b;
+                                  if (intensity <= 0.25) {
+                                    // Interpolate between deep purple and medium purple
+                                    const t = intensity / 0.25;
+                                    r = Math.round(colors[0].r + (colors[1].r - colors[0].r) * t);
+                                    g = Math.round(colors[0].g + (colors[1].g - colors[0].g) * t);
+                                    b = Math.round(colors[0].b + (colors[1].b - colors[0].b) * t);
+                                  } else if (intensity <= 0.5) {
+                                    // Interpolate between medium purple and light purple
+                                    const t = (intensity - 0.25) / 0.25;
+                                    r = Math.round(colors[1].r + (colors[2].r - colors[1].r) * t);
+                                    g = Math.round(colors[1].g + (colors[2].g - colors[1].g) * t);
+                                    b = Math.round(colors[1].b + (colors[2].b - colors[1].b) * t);
+                                  } else if (intensity <= 0.75) {
+                                    // Interpolate between light purple and pale orchid
+                                    const t = (intensity - 0.5) / 0.25;
+                                    r = Math.round(colors[2].r + (colors[3].r - colors[2].r) * t);
+                                    g = Math.round(colors[2].g + (colors[3].g - colors[2].g) * t);
+                                    b = Math.round(colors[2].b + (colors[3].b - colors[2].b) * t);
+                                  } else {
+                                    // Interpolate between pale orchid and pale pink
+                                    const t = (intensity - 0.75) / 0.25;
+                                    r = Math.round(colors[3].r + (colors[4].r - colors[3].r) * t);
+                                    g = Math.round(colors[3].g + (colors[4].g - colors[3].g) * t);
+                                    b = Math.round(colors[3].b + (colors[4].b - colors[3].b) * t);
+                                  }
+
+                                  return `radial-gradient(circle, rgba(${r}, ${g}, ${b}, 1) 0%, rgba(${r}, ${g}, ${b}, 0.6) 50%, rgba(${r}, ${g}, ${b}, 0.2) 100%)`;
+                                })(),
+                                boxShadow: (() => {
+                                  const size = getCoherentCircleSize();
+                                  const intensity = size / 340;
+
+                                  // Use same 5-color gradient for box shadow
+                                  const colors = [
+                                    { r: 116, g: 105, b: 182 },   // Deep Purple/Blue-Violet
+                                    { r: 173, g: 136, b: 198 },   // Medium Purple/African Violet
+                                    { r: 225, g: 175, b: 209 },   // Light Purple/Light Orchid
+                                    { r: 247, g: 214, b: 236 },   // Pale Orchid
+                                    { r: 255, g: 230, b: 230 }    // Pale Pink/Rose
+                                  ];
+
+                                  let r, g, b;
+                                  if (intensity <= 0.25) {
+                                    const t = intensity / 0.25;
+                                    r = Math.round(colors[0].r + (colors[1].r - colors[0].r) * t);
+                                    g = Math.round(colors[0].g + (colors[1].g - colors[0].g) * t);
+                                    b = Math.round(colors[0].b + (colors[1].b - colors[0].b) * t);
+                                  } else if (intensity <= 0.5) {
+                                    const t = (intensity - 0.25) / 0.25;
+                                    r = Math.round(colors[1].r + (colors[2].r - colors[1].r) * t);
+                                    g = Math.round(colors[1].g + (colors[2].g - colors[1].g) * t);
+                                    b = Math.round(colors[1].b + (colors[2].b - colors[1].b) * t);
+                                  } else if (intensity <= 0.75) {
+                                    const t = (intensity - 0.5) / 0.25;
+                                    r = Math.round(colors[2].r + (colors[3].r - colors[2].r) * t);
+                                    g = Math.round(colors[2].g + (colors[3].g - colors[2].g) * t);
+                                    b = Math.round(colors[2].b + (colors[3].b - colors[2].b) * t);
+                                  } else {
+                                    const t = (intensity - 0.75) / 0.25;
+                                    r = Math.round(colors[3].r + (colors[4].r - colors[3].r) * t);
+                                    g = Math.round(colors[3].g + (colors[4].g - colors[3].g) * t);
+                                    b = Math.round(colors[3].b + (colors[4].b - colors[3].b) * t);
+                                  }
+
+                                  return `0 0 30px rgba(${r}, ${g}, ${b}, 0.5)`;
+                                })(),
+                                transition: 'all 100ms linear'
+                              }}
+                            />
+
+                              {/* Phase Text - At Center of Circle */}
+                              <div className="absolute text-center">
+                                <div
+                                  className={`text-lg font-semibold text-white uppercase tracking-wider`}
+                                >
+                                  {breathingPhase === 'inhale' && animationReady && 'Breathe In'}
+                                  {breathingPhase === 'exhale' && animationReady && 'Breathe Out'}
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -2220,103 +2701,115 @@ export default function Home() {
                         /* Alternate Nostril Animation */
                         <>
                           {/* Breathing Container Illustration - Alternate Nostril */}
-                          <div className="flex-1 flex items-center justify-center w-full relative px-4">
-                            {/* Split square markers (50:50 left/right) with 4px gap (same as Box Breathing) */}
-                            <div className="relative flex" style={{ gap: '4px' }}>
-                              {/* Left Container */}
-                              <div className="relative" style={{ width: '181.5px', height: '363px' }}>
-                                {/* Gray outline */}
-                                <svg width="181.5" height="363">
-                                  <rect x="4" y="4" width="173.5" height="355" rx="15"
-                                    fill="none" stroke="#E5E7EB" strokeWidth="4" />
-                                </svg>
+                          <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Neumorphic Square Container */}
+                            <div
+                              className="flex items-center justify-center p-4"
+                              style={{
+                                borderRadius: '13px',
+                                background: '#333',
+                                boxShadow: '-5px -5px 10px 0 #3C3C3C, 5px 5px 10px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset',
+                                width: '340px',
+                                height: '340px'
+                              }}
+                            >
+                              {/* Split square markers (50:50 left/right) with 4px gap */}
+                              <div className="relative flex" style={{ gap: '4px' }}>
+                                {/* Left Container */}
+                                <div className="relative" style={{ width: '154px', height: '308px' }}>
+                                  {/* Gray outline */}
+                                  <svg width="154" height="308">
+                                    <rect x="4" y="4" width="146" height="300" rx="13"
+                                      fill="none" stroke="#4B5563" strokeWidth="4" />
+                                  </svg>
 
-                                {/* App color spectrum fill - Left Nostril (even cycles: 0, 2, 4...) */}
-                                {currentCycle % 2 === 0 && (() => {
-                                  let heightPercent;
-                                  if (breathingPhase === 'inhale') {
-                                    heightPercent = timer / (alternateNostrilBreathTime * 10);
-                                  } else if (breathingPhase === 'exhale') {
-                                    heightPercent = timer / (alternateNostrilBreathTime * 10);
-                                  } else {
-                                    // hold2 or other phases: empty
-                                    heightPercent = 0;
-                                  }
-                                  const heightPx = heightPercent * 355;
-                                  const isFull = heightPercent >= 0.98; // Consider full at 98%+
-                                  return (
-                                    <div className="absolute" style={{
-                                      bottom: '4px',
-                                      left: '4px',
-                                      width: '173.5px',
-                                      height: `${heightPx}px`,
-                                      background: 'linear-gradient(to top, #7469B6 0%, #AD88C6 25%, #E1AFD1 50%, #F6D0EA 75%, #FFE6E6 100%)',
-                                      borderRadius: isFull ? '15px' : '0 0 15px 15px',
-                                      transition: 'height 100ms linear'
-                                    }} />
-                                  );
-                                })()}
+                                  {/* App color spectrum fill - Left Nostril (even cycles: 0, 2, 4...) */}
+                                  {currentCycle % 2 === 0 && (() => {
+                                    let heightPercent;
+                                    if (breathingPhase === 'inhale') {
+                                      heightPercent = timer / (alternateNostrilBreathTime * 10);
+                                    } else if (breathingPhase === 'exhale') {
+                                      heightPercent = timer / (alternateNostrilBreathTime * 10);
+                                    } else {
+                                      // hold2 or other phases: empty
+                                      heightPercent = 0;
+                                    }
+                                    const heightPx = heightPercent * 300;
+                                    const isFull = heightPercent >= 0.98; // Consider full at 98%+
+                                    return (
+                                      <div className="absolute" style={{
+                                        bottom: '4px',
+                                        left: '4px',
+                                        width: '146px',
+                                        height: `${heightPx}px`,
+                                        background: 'linear-gradient(to top, #7469B6 0%, #AD88C6 25%, #E1AFD1 50%, #F6D0EA 75%, #FFE6E6 100%)',
+                                        borderRadius: isFull ? '13px' : '0 0 13px 13px',
+                                        transition: 'height 100ms linear'
+                                      }} />
+                                    );
+                                  })()}
 
-                                {/* Phase Text - Left Nostril */}
-                                {currentCycle % 2 === 0 && (
-                                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                    <div className="text-lg font-semibold text-gray-900 uppercase tracking-wider">
-                                      {breathingPhase === 'inhale' && 'Breathe In'}
-                                      {breathingPhase === 'exhale' && 'Breathe Out'}
+                                  {/* Phase Text - Left Nostril */}
+                                  {currentCycle % 2 === 0 && (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                      <div className="text-lg font-semibold uppercase tracking-wider" style={{ color: '#FFFFFF' }}>
+                                        {breathingPhase === 'inhale' && 'Breathe In'}
+                                        {breathingPhase === 'exhale' && 'Breathe Out'}
+                                      </div>
+                                      <div className="text-sm mt-1" style={{ color: '#D1D5DB' }}>
+                                        Left Nostril
+                                      </div>
                                     </div>
-                                    <div className="text-sm text-gray-700 mt-1">
-                                      Left Nostril
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
+                                  )}
+                                </div>
 
-                              {/* Right Container */}
-                              <div className="relative" style={{ width: '181.5px', height: '363px' }}>
-                                {/* Gray outline */}
-                                <svg width="181.5" height="363">
-                                  <rect x="4" y="4" width="173.5" height="355" rx="15"
-                                    fill="none" stroke="#E5E7EB" strokeWidth="4" />
-                                </svg>
+                                {/* Right Container */}
+                                <div className="relative" style={{ width: '154px', height: '308px' }}>
+                                  {/* Gray outline */}
+                                  <svg width="154" height="308">
+                                    <rect x="4" y="4" width="146" height="300" rx="13"
+                                      fill="none" stroke="#4B5563" strokeWidth="4" />
+                                  </svg>
 
-                                {/* App color spectrum fill - Right Nostril (odd cycles: 1, 3, 5...) */}
-                                {currentCycle % 2 === 1 && (() => {
-                                  let heightPercent;
-                                  if (breathingPhase === 'inhale') {
-                                    heightPercent = timer / (alternateNostrilBreathTime * 10);
-                                  } else if (breathingPhase === 'exhale') {
-                                    heightPercent = timer / (alternateNostrilBreathTime * 10);
-                                  } else {
-                                    // hold2 or other phases: empty
-                                    heightPercent = 0;
-                                  }
-                                  const heightPx = heightPercent * 355;
-                                  const isFull = heightPercent >= 0.98; // Consider full at 98%+
-                                  return (
-                                    <div className="absolute" style={{
-                                      bottom: '4px',
-                                      left: '4px',
-                                      width: '173.5px',
-                                      height: `${heightPx}px`,
-                                      background: 'linear-gradient(to top, #7469B6 0%, #AD88C6 25%, #E1AFD1 50%, #F6D0EA 75%, #FFE6E6 100%)',
-                                      borderRadius: isFull ? '15px' : '0 0 15px 15px',
-                                      transition: 'height 100ms linear'
-                                    }} />
-                                  );
-                                })()}
+                                  {/* App color spectrum fill - Right Nostril (odd cycles: 1, 3, 5...) */}
+                                  {currentCycle % 2 === 1 && (() => {
+                                    let heightPercent;
+                                    if (breathingPhase === 'inhale') {
+                                      heightPercent = timer / (alternateNostrilBreathTime * 10);
+                                    } else if (breathingPhase === 'exhale') {
+                                      heightPercent = timer / (alternateNostrilBreathTime * 10);
+                                    } else {
+                                      // hold2 or other phases: empty
+                                      heightPercent = 0;
+                                    }
+                                    const heightPx = heightPercent * 300;
+                                    const isFull = heightPercent >= 0.98; // Consider full at 98%+
+                                    return (
+                                      <div className="absolute" style={{
+                                        bottom: '4px',
+                                        left: '4px',
+                                        width: '146px',
+                                        height: `${heightPx}px`,
+                                        background: 'linear-gradient(to top, #7469B6 0%, #AD88C6 25%, #E1AFD1 50%, #F6D0EA 75%, #FFE6E6 100%)',
+                                        borderRadius: isFull ? '13px' : '0 0 13px 13px',
+                                        transition: 'height 100ms linear'
+                                      }} />
+                                    );
+                                  })()}
 
-                                {/* Phase Text - Right Nostril */}
-                                {currentCycle % 2 === 1 && (
-                                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                    <div className="text-lg font-semibold text-gray-900 uppercase tracking-wider">
-                                      {breathingPhase === 'inhale' && 'Breathe In'}
-                                      {breathingPhase === 'exhale' && 'Breathe Out'}
+                                  {/* Phase Text - Right Nostril */}
+                                  {currentCycle % 2 === 1 && (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                      <div className="text-lg font-semibold uppercase tracking-wider" style={{ color: '#FFFFFF' }}>
+                                        {breathingPhase === 'inhale' && 'Breathe In'}
+                                        {breathingPhase === 'exhale' && 'Breathe Out'}
+                                      </div>
+                                      <div className="text-sm mt-1" style={{ color: '#D1D5DB' }}>
+                                        Right Nostril
+                                      </div>
                                     </div>
-                                    <div className="text-sm text-gray-700 mt-1">
-                                      Right Nostril
-                                    </div>
-                                  </div>
-                                )}
+                                  )}
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -2398,7 +2891,12 @@ export default function Home() {
                       {/* Countdown Progress Bar - Show during countdown (only on first start, not after completion) */}
                       {countdown !== null && countdown > 0 && !exerciseCompleted && (
                         <div className="w-full max-w-xs px-4">
-                          <span className="text-sm text-gray-600 font-medium mb-2 block text-center">
+                          <span
+                            className="text-sm font-medium mb-2 block text-center"
+                            style={{
+                              color: '#FFFFFF'
+                            }}
+                          >
                             Exercise starting...
                           </span>
                           {/* Progress Bar Container */}
@@ -2465,11 +2963,16 @@ export default function Home() {
                             setIsPaused(true);
                           }
                         }}
-                        className={`w-20 h-20 rounded-full hover:opacity-90 transition-opacity font-medium text-sm border-2 flex items-center justify-center ${
-                          isPaused || exerciseCompleted
-                            ? 'bg-black text-white border-black'
-                            : 'bg-transparent text-black border-black'
-                        }`}
+                        className="rounded-full font-medium text-sm flex items-center justify-center transition-all hover:brightness-110 active:brightness-90"
+                        style={{
+                          width: '80px',
+                          height: '80px',
+                          background: '#36393B',
+                          color: '#FFFFFF',
+                          boxShadow: (isPaused || exerciseCompleted)
+                            ? '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
+                            : '6px 6px 15px 0 #000 inset, -6px -6px 12px 0 rgba(255, 255, 255, 0.15) inset'
+                        }}
                       >
                         {exerciseCompleted || isPaused ? 'Start' : 'Pause'}
                       </button>

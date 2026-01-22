@@ -5,7 +5,8 @@ export const getExerciseMetadata = (exerciseName) => {
     'Coherent Breathing': { bestFor: 'HRV & Relaxation', idealSession: '10–20 min' },
     'Physiological Sigh': { bestFor: 'Acute Stress Relief', idealSession: '1–3 min' },
     'Alternate Nostril': { bestFor: 'Nervous System Balance', idealSession: '5–15 min' },
-    'Humming Bee': { bestFor: 'Relaxation & Sleep', idealSession: '5–10 min' }
+    'Humming Bee': { bestFor: 'Relaxation & Sleep', idealSession: '5–10 min' },
+    'Neumorphism Trial': { bestFor: 'HRV & Relaxation', idealSession: '10–20 min' }
   };
   return metadataMap[exerciseName] || { bestFor: '', idealSession: '' };
 };
