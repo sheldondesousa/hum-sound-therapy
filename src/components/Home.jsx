@@ -89,6 +89,9 @@ export default function Home() {
   const [alternateNostrilBreathTime, setAlternateNostrilBreathTime] = useState(5); // Breath time for Alternate Nostril (default 5s)
   const [showMusicSheet, setShowMusicSheet] = useState(false); // Track music selection bottom sheet visibility
   const [selectedMusic, setSelectedMusic] = useState(null); // Track selected music track (null = no music)
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false); // Track if description is expanded
+  const [isDarkMode, setIsDarkMode] = useState(true); // Track light/dark mode (default: dark)
+  const [selectedTab, setSelectedTab] = useState(null); // Track selected tab in info screen: 'customize', 'start', 'sound'
 
   // Track exercise completion (only once per completion)
   useEffect(() => {
@@ -123,7 +126,7 @@ export default function Home() {
     if (selectedExercise && showingInfo) {
       // Set defaults based on exercise type
       switch (selectedExercise.name) {
-        case 'Box Breathing (4-4-4-4)':
+        case 'Box Breathing':
           setSelectedCycles(4);
           break;
         case '4-7-8 Breathing':
@@ -162,7 +165,7 @@ export default function Home() {
       setIsPaused(false);
       setBreathingPhase('inhale');
       // Box Breathing starts at timer 1, all other exercises start at 0
-      setTimer(selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? 1 : 0);
+      setTimer(selectedExercise?.name === 'Box Breathing' ? 1 : 0);
       setCurrentCycle(0);
       return;
     }
@@ -616,7 +619,7 @@ export default function Home() {
   const DifficultyIndicator = ({ level }) => {
     return (
       <div className="flex items-center gap-2">
-        <span className="font-bold text-gray-300" style={{ fontSize: '13px' }}>Effort</span>
+        <span className="text-sm" style={{ color: isDarkMode ? '#D1D5DB' : '#6B7280' }}>Effort</span>
         <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((circle) => {
             const isFilled = circle <= Math.floor(level);
@@ -627,14 +630,14 @@ export default function Home() {
                 key={circle}
                 className="w-2 h-2 rounded-full relative overflow-hidden"
                 style={{
-                  backgroundColor: isFilled ? '#FFFFFF' : 'transparent',
-                  border: !isFilled && !isHalf ? '1px solid #9CA3AF' : 'none'
+                  backgroundColor: isFilled ? (isDarkMode ? '#FFFFFF' : '#000000') : 'transparent',
+                  border: !isFilled && !isHalf ? `1px solid ${isDarkMode ? '#9CA3AF' : '#6B7280'}` : 'none'
                 }}
               >
                 {isHalf && (
                   <>
-                    <div className="absolute inset-0 w-1/2 bg-white" />
-                    <div className="absolute inset-0 w-full h-full border border-gray-400 rounded-full" />
+                    <div className="absolute inset-0 w-1/2" style={{ backgroundColor: isDarkMode ? '#FFFFFF' : '#000000' }} />
+                    <div className="absolute inset-0 w-full h-full rounded-full" style={{ border: `1px solid ${isDarkMode ? '#9CA3AF' : '#6B7280'}` }} />
                   </>
                 )}
               </div>
@@ -646,7 +649,20 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom, #F4F9FD, #C3DBEA)' }}>
+    <div className="min-h-screen" style={{
+      backgroundImage: 'url(/LoginScreen.jpeg)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      position: 'relative'
+    }}>
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.3)',
+        pointerEvents: 'none',
+        zIndex: 0
+      }}></div>
       <style>{`
         @media (min-width: 1024px) {
           .music-player-desktop {
@@ -806,7 +822,7 @@ export default function Home() {
           }
         }
       `}</style>
-      <div className="flex min-h-screen flex-col lg:flex-row">
+      <div className="flex min-h-screen flex-col lg:flex-row" style={{ position: 'relative', zIndex: 1 }}>
         {/* Sidebar - Desktop */}
         <aside className="hidden lg:flex w-64 bg-white border-r border-gray-300 p-8 flex-col">
           <nav className="space-y-0">
@@ -851,10 +867,25 @@ export default function Home() {
             </button>
             <button
               onClick={handleLogout}
-              className="block w-full text-left text-base text-black hover:opacity-70 transition-opacity pt-6"
+              className="block w-full text-left text-base text-black hover:opacity-70 transition-opacity pt-6 pb-6 border-b border-gray-300"
             >
               Logout
             </button>
+
+            {/* Theme Toggle */}
+            <div className="pt-6 flex items-center justify-between">
+              <span className="text-base text-black">Dark Mode</span>
+              <button
+                onClick={() => setIsDarkMode(!isDarkMode)}
+                className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                style={{ backgroundColor: isDarkMode ? '#7469B6' : '#D1D5DB' }}
+              >
+                <span
+                  className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+                  style={{ transform: isDarkMode ? 'translateX(1.5rem)' : 'translateX(0.25rem)' }}
+                />
+              </button>
+            </div>
           </nav>
         </aside>
 
@@ -938,10 +969,25 @@ export default function Home() {
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="block w-full text-left text-base text-black hover:opacity-70 transition-opacity pt-6"
+                  className="block w-full text-left text-base text-black hover:opacity-70 transition-opacity pt-6 pb-6 border-b border-gray-300"
                 >
                   Logout
                 </button>
+
+                {/* Theme Toggle */}
+                <div className="pt-6 flex items-center justify-between">
+                  <span className="text-base text-black">Dark Mode</span>
+                  <button
+                    onClick={() => setIsDarkMode(!isDarkMode)}
+                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                    style={{ backgroundColor: isDarkMode ? '#7469B6' : '#D1D5DB' }}
+                  >
+                    <span
+                      className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+                      style={{ transform: isDarkMode ? 'translateX(1.5rem)' : 'translateX(0.25rem)' }}
+                    />
+                  </button>
+                </div>
               </nav>
             </div>
           </div>
@@ -1044,10 +1090,8 @@ export default function Home() {
               <div
                 className="music-player-desktop music-player-frame border-2 border-white rounded-3xl p-6 flex flex-col w-full lg:flex-shrink-0 relative overflow-hidden"
                 style={{
-                  backgroundColor: '#36393B',
-                  backgroundImage: selectedOption === 'breathe' && selectedExercise?.name === 'Coherent Breathing'
-                    ? `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E")`
-                    : 'none'
+                  backgroundColor: isDarkMode ? '#333' : '#FFFFFF',
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E")`
                 }}
               >
               {/* Profile & Metrics Section - Show when on breathing exercises listing */}
@@ -1073,14 +1117,14 @@ export default function Home() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h2 className="text-lg font-semibold text-white truncate">
+                      <h2 className="text-lg font-semibold truncate" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>
                         Hello {currentUser?.displayName?.split(' ')[0] || 'User'}!
                       </h2>
                     </div>
                   </div>
 
                   {/* Motivational Text */}
-                  <h1 className="text-4xl font-bold text-white mb-4" style={{ fontFamily: "'SF Pro Display', sans-serif" }}>
+                  <h1 className="text-4xl font-bold mb-4" style={{ fontFamily: "'SF Pro Display', sans-serif", color: isDarkMode ? '#FFFFFF' : '#000000' }}>
                     Take a deep breath<br />and relax
                   </h1>
 
@@ -1179,20 +1223,10 @@ export default function Home() {
               )}
 
               {/* Track List or Exercise Detail View */}
-              <div className={`flex-1 overflow-hidden min-h-0 ${selectedOption === 'breathe' && selectedExercise ? 'flex' : 'flex flex-col'}`}>
+              <div className={`flex-1 overflow-auto min-h-0 ${selectedOption === 'breathe' && selectedExercise ? 'flex' : 'flex flex-col'}`}>
                 {selectedOption === 'breathe' && selectedExercise && showingInfo ? (
                   /* Breathing Exercise Info Screen */
-                  <div
-                    className="flex flex-col h-full w-full"
-                    style={{
-                      background: selectedExercise?.name === 'Coherent Breathing'
-                        ? '#36393B'
-                        : '#36393B',
-                      backgroundImage: selectedExercise?.name === 'Coherent Breathing'
-                        ? `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E")`
-                        : 'none'
-                    }}
-                  >
+                  <div className="flex flex-col h-full w-full">
                     {/* Header */}
                     <div className="flex-[0.1] flex items-center justify-between px-2 mb-4">
                       <button
@@ -1201,7 +1235,7 @@ export default function Home() {
                           setShowingInfo(false);
                         }}
                         className="flex items-center gap-2 text-sm transition-colors"
-                        style={{ color: '#FFFFFF' }}
+                        style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
@@ -1212,32 +1246,65 @@ export default function Home() {
                     </div>
 
                     {/* Scrollable Content with Flexbox Gap - All Exercises */}
-                    <div className="flex-1 px-2 flex flex-col">
-                      <div className="flex flex-col gap-4 flex-1">
+                    <div className="flex-1 flex flex-col items-center">
+                      <div className="flex flex-col gap-4 flex-1 w-full max-w-md px-2">
                         {/* Title */}
                         <h1
                           className="text-3xl font-bold"
-                          style={{ color: '#FFFFFF' }}
+                          style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}
                         >
                           {selectedExercise.name.replace(/\s*\([^)]*\)/, '')}
                         </h1>
 
+                        {/* Gradient Separator */}
+                        <div
+                          className="w-full h-1 rounded-full"
+                          style={{
+                            background: 'linear-gradient(to right, #7469B6, #AD88C6, #E1AFD1, #F6D0EA, #FFE6E6)'
+                          }}
+                        />
+
                         {/* Description */}
-                        <p
-                          className="text-base leading-snug whitespace-pre-line"
-                          style={{ color: '#FFFFFF' }}
-                        >
-                          {(exerciseContent[selectedExercise.name]?.description || 'Exercise description not available.').split('\n').map((line, index) => (
-                            <span key={index}>
-                              {line.trim().startsWith('Suggested:') ? (
-                                <span className="text-[15px]">
-                                  <span className="font-semibold">Suggested:</span> {line.trim().substring(10)}
-                                </span>
-                              ) : line}
-                              {index < (exerciseContent[selectedExercise.name]?.description || '').split('\n').length - 1 && '\n'}
-                            </span>
-                          ))}
-                        </p>
+                        <div>
+                          <p
+                            className="text-base leading-snug whitespace-pre-line"
+                            style={{
+                              color: isDarkMode ? '#FFFFFF' : '#000000',
+                              display: '-webkit-box',
+                              WebkitLineClamp: isDescriptionExpanded ? 'unset' : 4,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: isDescriptionExpanded ? 'visible' : 'hidden'
+                            }}
+                          >
+                            {(exerciseContent[selectedExercise.name]?.description || 'Exercise description not available.').split('\n').map((line, index) => (
+                              <span key={index}>
+                                {line.trim().startsWith('Suggested:') ? (
+                                  <span className="text-[15px]">
+                                    <span className="font-semibold">Suggested:</span> {line.trim().substring(10)}
+                                  </span>
+                                ) : line}
+                                {index < (exerciseContent[selectedExercise.name]?.description || '').split('\n').length - 1 && '\n'}
+                              </span>
+                            ))}
+                          </p>
+                          <button
+                            onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                            className="flex items-center gap-1 mt-2 text-sm"
+                            style={{ color: isDarkMode ? '#F6D0EA' : '#7469B6' }}
+                          >
+                            <span>{isDescriptionExpanded ? 'Show less' : 'Show more'}</span>
+                            <svg
+                              className="w-4 h-4 transition-transform"
+                              style={{ transform: isDescriptionExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              viewBox="0 0 24 24"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                          </button>
+                        </div>
 
                         {/* 2x2 Grid Layout */}
                         <div className="grid grid-cols-2 gap-3 px-4">
@@ -1247,14 +1314,16 @@ export default function Home() {
                               className="flex flex-col items-center justify-center gap-1 p-3 transition-all hover:brightness-110 active:brightness-90 aspect-square"
                               style={{
                                 borderRadius: '13px',
-                                background: '#333',
-                                boxShadow: '-10px -10px 20px 0 #3C3C3C, 10px 10px 20px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                background: isDarkMode ? '#333' : '#E8E8E8',
+                                boxShadow: isDarkMode
+                                  ? '-10px -10px 20px 0 #3C3C3C, 10px 10px 10px 0 rgba(30, 30, 30, 0.5), -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                  : '-10px -10px 20px 0 rgba(255, 255, 255, 0.8), 10px 10px 20px 0 rgba(0, 0, 0, 0.15), -4px -4px 8px 0 rgba(255, 255, 255, 0.5) inset, 4px 4px 8px 0 rgba(0, 0, 0, 0.15) inset'
                               }}
                             >
-                              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <svg className="w-6 h-6" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                               </svg>
-                              <span className="text-xs font-semibold text-white text-center">Tips</span>
+                              <span className="text-xs font-semibold text-center" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>Tips</span>
                             </button>
 
                             {/* Preparation Tile */}
@@ -1263,14 +1332,16 @@ export default function Home() {
                               className="flex flex-col items-center justify-center gap-1 p-3 transition-all hover:brightness-110 active:brightness-90 aspect-square"
                               style={{
                                 borderRadius: '13px',
-                                background: '#333',
-                                boxShadow: '-10px -10px 20px 0 #3C3C3C, 10px 10px 20px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                background: isDarkMode ? '#333' : '#E8E8E8',
+                                boxShadow: isDarkMode
+                                  ? '-10px -10px 20px 0 #3C3C3C, 10px 10px 10px 0 rgba(30, 30, 30, 0.5), -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                  : '-10px -10px 20px 0 rgba(255, 255, 255, 0.8), 10px 10px 20px 0 rgba(0, 0, 0, 0.15), -4px -4px 8px 0 rgba(255, 255, 255, 0.5) inset, 4px 4px 8px 0 rgba(0, 0, 0, 0.15) inset'
                               }}
                             >
-                              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <svg className="w-6 h-6" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                               </svg>
-                              <span className="text-xs font-semibold text-white text-center">Preparation</span>
+                              <span className="text-xs font-semibold text-center" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>Preparation</span>
                             </button>
 
                             {/* Try this when Tile */}
@@ -1279,14 +1350,16 @@ export default function Home() {
                               className="flex flex-col items-center justify-center gap-1 p-3 transition-all hover:brightness-110 active:brightness-90 aspect-square"
                               style={{
                                 borderRadius: '13px',
-                                background: '#333',
-                                boxShadow: '-10px -10px 20px 0 #3C3C3C, 10px 10px 20px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                background: isDarkMode ? '#333' : '#E8E8E8',
+                                boxShadow: isDarkMode
+                                  ? '-10px -10px 20px 0 #3C3C3C, 10px 10px 10px 0 rgba(30, 30, 30, 0.5), -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                  : '-10px -10px 20px 0 rgba(255, 255, 255, 0.8), 10px 10px 20px 0 rgba(0, 0, 0, 0.15), -4px -4px 8px 0 rgba(255, 255, 255, 0.5) inset, 4px 4px 8px 0 rgba(0, 0, 0, 0.15) inset'
                               }}
                             >
-                              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <svg className="w-6 h-6" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
-                              <span className="text-xs font-semibold text-white text-center">Try this when</span>
+                              <span className="text-xs font-semibold text-center" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>Try this when</span>
                             </button>
 
                             {/* Precautions Tile */}
@@ -1295,85 +1368,138 @@ export default function Home() {
                               className="flex flex-col items-center justify-center gap-1 p-3 transition-all hover:brightness-110 active:brightness-90 aspect-square"
                               style={{
                                 borderRadius: '13px',
-                                background: '#333',
-                                boxShadow: '-10px -10px 20px 0 #3C3C3C, 10px 10px 20px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                background: isDarkMode ? '#333' : '#E8E8E8',
+                                boxShadow: isDarkMode
+                                  ? '-10px -10px 20px 0 #3C3C3C, 10px 10px 10px 0 rgba(30, 30, 30, 0.5), -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                  : '-10px -10px 20px 0 rgba(255, 255, 255, 0.8), 10px 10px 20px 0 rgba(0, 0, 0, 0.15), -4px -4px 8px 0 rgba(255, 255, 255, 0.5) inset, 4px 4px 8px 0 rgba(0, 0, 0, 0.15) inset'
                               }}
                             >
-                              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <svg className="w-6 h-6" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                               </svg>
-                              <span className="text-xs font-semibold text-white text-center">Precautions</span>
+                              <span className="text-xs font-semibold text-center" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>Precautions</span>
                             </button>
                           </div>
 
                         {/* Spacer to push buttons to bottom */}
                         <div className="flex-grow"></div>
 
-                        {/* Start Exercise Button with Customization and Sound buttons - Static position */}
-                        <div className="pb-6 flex justify-center items-center" style={{ gap: '34px' }}>
-                          {/* Customization Button - Left */}
-                          <button
-                            onClick={() => {
-                              setShowCustomizationSheet(true);
-                            }}
-                            className="rounded-full font-medium text-sm flex items-center justify-center transition-all hover:brightness-110 active:brightness-90"
+                        {/* Tab Bar for Customization, Start, and Sound */}
+                        <div className="pb-6 px-2">
+                          <div
+                            className="flex items-center w-full"
                             style={{
-                              width: '56px',
-                              height: '56px',
-                              background: '#36393B',
-                              color: '#FFFFFF',
-                              boxShadow: '6px 6px 15px 0 #000'
-                            }}
-                          >
-                            <svg width="24" height="24" viewBox="0 0 118 118" fill="none">
-                              <path d="M19.6667 24.5845L49.1667 24.5833" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                              <path d="M63.9167 24.5833H98.3334" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                              <path d="M78.6667 44.25V73.75" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                              <path d="M49.1667 9.83333V39.3333" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                              <path d="M59 78.6667V108.167" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                              <path d="M78.6667 59L98.3334 59.001" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                              <path d="M19.6667 59.001L63.9167 59" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                              <path d="M59 93.4167H98.3333" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                              <path d="M19.6667 93.4176L44.2501 93.4167" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                            </svg>
-                          </button>
+                                height: '80px',
+                                padding: '0 10px',
+                                borderRadius: '10px',
+                                background: isDarkMode ? '#2B2B2B' : '#FFFFFF',
+                                boxShadow: '0 4px 12px 0 rgba(13, 10, 44, 0.06)'
+                              }}
+                            >
+                            {/* Customization Button */}
+                            <button
+                              onClick={() => {
+                                setShowCustomizationSheet(true);
+                              }}
+                              className="flex-1 flex flex-col items-center justify-end transition-all"
+                              style={{
+                                color: isDarkMode ? '#FFFFFF' : '#000000',
+                                background: 'transparent',
+                                borderRadius: '8px',
+                                padding: '10px',
+                                gap: '4px',
+                                height: '100%',
+                                transition: 'filter 0.2s ease'
+                              }}
+                              onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.2)'}
+                              onMouseLeave={(e) => e.currentTarget.style.filter = 'brightness(1)'}
+                              onMouseDown={(e) => e.currentTarget.style.filter = 'brightness(0.8)'}
+                              onMouseUp={(e) => e.currentTarget.style.filter = 'brightness(1.2)'}
+                            >
+                              <svg width="24" height="24" viewBox="0 0 118 118" fill="none" style={{ flexShrink: 0 }}>
+                                <path d="M19.6667 24.5845L49.1667 24.5833" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                                <path d="M63.9167 24.5833H98.3334" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                                <path d="M78.6667 44.25V73.75" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                                <path d="M49.1667 9.83333V39.3333" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                                <path d="M59 78.6667V108.167" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                                <path d="M78.6667 59L98.3334 59.001" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                                <path d="M19.6667 59.001L63.9167 59" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                                <path d="M59 93.4167H98.3333" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                                <path d="M19.6667 93.4176L44.2501 93.4167" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                              </svg>
+                              <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Customize</span>
+                            </button>
 
-                          {/* Start Button - Center */}
-                          <button
-                            onClick={() => {
-                              // Start the exercise by hiding the info screen
-                              setShowingInfo(false);
-                            }}
-                            className="rounded-full font-medium text-sm flex items-center justify-center transition-all hover:brightness-110 active:brightness-90"
-                            style={{
-                              width: '80px',
-                              height: '80px',
-                              background: '#36393B',
-                              color: '#FFFFFF',
-                              boxShadow: '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
-                            }}
-                          >
-                            Start
-                          </button>
+                            {/* Divider */}
+                            <div
+                              style={{
+                                width: '1px',
+                                height: '50px',
+                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                              }}
+                            />
 
-                          {/* Sound Button - Right */}
-                          <button
-                            onClick={() => {
-                              setShowMusicSheet(true);
-                            }}
-                            className="rounded-full font-medium text-sm flex items-center justify-center transition-all hover:brightness-110 active:brightness-90"
-                            style={{
-                              width: '56px',
-                              height: '56px',
-                              background: selectedMusic ? '#746996' : '#36393B',
-                              color: '#FFFFFF',
-                              boxShadow: '6px 6px 15px 0 #000'
-                            }}
-                          >
-                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                              <path d="M17.1884 9.09605C17.1884 8.98559 17.1884 8.87994 17.1836 8.76948C17.1355 7.29029 16.7513 5.89755 16.1078 4.67769C14.6382 1.88741 11.8287 0 8.59658 0C5.36446 0 2.55016 1.88741 1.08058 4.67769C0.437033 5.90235 0.0528329 7.29029 0.00480725 8.76948C4.69011e-06 8.87994 0 8.98559 0 9.09605V13.6201C0 15.6035 1.39754 17.2556 3.26574 17.6542C3.46744 17.8607 3.77482 18 4.12061 18C4.46639 18 4.77375 17.8655 4.97546 17.6542L4.98987 17.6398V9.60032H4.98506C4.78816 9.3842 4.47119 9.24013 4.1158 9.24013C3.76041 9.24013 3.44344 9.3842 3.24654 9.60032H3.24173C2.59819 9.73479 2.01228 10.0277 1.52242 10.4264C1.484 10.46 1.17182 10.7385 1.07577 10.8538V9.01441C1.07577 8.88474 1.18143 8.77428 1.3159 8.77428H1.32551H1.42155C1.58004 4.73052 4.73053 1.5032 8.58698 1.5032C12.4434 1.5032 15.5891 4.73052 15.7476 8.77428H15.8581C15.9925 8.77428 16.0982 8.88474 16.0982 9.01441V10.8538C16.0021 10.7385 15.8917 10.6281 15.7764 10.5368C15.7764 10.5368 15.69 10.46 15.6515 10.4264C15.1617 10.0277 14.5758 9.73959 13.9322 9.60032C13.7305 9.3842 13.4136 9.24013 13.0582 9.24013C12.7028 9.24013 12.3954 9.3746 12.1889 9.59552V17.6494C12.1889 17.6494 12.1937 17.6542 12.1985 17.6542C12.4002 17.8607 12.7124 18 13.0534 18C13.3943 18 13.7065 17.8655 13.9082 17.6542C15.7764 17.2556 17.174 15.6035 17.174 13.6201C17.174 13.3031 17.1355 12.9909 17.0683 12.6932C17.1355 12.9909 17.174 13.2983 17.174 13.6201V9.09605H17.1884Z" fill="currentColor"/>
-                            </svg>
-                          </button>
+                            {/* Start Button */}
+                            <button
+                              onClick={() => {
+                                setShowingInfo(false);
+                              }}
+                              className="flex-1 flex flex-col items-center justify-end transition-all"
+                              style={{
+                                color: isDarkMode ? '#FFFFFF' : '#000000',
+                                background: 'transparent',
+                                borderRadius: '8px',
+                                padding: '10px',
+                                gap: '4px',
+                                height: '100%',
+                                transition: 'filter 0.2s ease'
+                              }}
+                              onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.2)'}
+                              onMouseLeave={(e) => e.currentTarget.style.filter = 'brightness(1)'}
+                              onMouseDown={(e) => e.currentTarget.style.filter = 'brightness(0.8)'}
+                              onMouseUp={(e) => e.currentTarget.style.filter = 'brightness(1.2)'}
+                            >
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+                                <path d="M8 5v14l11-7L8 5z" fill="currentColor"/>
+                              </svg>
+                              <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Start</span>
+                            </button>
+
+                            {/* Divider */}
+                            <div
+                              style={{
+                                width: '1px',
+                                height: '50px',
+                                backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                              }}
+                            />
+
+                            {/* Sound Button */}
+                            <button
+                              onClick={() => {
+                                setShowMusicSheet(true);
+                              }}
+                              className="flex-1 flex flex-col items-center justify-end transition-all"
+                              style={{
+                                color: isDarkMode ? '#FFFFFF' : '#000000',
+                                background: 'transparent',
+                                borderRadius: '8px',
+                                padding: '10px',
+                                gap: '4px',
+                                height: '100%',
+                                transition: 'filter 0.2s ease'
+                              }}
+                              onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.2)'}
+                              onMouseLeave={(e) => e.currentTarget.style.filter = 'brightness(1)'}
+                              onMouseDown={(e) => e.currentTarget.style.filter = 'brightness(0.8)'}
+                              onMouseUp={(e) => e.currentTarget.style.filter = 'brightness(1.2)'}
+                            >
+                              <svg width="24" height="24" viewBox="-2 -2 22 22" fill="none" style={{ flexShrink: 0 }}>
+                                <path d="M17.1884 9.09605C17.1884 8.98559 17.1884 8.87994 17.1836 8.76948C17.1355 7.29029 16.7513 5.89755 16.1078 4.67769C14.6382 1.88741 11.8287 0 8.59658 0C5.36446 0 2.55016 1.88741 1.08058 4.67769C0.437033 5.90235 0.0528329 7.29029 0.00480725 8.76948C4.69011e-06 8.87994 0 8.98559 0 9.09605V13.6201C0 15.6035 1.39754 17.2556 3.26574 17.6542C3.46744 17.8607 3.77482 18 4.12061 18C4.46639 18 4.77375 17.8655 4.97546 17.6542L4.98987 17.6398V9.60032H4.98506C4.78816 9.3842 4.47119 9.24013 4.1158 9.24013C3.76041 9.24013 3.44344 9.3842 3.24654 9.60032H3.24173C2.59819 9.73479 2.01228 10.0277 1.52242 10.4264C1.484 10.46 1.17182 10.7385 1.07577 10.8538V9.01441C1.07577 8.88474 1.18143 8.77428 1.3159 8.77428H1.32551H1.42155C1.58004 4.73052 4.73053 1.5032 8.58698 1.5032C12.4434 1.5032 15.5891 4.73052 15.7476 8.77428H15.8581C15.9925 8.77428 16.0982 8.88474 16.0982 9.01441V10.8538C16.0021 10.7385 15.8917 10.6281 15.7764 10.5368C15.7764 10.5368 15.69 10.46 15.6515 10.4264C15.1617 10.0277 14.5758 9.73959 13.9322 9.60032C13.7305 9.3842 13.4136 9.24013 13.0582 9.24013C12.7028 9.24013 12.3954 9.3746 12.1889 9.59552V17.6494C12.1889 17.6494 12.1937 17.6542 12.1985 17.6542C12.4002 17.8607 12.7124 18 13.0534 18C13.3943 18 13.7065 17.8655 13.9082 17.6542C15.7764 17.2556 17.174 15.6035 17.174 13.6201C17.174 13.3031 17.1355 12.9909 17.0683 12.6932C17.1355 12.9909 17.174 13.2983 17.174 13.6201V9.09605H17.1884Z" fill="currentColor"/>
+                              </svg>
+                              <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Sound</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1412,7 +1538,7 @@ export default function Home() {
                                 return (
                                   <div key={index} className={`flex gap-3 ${index > 0 ? 'mt-4' : ''}`}>
                                     {/* Checkbox with tick mark for Box Breathing */}
-                                    {selectedExercise?.name === 'Box Breathing (4-4-4-4)' && (
+                                    {selectedExercise?.name === 'Box Breathing' && (
                                       <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
                                         {/* Blue circle */}
                                         <circle cx="12" cy="12" r="9" stroke="#067AC3" strokeWidth="2" fill="none" />
@@ -1422,7 +1548,7 @@ export default function Home() {
                                     )}
                                     <p>
                                       {item.label && <strong>{item.label}</strong>}{' '}
-                                      {selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? formatText(item.text) : item.text}
+                                      {selectedExercise?.name === 'Box Breathing' ? formatText(item.text) : item.text}
                                     </p>
                                   </div>
                                 );
@@ -1632,6 +1758,1528 @@ export default function Home() {
                       </div>
                     )}
 
+
+                    {/* Music Selection Bottom Sheet */}
+                    {showMusicSheet && (
+                      <div
+                        className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-end"
+                        onClick={() => setShowMusicSheet(false)}
+                      >
+                        <div
+                          className="rounded-t-3xl w-full max-h-[70vh] overflow-y-auto animate-slide-up"
+                          style={{
+                            backgroundColor: isDarkMode ? '#2B2B2B' : '#FFFFFF'
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <div className="p-6">
+                            {/* Sheet Handle */}
+                            <div
+                              className="w-12 h-1 rounded-full mx-auto mb-6"
+                              style={{
+                                backgroundColor: isDarkMode ? '#555' : '#D1D5DB'
+                              }}
+                            ></div>
+
+                            {/* Title */}
+                            <h2
+                              className="text-2xl font-bold mb-4"
+                              style={{
+                                color: isDarkMode ? '#FFFFFF' : '#000000'
+                              }}
+                            >
+                              Select Music
+                            </h2>
+
+                            {/* Music Options */}
+                            <div className="space-y-3 mb-6">
+                              {/* No Music Option */}
+                              <button
+                                onClick={() => {
+                                  setSelectedMusic(null);
+                                  setShowMusicSheet(false);
+                                }}
+                                className="w-full p-4 rounded-xl text-left transition-all"
+                                style={{
+                                  backgroundColor: selectedMusic === null
+                                    ? '#AD88C6'
+                                    : isDarkMode ? '#333' : '#F3F4F6',
+                                  color: selectedMusic === null
+                                    ? '#FFFFFF'
+                                    : isDarkMode ? '#FFFFFF' : '#1F2937'
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (selectedMusic !== null) {
+                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (selectedMusic !== null) {
+                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
+                                  }
+                                }}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <p className="font-semibold">No Music</p>
+                                    <p className="text-sm opacity-70">Exercise in silence</p>
+                                  </div>
+                                  {selectedMusic === null && (
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                                    </svg>
+                                  )}
+                                </div>
+                              </button>
+
+                              {/* Nature Sounds */}
+                              <button
+                                onClick={() => {
+                                  setSelectedMusic('nature');
+                                  setShowMusicSheet(false);
+                                }}
+                                className="w-full p-4 rounded-xl text-left transition-all"
+                                style={{
+                                  backgroundColor: selectedMusic === 'nature'
+                                    ? '#AD88C6'
+                                    : isDarkMode ? '#333' : '#F3F4F6',
+                                  color: selectedMusic === 'nature'
+                                    ? '#FFFFFF'
+                                    : isDarkMode ? '#FFFFFF' : '#1F2937'
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (selectedMusic !== 'nature') {
+                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (selectedMusic !== 'nature') {
+                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
+                                  }
+                                }}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <p className="font-semibold">Nature Sounds</p>
+                                    <p className="text-sm opacity-70">Calm forest ambience</p>
+                                  </div>
+                                  {selectedMusic === 'nature' && (
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                                    </svg>
+                                  )}
+                                </div>
+                              </button>
+
+                              {/* Ambient Music */}
+                              <button
+                                onClick={() => {
+                                  setSelectedMusic('ambient');
+                                  setShowMusicSheet(false);
+                                }}
+                                className="w-full p-4 rounded-xl text-left transition-all"
+                                style={{
+                                  backgroundColor: selectedMusic === 'ambient'
+                                    ? '#AD88C6'
+                                    : isDarkMode ? '#333' : '#F3F4F6',
+                                  color: selectedMusic === 'ambient'
+                                    ? '#FFFFFF'
+                                    : isDarkMode ? '#FFFFFF' : '#1F2937'
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (selectedMusic !== 'ambient') {
+                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (selectedMusic !== 'ambient') {
+                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
+                                  }
+                                }}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <p className="font-semibold">Ambient Music</p>
+                                    <p className="text-sm opacity-70">Peaceful meditation tones</p>
+                                  </div>
+                                  {selectedMusic === 'ambient' && (
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                                    </svg>
+                                  )}
+                                </div>
+                              </button>
+
+                              {/* Binaural Beats */}
+                              <button
+                                onClick={() => {
+                                  setSelectedMusic('binaural');
+                                  setShowMusicSheet(false);
+                                }}
+                                className="w-full p-4 rounded-xl text-left transition-all"
+                                style={{
+                                  backgroundColor: selectedMusic === 'binaural'
+                                    ? '#AD88C6'
+                                    : isDarkMode ? '#333' : '#F3F4F6',
+                                  color: selectedMusic === 'binaural'
+                                    ? '#FFFFFF'
+                                    : isDarkMode ? '#FFFFFF' : '#1F2937'
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (selectedMusic !== 'binaural') {
+                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (selectedMusic !== 'binaural') {
+                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
+                                  }
+                                }}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <p className="font-semibold">Binaural Beats</p>
+                                    <p className="text-sm opacity-70">Focus and relaxation</p>
+                                  </div>
+                                  {selectedMusic === 'binaural' && (
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                                    </svg>
+                                  )}
+                                </div>
+                              </button>
+
+                              {/* Ocean Waves */}
+                              <button
+                                onClick={() => {
+                                  setSelectedMusic('ocean');
+                                  setShowMusicSheet(false);
+                                }}
+                                className="w-full p-4 rounded-xl text-left transition-all"
+                                style={{
+                                  backgroundColor: selectedMusic === 'ocean'
+                                    ? '#AD88C6'
+                                    : isDarkMode ? '#333' : '#F3F4F6',
+                                  color: selectedMusic === 'ocean'
+                                    ? '#FFFFFF'
+                                    : isDarkMode ? '#FFFFFF' : '#1F2937'
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (selectedMusic !== 'ocean') {
+                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (selectedMusic !== 'ocean') {
+                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
+                                  }
+                                }}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div>
+                                    <p className="font-semibold">Ocean Waves</p>
+                                    <p className="text-sm opacity-70">Rhythmic wave sounds</p>
+                                  </div>
+                                  {selectedMusic === 'ocean' && (
+                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                                    </svg>
+                                  )}
+                                </div>
+                              </button>
+                            </div>
+
+                            {/* Done Button */}
+                            <div className="flex justify-center">
+                              <button
+                                onClick={() => setShowMusicSheet(false)}
+                                className="text-base font-bold transition-all hover:brightness-110 active:brightness-90"
+                                style={{
+                                  display: 'flex',
+                                  width: '200px',
+                                  height: '59px',
+                                  padding: '12px 32px 11px 32px',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  borderRadius: '27px',
+                                  background: '#7469B6',
+                                  boxShadow: 'none',
+                                  color: '#FFFFFF'
+                                }}
+                              >
+                                Done
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : selectedOption === 'breathe' && selectedExercise ? (
+                  /* Breathing Exercise Detail View */
+                  <div className="flex flex-col h-full w-full justify-between">
+                    {/* Header - 15% */}
+                    <div className="flex-[0.15] flex items-center justify-center px-2">
+                      <div className="flex items-center justify-between w-full max-w-md">
+                      <button
+                        onClick={() => {
+                          // Go back to exercise info screen
+                          setShowingInfo(true);
+                          // Reset exercise state
+                          setIsExercising(false);
+                          setCountdown(null);
+                          setIsPaused(false);
+                          setBreathingPhase('inhale');
+                          setTimer(0);
+                          setCurrentCycle(0);
+                          setExerciseCompleted(false);
+                          // Reset Coherent breathing customization to defaults
+                          setCoherentCycles(6);
+                          setCoherentBreathTime(5);
+                          // Reset Alternate Nostril customization to defaults
+                          setAlternateNostrilCycles(3);
+                          setAlternateNostrilBreathTime(5);
+                        }}
+                        className="flex items-center gap-2 text-sm transition-colors"
+                        style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        <span>Back</span>
+                      </button>
+
+                      <h3
+                        className="text-base font-semibold text-center flex-1 px-4"
+                        style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}
+                      >
+                        {selectedExercise.name}
+                      </h3>
+
+                      {/* Spacer to balance layout */}
+                      <div className="w-14"></div>
+                      </div>
+                    </div>
+
+                    {/* Timer Section - 15% */}
+                    <div className="flex-[0.15] flex items-center justify-center" style={{ minHeight: '0' }}>
+                      {/* Timer Display - Show during all phases for Box Breathing, INHALE and EXHALE for others */}
+                      {!exerciseCompleted && isExercising && countdown === null ? (
+                        selectedExercise?.name === 'Box Breathing' ? (
+                          /* Box Breathing: Show timer for ALL phases including HOLD */
+                          <div className="text-center">
+                            <div
+                              className="font-bold"
+                              style={{
+                                fontSize: '4.32rem',
+                                color: isDarkMode ? '#FFFFFF' : '#000000'
+                              }}
+                            >
+                              {timer}
+                            </div>
+                          </div>
+                        ) : (breathingPhase === 'inhale' || breathingPhase === 'exhale') ? (
+                          /* Other exercises: Show timer only during INHALE and EXHALE */
+                          <div className="text-center">
+                            <div
+                              className="font-bold"
+                              style={{
+                                fontSize: '4.32rem',
+                                color: isDarkMode ? '#FFFFFF' : '#000000'
+                              }}
+                            >
+                              {selectedExercise?.name === 'Coherent Breathing'
+                                ? (breathingPhase === 'inhale'
+                                    ? `${Math.ceil(timer / 10)}s`  // INHALE: 0s to coherentBreathTime (e.g., 0s-5s)
+                                    : `${Math.ceil(timer / 10)}s`)  // EXHALE: coherentBreathTime to 0s (e.g., 5s-0s)
+                                : selectedExercise?.name === 'Alternate Nostril'
+                                  ? (breathingPhase === 'inhale'
+                                      ? `${Math.floor(timer / 10)}s`  // INHALE: 0s to alternateNostrilBreathTime (e.g., 0s-4s)
+                                      : `${Math.ceil(timer / 10)}s`)  // EXHALE: alternateNostrilBreathTime to 0s (e.g., 4s-0s)
+                                  : selectedExercise?.name === 'Physiological Sigh'
+                                    ? (breathingPhase === 'inhale'
+                                        ? `${Math.round(timer / 10)}s`  // INHALE: 0-39 → 0s-4s
+                                        : `${Math.ceil(timer / 10)}s`)  // EXHALE: 79-0 → 8s-0s
+                                    : selectedExercise?.name === '4-7-8 Breathing'
+                                      ? (breathingPhase === 'inhale'
+                                          ? `${Math.floor(timer / 10)}s`  // INHALE: 0-40 → 0s-4s
+                                          : `${Math.ceil(timer / 10)}s`)  // EXHALE: 80-0 → 8s-0s
+                                      : selectedExercise?.name === 'Humming Bee'
+                                        ? (breathingPhase === 'inhale'
+                                            ? `${Math.floor(timer / 10)}s`  // INHALE: 0-40 → 0s-4s
+                                            : `${Math.ceil(timer / 10)}s`)  // EXHALE: 80-0 → 8s-0s
+                                        : `${timer}s`
+                              }
+                            </div>
+                          </div>
+                        ) : null
+                      ) : null}
+                    </div>
+
+                    {/* Breathing Circles Area - 40% */}
+                    <div className="flex-[0.4] rounded-lg flex flex-col items-center justify-center p-4 overflow-visible">
+                      {/* Show completion screen when exercise is completed */}
+                      {exerciseCompleted ? (
+                        <div className="flex flex-col items-center justify-center text-center gap-6">
+                          <h2
+                            className="font-bold mb-6"
+                            style={{
+                              fontSize: '1.59rem',
+                              color: isDarkMode ? '#FFFFFF' : '#000000'
+                            }}
+                          >
+                            Completed
+                          </h2>
+                          <div className="flex flex-col gap-3 w-full max-w-xs">
+                            <button
+                              onClick={() => {
+                                setExerciseCompleted(false);
+                                setIsExercising(false);
+                                setSelectedExercise(null);
+                                setTimer(0);
+                                setCurrentCycle(0);
+                                setBreathingPhase('inhale');
+                                // Reset Coherent breathing customization to defaults
+                                setCoherentCycles(6);
+                                setCoherentBreathTime(5);
+                                // Reset Alternate Nostril customization to defaults
+                                setAlternateNostrilCycles(3);
+                                setAlternateNostrilBreathTime(5);
+                              }}
+                              className={(selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Box Breathing')
+                                ? "font-semibold transition-all hover:brightness-110 active:brightness-90 flex items-center justify-center"
+                                : "py-3 px-6 rounded-lg font-semibold hover:opacity-90 transition-opacity"}
+                              style={(selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Box Breathing')
+                                ? {
+                                    width: '100%',
+                                    height: '56px',
+                                    padding: '0 24px',
+                                    borderRadius: '28px',
+                                    background: isDarkMode ? '#36393B' : '#FFFFFF',
+                                    color: isDarkMode ? '#FFFFFF' : '#000000',
+                                    boxShadow: isDarkMode
+                                      ? '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
+                                      : '-6px -6px 12px 0 rgba(255, 255, 255, 0.8), 6px 6px 15px 0 rgba(0, 0, 0, 0.15)'
+                                  }
+                                : {
+                                    background: isDarkMode ? '#000000' : '#FFFFFF',
+                                    color: isDarkMode ? '#FFFFFF' : '#000000',
+                                    border: isDarkMode ? 'none' : '2px solid #000000'
+                                  }}
+                            >
+                              Return to Main Menu
+                            </button>
+                            <button
+                              onClick={() => {
+                                setExerciseCompleted(false);
+                                setCurrentCycle(0);
+                                // Box Breathing starts at timer 1, all other exercises start at 0
+                                setTimer(selectedExercise?.name === 'Box Breathing' ? 1 : 0);
+                                setBreathingPhase('inhale');
+                                setIsExercising(true);
+                              }}
+                              className={(selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Box Breathing')
+                                ? "font-semibold transition-all hover:brightness-110 active:brightness-90 flex items-center justify-center"
+                                : "py-3 px-6 rounded-lg font-semibold transition-colors"}
+                              style={(selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Box Breathing')
+                                ? {
+                                    width: '100%',
+                                    height: '56px',
+                                    padding: '0 24px',
+                                    borderRadius: '28px',
+                                    background: isDarkMode ? '#36393B' : '#FFFFFF',
+                                    color: isDarkMode ? '#FFFFFF' : '#000000',
+                                    boxShadow: isDarkMode
+                                      ? '6px 6px 15px 0 #000 inset, -6px -6px 12px 0 rgba(255, 255, 255, 0.15) inset'
+                                      : '6px 6px 15px 0 rgba(0, 0, 0, 0.15) inset, -6px -6px 12px 0 rgba(255, 255, 255, 0.8) inset'
+                                  }
+                                : {
+                                    background: isDarkMode ? '#FFFFFF' : '#000000',
+                                    color: isDarkMode ? '#000000' : '#FFFFFF',
+                                    border: isDarkMode ? '2px solid #000000' : 'none',
+                                    hover: { background: isDarkMode ? '#F3F4F6' : '#1F2937' }
+                                  }}
+                            >
+                              Restart
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                      {/* Conditional Animation based on exercise */}
+                      {selectedExercise?.name === 'Box Breathing' ? (
+                        <>
+                          {/* Phase Indicator - 4 Boxes in Square Pattern (Clockwise) */}
+                          <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Neumorphic Container */}
+                            <div
+                              className="flex items-center justify-center p-4"
+                              style={{
+                                borderRadius: '13px',
+                                background: isDarkMode ? '#333' : '#E8E8E8',
+                                boxShadow: isDarkMode
+                                  ? '-5px -5px 10px 0 #3C3C3C, 5px 5px 10px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                  : '-10px -10px 20px 0 rgba(255, 255, 255, 0.8), 10px 10px 20px 0 rgba(0, 0, 0, 0.15), -4px -4px 8px 0 rgba(255, 255, 255, 0.5) inset, 4px 4px 8px 0 rgba(0, 0, 0, 0.15) inset',
+                                width: '340px',
+                                height: '340px'
+                              }}
+                            >
+                              <div className="flex flex-col items-center justify-center gap-3 w-full h-full">
+                                {/* Top Row - Breathe In and Hold 1 */}
+                                <div className="flex justify-center gap-3 w-full">
+                                  {/* Breathe In - Top Left */}
+                                  <div
+                                    className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
+                                    style={{
+                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'inhale') ? '#746996' : (isDarkMode ? '#444' : '#D0D0D0'),
+                                      width: '148px',
+                                      height: '148px'
+                                    }}
+                                  >
+                                    <div className={`text-sm font-semibold mb-1 text-center leading-tight ${(isExercising && countdown === null && breathingPhase === 'inhale') ? 'text-white' : (isDarkMode ? 'text-gray-400' : 'text-gray-600')}`}>
+                                      Breathe In
+                                    </div>
+                                    <div className={`text-2xl text-center ${(isExercising && countdown === null && breathingPhase === 'inhale') ? 'text-white' : (isDarkMode ? 'text-gray-500' : 'text-gray-700')}`}>
+                                      ↑
+                                    </div>
+                                  </div>
+
+                                  {/* Hold 1 - Top Right */}
+                                  <div
+                                    className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
+                                    style={{
+                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'hold1') ? '#F6D0EA' : (isDarkMode ? '#444' : '#D0D0D0'),
+                                      width: '148px',
+                                      height: '148px'
+                                    }}
+                                  >
+                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && breathingPhase === 'hold1') ? 'text-gray-800' : (isDarkMode ? 'text-gray-400' : 'text-gray-600')}`}>
+                                      Hold Breath
+                                    </div>
+                                    <svg
+                                      className={`${(isExercising && countdown === null && breathingPhase === 'hold1') ? 'text-gray-800' : (isDarkMode ? 'text-gray-500' : 'text-gray-700')}`}
+                                      width="24"
+                                      height="24"
+                                      viewBox="0 0 24 24"
+                                      fill="currentColor"
+                                    >
+                                      <rect x="6" y="4" width="4" height="16" rx="1"/>
+                                      <rect x="14" y="4" width="4" height="16" rx="1"/>
+                                    </svg>
+                                  </div>
+                                </div>
+
+                                {/* Bottom Row - Hold 2 and Breathe Out */}
+                                <div className="flex justify-center gap-3 w-full">
+                                  {/* Hold 2 - Bottom Left */}
+                                  <div
+                                    className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
+                                    style={{
+                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'hold2') ? '#F6D0EA' : (isDarkMode ? '#444' : '#D0D0D0'),
+                                      width: '148px',
+                                      height: '148px'
+                                    }}
+                                  >
+                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && breathingPhase === 'hold2') ? 'text-gray-800' : (isDarkMode ? 'text-gray-400' : 'text-gray-600')}`}>
+                                      Hold Breath
+                                    </div>
+                                    <svg
+                                      className={`${(isExercising && countdown === null && breathingPhase === 'hold2') ? 'text-gray-800' : (isDarkMode ? 'text-gray-500' : 'text-gray-700')}`}
+                                      width="24"
+                                      height="24"
+                                      viewBox="0 0 24 24"
+                                      fill="currentColor"
+                                    >
+                                      <rect x="6" y="4" width="4" height="16" rx="1"/>
+                                      <rect x="14" y="4" width="4" height="16" rx="1"/>
+                                    </svg>
+                                  </div>
+
+                                  {/* Breathe Out - Bottom Right */}
+                                  <div
+                                    className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
+                                    style={{
+                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'exhale') ? '#AD8FC6' : (isDarkMode ? '#444' : '#D0D0D0'),
+                                      width: '148px',
+                                      height: '148px'
+                                    }}
+                                  >
+                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && breathingPhase === 'exhale') ? 'text-white' : (isDarkMode ? 'text-gray-400' : 'text-gray-600')}`}>
+                                      Breathe Out
+                                    </div>
+                                    <div className={`text-2xl text-center ${(isExercising && countdown === null && breathingPhase === 'exhale') ? 'text-white' : (isDarkMode ? 'text-gray-500' : 'text-gray-700')}`}>
+                                      ↓
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : selectedExercise?.name === '4-7-8 Breathing' ? (
+                        /* 4-7-8 Triangle Animation */
+                        <>
+                          {/* Breathing Circle Illustration - 4-7-8 */}
+                          <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Neumorphic Circular Container */}
+                            <div
+                              className="rounded-full flex items-center justify-center aspect-square"
+                              style={{
+                                borderRadius: '50%',
+                                background: isDarkMode ? '#333' : '#E8E8E8',
+                                boxShadow: isDarkMode
+                                  ? '-10px -10px 20px 0 #3C3C3C, 10px 10px 20px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                  : '-10px -10px 20px 0 rgba(255, 255, 255, 0.8), 10px 10px 20px 0 rgba(0, 0, 0, 0.15), -4px -4px 8px 0 rgba(255, 255, 255, 0.5) inset, 4px 4px 8px 0 rgba(0, 0, 0, 0.15) inset',
+                                width: '100%',
+                                maxWidth: '340px',
+                                maxHeight: '340px',
+                                position: 'relative'
+                              }}
+                            >
+                              {/* Gray Background Circle - Always visible */}
+                              <svg
+                                className="absolute"
+                                width="300"
+                                height="300"
+                                style={{ transform: 'rotate(-90deg)' }}
+                              >
+                                <circle
+                                  cx="150"
+                                  cy="150"
+                                  r="145"
+                                  fill="none"
+                                  stroke="#4B5563"
+                                  strokeWidth="2"
+                                />
+                              </svg>
+
+                              {/* Blue-Violet Progress Circle - Shows during HOLD phase (7 seconds) */}
+                              {breathingPhase === 'hold1' && animationReady && (
+                                <svg
+                                  className="absolute"
+                                  width="300"
+                                  height="300"
+                                  style={{ transform: 'rotate(-90deg)' }}
+                                >
+                                  <circle
+                                    cx="150"
+                                    cy="150"
+                                    r="145"
+                                    fill="none"
+                                    stroke="#7469BB"
+                                    strokeWidth="2"
+                                    strokeDasharray="911"
+                                    strokeDashoffset={911 - (911 * (timer / 10) / 7)}
+                                    style={{ transition: 'stroke-dashoffset 100ms linear' }}
+                                    strokeLinecap="round"
+                                  />
+                                </svg>
+                              )}
+
+                              {/* Single Expanding/Compressing Circle with Radial Gradient */}
+                              {animationReady && !(breathingPhase === 'inhale' && timer === 0) && !(breathingPhase === 'exhale' && timer === 0) && (
+                                <div
+                                  className="rounded-full absolute"
+                                  style={{
+                                    width: `${get478CircleSize() * 0.824}px`,
+                                    height: `${get478CircleSize() * 0.824}px`,
+                                    background: 'radial-gradient(circle, rgba(116, 105, 187, 1) 0%, rgba(116, 105, 187, 1) 50%, rgba(116, 105, 187, 1) 100%)',
+                                    boxShadow: '0 0 30px rgba(116, 105, 187, 0.5)',
+                                    transition: 'all 100ms linear'
+                                  }}
+                                />
+                              )}
+
+                              {/* Phase Text - At Center of Circles */}
+                              <div className="absolute text-center">
+                                <div
+                                  className={`text-lg font-semibold uppercase tracking-wider ${
+                                    breathingPhase === 'hold1' && animationReady ? 'pulse-hold' : ''
+                                  }`}
+                                  style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}
+                                >
+                                  {breathingPhase === 'inhale' && animationReady && 'Breathe In'}
+                                  {breathingPhase === 'hold1' && animationReady && 'HOLD'}
+                                  {breathingPhase === 'exhale' && animationReady && 'Breathe Out'}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : selectedExercise?.name === 'Coherent Breathing' ? (
+                        /* Coherent Breathing Animation */
+                        <>
+                          {/* Breathing Circle Illustration - Coherent */}
+                          <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Neumorphic Circular Container */}
+                            <div
+                              className="rounded-full flex items-center justify-center aspect-square"
+                              style={{
+                                borderRadius: '50%',
+                                background: isDarkMode ? '#333' : '#E8E8E8',
+                                boxShadow: isDarkMode
+                                  ? '-10px -10px 20px 0 #3C3C3C, 10px 10px 20px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                  : '-10px -10px 20px 0 rgba(255, 255, 255, 0.8), 10px 10px 20px 0 rgba(0, 0, 0, 0.15), -4px -4px 8px 0 rgba(255, 255, 255, 0.5) inset, 4px 4px 8px 0 rgba(0, 0, 0, 0.15) inset',
+                                width: '100%',
+                                maxWidth: '340px',
+                                maxHeight: '340px',
+                                position: 'relative'
+                              }}
+                            >
+                              {/* Gray Background Circle - Blinks purple at transitions */}
+                              <svg
+                                className="absolute"
+                                width="300"
+                                height="300"
+                                style={{ transform: 'rotate(-90deg)' }}
+                              >
+                                <circle
+                                  cx="150"
+                                  cy="150"
+                                  r="145"
+                                  fill="none"
+                                  stroke="#4B5563"
+                                  strokeWidth="2"
+                                  className={timer === (coherentBreathTime * 10) || (timer === 0 && currentCycle > 0) ? 'blink-purple' : ''}
+                                />
+                              </svg>
+
+                              {/* Single Expanding/Compressing Circle with Radial Gradient */}
+                              <div
+                                className="rounded-full absolute"
+                                style={{
+                                  width: `${getCoherentCircleSize()}px`,
+                                  height: `${getCoherentCircleSize()}px`,
+                                background: (() => {
+                                  const size = getCoherentCircleSize();
+                                  const intensity = size / 280; // 0 to 1, from empty to full (updated for smaller container)
+
+                                  // 5-color gradient sequence using all app colors: deep purple → medium purple → light purple → pale orchid → pale pink
+                                  const colors = [
+                                    { r: 116, g: 105, b: 182 },   // Deep Purple/Blue-Violet (empty)
+                                    { r: 173, g: 136, b: 198 },   // Medium Purple/African Violet (25%)
+                                    { r: 225, g: 175, b: 209 },   // Light Purple/Light Orchid (50%)
+                                    { r: 246, g: 208, b: 234 },   // Pale Orchid (75%)
+                                    { r: 255, g: 230, b: 230 }    // Pale Pink/Misty Rose (full)
+                                  ];
+
+                                  // Calculate which color segment we're in and interpolate
+                                  let r, g, b;
+                                  if (intensity <= 0.25) {
+                                    // Interpolate between deep purple and medium purple
+                                    const t = intensity / 0.25;
+                                    r = Math.round(colors[0].r + (colors[1].r - colors[0].r) * t);
+                                    g = Math.round(colors[0].g + (colors[1].g - colors[0].g) * t);
+                                    b = Math.round(colors[0].b + (colors[1].b - colors[0].b) * t);
+                                  } else if (intensity <= 0.5) {
+                                    // Interpolate between medium purple and light purple
+                                    const t = (intensity - 0.25) / 0.25;
+                                    r = Math.round(colors[1].r + (colors[2].r - colors[1].r) * t);
+                                    g = Math.round(colors[1].g + (colors[2].g - colors[1].g) * t);
+                                    b = Math.round(colors[1].b + (colors[2].b - colors[1].b) * t);
+                                  } else if (intensity <= 0.75) {
+                                    // Interpolate between light purple and pale orchid
+                                    const t = (intensity - 0.5) / 0.25;
+                                    r = Math.round(colors[2].r + (colors[3].r - colors[2].r) * t);
+                                    g = Math.round(colors[2].g + (colors[3].g - colors[2].g) * t);
+                                    b = Math.round(colors[2].b + (colors[3].b - colors[2].b) * t);
+                                  } else {
+                                    // Interpolate between pale orchid and pale pink
+                                    const t = (intensity - 0.75) / 0.25;
+                                    r = Math.round(colors[3].r + (colors[4].r - colors[3].r) * t);
+                                    g = Math.round(colors[3].g + (colors[4].g - colors[3].g) * t);
+                                    b = Math.round(colors[3].b + (colors[4].b - colors[3].b) * t);
+                                  }
+
+                                  return `radial-gradient(circle, rgba(${r}, ${g}, ${b}, 1) 0%, rgba(${r}, ${g}, ${b}, 1) 50%, rgba(${r}, ${g}, ${b}, 1) 100%)`;
+                                })(),
+                                boxShadow: (() => {
+                                  const size = getCoherentCircleSize();
+                                  const intensity = size / 340;
+
+                                  // Use same 5-color gradient for box shadow
+                                  const colors = [
+                                    { r: 116, g: 105, b: 182 },   // Deep Purple/Blue-Violet
+                                    { r: 173, g: 136, b: 198 },   // Medium Purple/African Violet
+                                    { r: 225, g: 175, b: 209 },   // Light Purple/Light Orchid
+                                    { r: 247, g: 214, b: 236 },   // Pale Orchid
+                                    { r: 255, g: 230, b: 230 }    // Pale Pink/Rose
+                                  ];
+
+                                  let r, g, b;
+                                  if (intensity <= 0.25) {
+                                    const t = intensity / 0.25;
+                                    r = Math.round(colors[0].r + (colors[1].r - colors[0].r) * t);
+                                    g = Math.round(colors[0].g + (colors[1].g - colors[0].g) * t);
+                                    b = Math.round(colors[0].b + (colors[1].b - colors[0].b) * t);
+                                  } else if (intensity <= 0.5) {
+                                    const t = (intensity - 0.25) / 0.25;
+                                    r = Math.round(colors[1].r + (colors[2].r - colors[1].r) * t);
+                                    g = Math.round(colors[1].g + (colors[2].g - colors[1].g) * t);
+                                    b = Math.round(colors[1].b + (colors[2].b - colors[1].b) * t);
+                                  } else if (intensity <= 0.75) {
+                                    const t = (intensity - 0.5) / 0.25;
+                                    r = Math.round(colors[2].r + (colors[3].r - colors[2].r) * t);
+                                    g = Math.round(colors[2].g + (colors[3].g - colors[2].g) * t);
+                                    b = Math.round(colors[2].b + (colors[3].b - colors[2].b) * t);
+                                  } else {
+                                    const t = (intensity - 0.75) / 0.25;
+                                    r = Math.round(colors[3].r + (colors[4].r - colors[3].r) * t);
+                                    g = Math.round(colors[3].g + (colors[4].g - colors[3].g) * t);
+                                    b = Math.round(colors[3].b + (colors[4].b - colors[3].b) * t);
+                                  }
+
+                                  return `0 0 30px rgba(${r}, ${g}, ${b}, 0.5)`;
+                                })(),
+                                transition: 'all 100ms linear'
+                              }}
+                            />
+
+                              {/* Phase Text - At Center of Circle */}
+                              <div className="absolute text-center">
+                                <div
+                                  className={`text-lg font-semibold uppercase tracking-wider`}
+                                  style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}
+                                >
+                                  {breathingPhase === 'inhale' && animationReady && 'Breathe In'}
+                                  {breathingPhase === 'exhale' && animationReady && 'Breathe Out'}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : selectedExercise?.name === 'Physiological Sigh' ? (
+                        /* Physiological Sigh Animation - Two-circle expanding effect */
+                        <>
+                          {/* Breathing Circle Illustration - Physiological Sigh */}
+                          <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Neumorphic Circular Container */}
+                            <div
+                              className="rounded-full flex items-center justify-center relative aspect-square"
+                              style={{
+                                borderRadius: '50%',
+                                width: '100%',
+                                maxWidth: '340px',
+                                maxHeight: '340px',
+                                background: isDarkMode ? '#333' : '#E8E8E8',
+                                boxShadow: isDarkMode
+                                  ? '-10px -10px 20px 0 #3C3C3C, 10px 10px 20px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                  : '-10px -10px 20px 0 rgba(255, 255, 255, 0.8), 10px 10px 20px 0 rgba(0, 0, 0, 0.15), -4px -4px 8px 0 rgba(255, 255, 255, 0.5) inset, 4px 4px 8px 0 rgba(0, 0, 0, 0.15) inset'
+                              }}
+                            >
+                              {/* Gray Background Circle */}
+                              <svg
+                                className="absolute"
+                                width="300"
+                                height="300"
+                                style={{ transform: 'rotate(-90deg)' }}
+                              >
+                                <circle
+                                  cx="150"
+                                  cy="150"
+                                  r="145"
+                                  fill="none"
+                                  stroke="#4B5563"
+                                  strokeWidth="2"
+                                />
+                              </svg>
+
+                              {(() => {
+                                const { circle1Size, circle2Size } = getPhysiologicalSighCircleSizes();
+
+                                return (
+                                  <>
+                                    {/* Circle 2 - Lighter gradient (behind, larger) - Misty Rose to Pale Pink */}
+                                    {circle2Size > 0 && (
+                                      <div
+                                        className="rounded-full absolute"
+                                        style={{
+                                          width: `${circle2Size}px`,
+                                          height: `${circle2Size}px`,
+                                          background: 'linear-gradient(135deg, #FFE6E6 0%, #F6D0EA 100%)',
+                                          boxShadow: '0 0 30px rgba(246, 208, 234, 0.5)',
+                                          transition: 'all 100ms linear',
+                                          zIndex: 1
+                                        }}
+                                      />
+                                    )}
+
+                                    {/* Circle 1 - Darker gradient (front, smaller) - African Violet to Blue Violet */}
+                                    {circle1Size > 0 && (
+                                      <div
+                                        className="rounded-full absolute"
+                                        style={{
+                                          width: `${circle1Size}px`,
+                                          height: `${circle1Size}px`,
+                                          background: 'linear-gradient(135deg, #AD88C6 0%, #7469B6 100%)',
+                                          boxShadow: '0 0 30px rgba(116, 105, 182, 0.5)',
+                                          transition: 'all 100ms linear',
+                                          zIndex: 2
+                                        }}
+                                      />
+                                    )}
+                                  </>
+                                );
+                              })()}
+
+                              {/* Phase Text - At Center of Circle */}
+                              <div className="absolute text-center" style={{ zIndex: 3 }}>
+                                <div
+                                  className={`text-lg font-semibold uppercase tracking-wider`}
+                                  style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}
+                                >
+                                  {breathingPhase === 'inhale' && animationReady && 'Breathe In'}
+                                  {breathingPhase === 'exhale' && animationReady && 'Breathe Out'}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : selectedExercise?.name === 'Alternate Nostril' ? (
+                        /* Alternate Nostril Animation */
+                        <>
+                          {/* Breathing Container Illustration - Alternate Nostril */}
+                          <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Neumorphic Square Container */}
+                            <div
+                              className="flex items-center justify-center p-4"
+                              style={{
+                                borderRadius: '13px',
+                                background: isDarkMode ? '#333' : '#E8E8E8',
+                                boxShadow: isDarkMode
+                                  ? '-5px -5px 10px 0 #3C3C3C, 5px 5px 10px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                  : '-10px -10px 20px 0 rgba(255, 255, 255, 0.8), 10px 10px 20px 0 rgba(0, 0, 0, 0.15), -4px -4px 8px 0 rgba(255, 255, 255, 0.5) inset, 4px 4px 8px 0 rgba(0, 0, 0, 0.15) inset',
+                                width: '340px',
+                                height: '340px'
+                              }}
+                            >
+                              {/* Split square markers (50:50 left/right) with 4px gap */}
+                              <div className="relative flex" style={{ gap: '4px' }}>
+                                {/* Left Container */}
+                                <div className="relative" style={{ width: '154px', height: '308px' }}>
+                                  {/* Gray outline */}
+                                  <svg width="154" height="308">
+                                    <rect x="4" y="4" width="146" height="300" rx="13"
+                                      fill="none" stroke="#4B5563" strokeWidth="4" />
+                                  </svg>
+
+                                  {/* App color spectrum fill - Left Nostril (even cycles: 0, 2, 4...) */}
+                                  {currentCycle % 2 === 0 && (() => {
+                                    let heightPercent;
+                                    if (breathingPhase === 'inhale') {
+                                      heightPercent = timer / (alternateNostrilBreathTime * 10);
+                                    } else if (breathingPhase === 'exhale') {
+                                      heightPercent = timer / (alternateNostrilBreathTime * 10);
+                                    } else {
+                                      // hold2 or other phases: empty
+                                      heightPercent = 0;
+                                    }
+                                    const heightPx = heightPercent * 296;
+                                    const isFull = heightPercent >= 0.98; // Consider full at 98%+
+                                    return (
+                                      <div className="absolute" style={{
+                                        bottom: '6px',
+                                        left: '6px',
+                                        width: '142px',
+                                        height: `${heightPx}px`,
+                                        background: 'linear-gradient(to top, #7469B6 0%, #AD88C6 25%, #E1AFD1 50%, #F6D0EA 75%, #FFE6E6 100%)',
+                                        borderRadius: isFull ? '10px' : '0 0 10px 10px',
+                                        transition: 'height 100ms linear'
+                                      }} />
+                                    );
+                                  })()}
+
+                                  {/* Phase Text - Left Nostril */}
+                                  {currentCycle % 2 === 0 && (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                      <div className="text-lg font-semibold uppercase tracking-wider" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>
+                                        {breathingPhase === 'inhale' && 'Breathe In'}
+                                        {breathingPhase === 'exhale' && 'Breathe Out'}
+                                      </div>
+                                      <div className="text-sm mt-1" style={{ color: isDarkMode ? '#D1D5DB' : '#6B7280' }}>
+                                        Left Nostril
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Right Container */}
+                                <div className="relative" style={{ width: '154px', height: '308px' }}>
+                                  {/* Gray outline */}
+                                  <svg width="154" height="308">
+                                    <rect x="4" y="4" width="146" height="300" rx="13"
+                                      fill="none" stroke="#4B5563" strokeWidth="4" />
+                                  </svg>
+
+                                  {/* App color spectrum fill - Right Nostril (odd cycles: 1, 3, 5...) */}
+                                  {currentCycle % 2 === 1 && (() => {
+                                    let heightPercent;
+                                    if (breathingPhase === 'inhale') {
+                                      heightPercent = timer / (alternateNostrilBreathTime * 10);
+                                    } else if (breathingPhase === 'exhale') {
+                                      heightPercent = timer / (alternateNostrilBreathTime * 10);
+                                    } else {
+                                      // hold2 or other phases: empty
+                                      heightPercent = 0;
+                                    }
+                                    const heightPx = heightPercent * 296;
+                                    const isFull = heightPercent >= 0.98; // Consider full at 98%+
+                                    return (
+                                      <div className="absolute" style={{
+                                        bottom: '6px',
+                                        left: '6px',
+                                        width: '142px',
+                                        height: `${heightPx}px`,
+                                        background: 'linear-gradient(to top, #7469B6 0%, #AD88C6 25%, #E1AFD1 50%, #F6D0EA 75%, #FFE6E6 100%)',
+                                        borderRadius: isFull ? '10px' : '0 0 10px 10px',
+                                        transition: 'height 100ms linear'
+                                      }} />
+                                    );
+                                  })()}
+
+                                  {/* Phase Text - Right Nostril */}
+                                  {currentCycle % 2 === 1 && (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                      <div className="text-lg font-semibold uppercase tracking-wider" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>
+                                        {breathingPhase === 'inhale' && 'Breathe In'}
+                                        {breathingPhase === 'exhale' && 'Breathe Out'}
+                                      </div>
+                                      <div className="text-sm mt-1" style={{ color: isDarkMode ? '#D1D5DB' : '#6B7280' }}>
+                                        Right Nostril
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : selectedExercise?.name === 'Humming Bee' ? (
+                        /* Humming Bee Animation - Similar to Coherent Breathing */
+                        <>
+                          {/* Breathing Circle Illustration - Humming Bee */}
+                          <div className="flex-1 flex items-center justify-center w-full relative">
+                            {/* Neumorphic Circular Container */}
+                            <div
+                              className="rounded-full flex items-center justify-center relative aspect-square"
+                              style={{
+                                borderRadius: '50%',
+                                width: '100%',
+                                maxWidth: '340px',
+                                maxHeight: '340px',
+                                background: isDarkMode ? '#333' : '#E8E8E8',
+                                boxShadow: isDarkMode
+                                  ? '-10px -10px 20px 0 #3C3C3C, 10px 10px 20px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset'
+                                  : '-10px -10px 20px 0 rgba(255, 255, 255, 0.8), 10px 10px 20px 0 rgba(0, 0, 0, 0.15), -4px -4px 8px 0 rgba(255, 255, 255, 0.5) inset, 4px 4px 8px 0 rgba(0, 0, 0, 0.15) inset'
+                              }}
+                            >
+                              {/* Gray Background Circle */}
+                              <svg
+                                className="absolute"
+                                width="300"
+                                height="300"
+                                style={{ transform: 'rotate(-90deg)' }}
+                              >
+                                <circle
+                                  cx="150"
+                                  cy="150"
+                                  r="145"
+                                  fill="none"
+                                  stroke="#4B5563"
+                                  strokeWidth="2"
+                                />
+                              </svg>
+
+                              {/* Single Expanding/Compressing Circle - Only show after countdown */}
+                              {animationReady && getHummingBeeCircleSize() > 0 && (
+                                <div
+                                  className="rounded-full absolute"
+                                  style={{
+                                    width: `${getHummingBeeCircleSize()}px`,
+                                    height: `${getHummingBeeCircleSize()}px`,
+                                    background: breathingPhase === 'inhale'
+                                      ? '#E1AFD1'  // Light Orchid on inhale
+                                      : '#AD88C6',  // African Violet on exhale
+                                    boxShadow: breathingPhase === 'inhale'
+                                      ? '0 0 30px rgba(225, 175, 209, 0.5)'
+                                      : '0 0 30px rgba(173, 136, 198, 0.5)',
+                                    transition: 'all 100ms linear'
+                                  }}
+                                />
+                              )}
+
+                              {/* Phase Text - At Center of Circle - Only show after countdown */}
+                              <div className="absolute text-center">
+                                {animationReady && (
+                                  breathingPhase === 'inhale' ? (
+                                    <div className="text-lg font-semibold uppercase tracking-wider" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>
+                                      Breathe In
+                                    </div>
+                                  ) : (
+                                    <div>
+                                      <div className="text-lg font-semibold uppercase tracking-wider" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>
+                                        Breathe Out
+                                      </div>
+                                      <div className="text-sm mt-1" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>
+                                        With Hum
+                                      </div>
+                                      {/* Sound Wave Vibration */}
+                                      <div className="mt-3 flex items-center justify-center gap-1">
+                                        <style>{`
+                                          @keyframes softVibrate {
+                                            0% { transform: scaleY(1); }
+                                            25% { transform: scaleY(1.15); }
+                                            50% { transform: scaleY(0.95); }
+                                            75% { transform: scaleY(1.08); }
+                                            100% { transform: scaleY(1); }
+                                          }
+                                        `}</style>
+                                        {[...Array(30)].map((_, i) => {
+                                          const position = i / 29; // 0 to 1
+                                          const distanceFromCenter = Math.abs(position - 0.5) * 2; // 0 at center, 1 at edges
+
+                                          // Bell curve: use Gaussian distribution for smooth falloff
+                                          const bellCurve = Math.exp(-Math.pow(distanceFromCenter * 2.5, 2));
+
+                                          // Height follows bell curve - tall in center, short at edges
+                                          const minHeight = 3;
+                                          const maxHeight = 24;
+                                          const baseHeight = minHeight + (maxHeight - minHeight) * bellCurve;
+
+                                          // Vibration intensity also follows bell curve
+                                          const centerIntensity = bellCurve;
+
+                                          // Fast, subtle vibration
+                                          const duration = 0.15 + (Math.random() * 0.05); // Random duration between 0.15-0.2s
+                                          const delay = i * 0.01; // Stagger each line slightly
+
+                                          return (
+                                            <div
+                                              key={i}
+                                              style={{
+                                                width: '2px',
+                                                height: `${baseHeight}px`,
+                                                backgroundColor: isDarkMode ? '#FFFFFF' : '#000000',
+                                                opacity: 0.8 + (centerIntensity * 0.2),
+                                                animation: isPaused ? 'none' : `softVibrate ${duration}s ease-in-out ${delay}s infinite`,
+                                                transformOrigin: 'center'
+                                              }}
+                                            />
+                                          );
+                                        })}
+                                      </div>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        /* Placeholder for other breathing exercises */
+                        <div className="flex-1 flex items-center justify-center w-full">
+                          <div className="text-center">
+                            <p className="text-gray-400 text-lg">Animation for</p>
+                            <p className="text-gray-600 text-xl font-semibold mt-2">{selectedExercise?.name}</p>
+                            <p className="text-gray-400 text-sm mt-4">Coming soon</p>
+                          </div>
+                        </div>
+                      )}
+                        </>
+                      )}
+                    </div>
+
+                    {/* Exercise Starting Section - 15% */}
+                    <div className="flex-[0.15] flex items-center justify-center" style={{ minHeight: '0' }}>
+                      {/* Countdown Progress Bar - Show during countdown (only on first start, not after completion) */}
+                      {countdown !== null && countdown > 0 && !exerciseCompleted ? (
+                        <div className="w-full max-w-xs px-4">
+                          <span
+                            className="text-sm font-medium mb-2 block text-center"
+                            style={{
+                              color: isDarkMode ? '#FFFFFF' : '#000000'
+                            }}
+                          >
+                            Exercise starting...
+                          </span>
+                          {/* Progress Bar Container */}
+                          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                            {/* Segmented Progress */}
+                            <div className="h-full flex gap-1">
+                              {/* Show segments based on countdown value - decrements from left to right */}
+                              {Array.from({ length: 3 }).map((_, index) => (
+                                <div
+                                  key={index}
+                                  className={`flex-1 transition-all duration-300 ${
+                                    index >= (3 - countdown) ? 'bg-[#9370DB]' : 'bg-transparent'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        /* Empty div to maintain spacing when countdown is not shown */
+                        <div></div>
+                      )}
+
+                      {/* Legend for Physiological Sigh - Show after countdown completes with 150ms delay */}
+                      {selectedExercise?.name === 'Physiological Sigh' && showLegend && (
+                        <div className="flex items-center justify-center gap-6">
+                          {/* Circle 2 Legend - Lighter gradient (Misty Rose to Pale Pink) */}
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded-full" style={{ background: 'linear-gradient(135deg, #FFE6E6 0%, #F6D0EA 100%)' }}></div>
+                            <span className="text-sm font-medium" style={{ color: isDarkMode ? '#9CA3AF' : '#374151' }}>Long breath (0-3s)</span>
+                          </div>
+                          {/* Circle 1 Legend - Darker gradient (African Violet to Blue Violet) */}
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 rounded-full" style={{ background: 'linear-gradient(135deg, #AD88C6 0%, #7469B6 100%)' }}></div>
+                            <span className="text-sm font-medium" style={{ color: isDarkMode ? '#9CA3AF' : '#374151' }}>Quick short breath (1s)</span>
+                          </div>
+                        </div>
+                      )}
+
+                    </div>
+
+                    {/* Navigation Section - 15% (hide when completed) */}
+                    {!exerciseCompleted && (
+                    <div className="flex-[0.15] flex flex-col items-center justify-end pb-6">
+                      <div className="w-full max-w-md px-4">
+                        <div
+                          className="flex items-center w-full"
+                          style={{
+                            height: '80px',
+                            padding: '0 10px',
+                            borderRadius: '10px',
+                            background: isDarkMode ? '#2B2B2B' : '#FFFFFF',
+                            boxShadow: '0 4px 12px 0 rgba(13, 10, 44, 0.06)'
+                          }}
+                        >
+                          {/* Customization Button */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Pause exercise if in progress
+                              if (isExercising && !isPaused) {
+                                setIsPaused(true);
+                              }
+                              setShowCustomizationSheet(true);
+                            }}
+                            className="flex-1 flex flex-col items-center justify-end transition-all"
+                            style={{
+                              color: isDarkMode ? '#FFFFFF' : '#000000',
+                              background: 'transparent',
+                              borderRadius: '8px',
+                              padding: '10px',
+                              gap: '4px',
+                              height: '100%',
+                              transition: 'filter 0.2s ease'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.2)'}
+                            onMouseLeave={(e) => e.currentTarget.style.filter = 'brightness(1)'}
+                            onMouseDown={(e) => e.currentTarget.style.filter = 'brightness(0.8)'}
+                            onMouseUp={(e) => e.currentTarget.style.filter = 'brightness(1.2)'}
+                          >
+                            <svg width="24" height="24" viewBox="0 0 118 118" fill="none" style={{ flexShrink: 0 }}>
+                              <path d="M19.6667 24.5845L49.1667 24.5833" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                              <path d="M63.9167 24.5833H98.3334" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                              <path d="M78.6667 44.25V73.75" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                              <path d="M49.1667 9.83333V39.3333" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                              <path d="M59 78.6667V108.167" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                              <path d="M78.6667 59L98.3334 59.001" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                              <path d="M19.6667 59.001L63.9167 59" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                              <path d="M59 93.4167H98.3333" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                              <path d="M19.6667 93.4176L44.2501 93.4167" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                            </svg>
+                            <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Customize</span>
+                          </button>
+
+                          {/* Divider */}
+                          <div
+                            style={{
+                              width: '1px',
+                              height: '50px',
+                              backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                            }}
+                          />
+
+                          {/* Start/Pause Button */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (exerciseCompleted) {
+                                // Restart exercise from beginning with countdown
+                                setExerciseCompleted(false);
+                                setCountdown(3);
+                                setIsPaused(false);
+                                setCurrentCycle(0);
+                                setBreathingPhase('inhale');
+                                setTimer(selectedExercise?.name === 'Physiological Sigh' ? 0 : 0);
+                                phaseHoldRef.current = false; // Reset phase hold flag
+                              } else if (isPaused) {
+                                // Resume from pause
+                                setIsPaused(false);
+                              } else if (countdown !== null && countdown > 0) {
+                                // Pause during countdown
+                                setIsPaused(true);
+                              } else if (isExercising) {
+                                // Pause during exercise
+                                setIsPaused(true);
+                              }
+                            }}
+                            className="flex-1 flex flex-col items-center justify-end transition-all"
+                            style={{
+                              color: isDarkMode ? '#FFFFFF' : '#000000',
+                              background: 'transparent',
+                              borderRadius: '8px',
+                              padding: '10px',
+                              gap: '4px',
+                              height: '100%',
+                              transition: 'filter 0.2s ease'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.2)'}
+                            onMouseLeave={(e) => e.currentTarget.style.filter = 'brightness(1)'}
+                            onMouseDown={(e) => e.currentTarget.style.filter = 'brightness(0.8)'}
+                            onMouseUp={(e) => e.currentTarget.style.filter = 'brightness(1.2)'}
+                          >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+                              <path d="M8 5v14l11-7L8 5z" fill="currentColor"/>
+                            </svg>
+                            <span className="text-xs font-medium" style={{ flexShrink: 0 }}>{exerciseCompleted || isPaused ? 'Start' : 'Pause'}</span>
+                          </button>
+
+                          {/* Divider */}
+                          <div
+                            style={{
+                              width: '1px',
+                              height: '50px',
+                              backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                            }}
+                          />
+
+                          {/* Sound Button */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Pause exercise if in progress
+                              if (isExercising && !isPaused) {
+                                setIsPaused(true);
+                              }
+                              setShowMusicSheet(true);
+                            }}
+                            className="flex-1 flex flex-col items-center justify-end transition-all"
+                            style={{
+                              color: isDarkMode ? '#FFFFFF' : '#000000',
+                              background: 'transparent',
+                              borderRadius: '8px',
+                              padding: '10px',
+                              gap: '4px',
+                              height: '100%',
+                              transition: 'filter 0.2s ease'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.2)'}
+                            onMouseLeave={(e) => e.currentTarget.style.filter = 'brightness(1)'}
+                            onMouseDown={(e) => e.currentTarget.style.filter = 'brightness(0.8)'}
+                            onMouseUp={(e) => e.currentTarget.style.filter = 'brightness(1.2)'}
+                          >
+                            <svg width="24" height="24" viewBox="-2 -2 22 22" fill="none" style={{ flexShrink: 0 }}>
+                              <path d="M17.1884 9.09605C17.1884 8.98559 17.1884 8.87994 17.1836 8.76948C17.1355 7.29029 16.7513 5.89755 16.1078 4.67769C14.6382 1.88741 11.8287 0 8.59658 0C5.36446 0 2.55016 1.88741 1.08058 4.67769C0.437033 5.90235 0.0528329 7.29029 0.00480725 8.76948C4.69011e-06 8.87994 0 8.98559 0 9.09605V13.6201C0 15.6035 1.39754 17.2556 3.26574 17.6542C3.46744 17.8607 3.77482 18 4.12061 18C4.46639 18 4.77375 17.8655 4.97546 17.6542L4.98987 17.6398V9.60032H4.98506C4.78816 9.3842 4.47119 9.24013 4.1158 9.24013C3.76041 9.24013 3.44344 9.3842 3.24654 9.60032H3.24173C2.59819 9.73479 2.01228 10.0277 1.52242 10.4264C1.484 10.46 1.17182 10.7385 1.07577 10.8538V9.01441C1.07577 8.88474 1.18143 8.77428 1.3159 8.77428H1.32551H1.42155C1.58004 4.73052 4.73053 1.5032 8.58698 1.5032C12.4434 1.5032 15.5891 4.73052 15.7476 8.77428H15.8581C15.9925 8.77428 16.0982 8.88474 16.0982 9.01441V10.8538C16.0021 10.7385 15.8917 10.6281 15.7764 10.5368C15.7764 10.5368 15.69 10.46 15.6515 10.4264C15.1617 10.0277 14.5758 9.73959 13.9322 9.60032C13.7305 9.3842 13.4136 9.24013 13.0582 9.24013C12.7028 9.24013 12.3954 9.3746 12.1889 9.59552V17.6494C12.1889 17.6494 12.1937 17.6542 12.1985 17.6542C12.4002 17.8607 12.7124 18 13.0534 18C13.3943 18 13.7065 17.8655 13.9082 17.6542C15.7764 17.2556 17.174 15.6035 17.174 13.6201C17.174 13.3031 17.1355 12.9909 17.0683 12.6932C17.1355 12.9909 17.174 13.2983 17.174 13.6201V9.09605H17.1884Z" fill="currentColor"/>
+                            </svg>
+                            <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Sound</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    )}
+                  </div>
+                ) : selectedOption === 'focus' || selectedOption === 'calm' ? (
+                  /* Development Message for Focus and Calm */
+                  <div className="flex items-center justify-center py-12 text-center">
+                    <p className="text-gray-400 text-sm">Feature is still in development</p>
+                  </div>
+                ) : (
+                  /* Track List */
+                  <div className="flex flex-col flex-1 min-h-0">
+                    {selectedOption === 'breathe' && (
+                      <div className="mb-6 flex-shrink-0">
+                        <h3 className="font-medium text-2xl" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>
+                          Select a breathing technique
+                        </h3>
+                      </div>
+                    )}
+                    {selectedOption === 'breathe' ? (
+                      /* Single Column List Layout for Breathing Exercises */
+                      <div className="overflow-y-auto flex-1 min-h-0 hide-scrollbar px-4">
+                        <div className="flex flex-col gap-3 pb-5">
+                          {currentTracks.map((track, index) => {
+                            const metadata = getExerciseMetadata(track.name);
+
+                            // Function to render exercise preview icon
+                            const renderExerciseIcon = (exerciseName) => {
+                              const iconSize = 56;
+
+                              switch(exerciseName) {
+                                case 'Box Breathing':
+                                  return (
+                                    <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" style={{ border: `1px solid ${isDarkMode ? '#666' : '#999'}`, borderRadius: '6px' }}>
+                                      <rect x="6" y="6" width="16" height="16" rx="2" fill="#7469B6" />
+                                      <rect x="26" y="6" width="16" height="16" rx="2" fill="#AD88C6" />
+                                      <rect x="6" y="26" width="16" height="16" rx="2" fill="#E1AFD1" />
+                                      <rect x="26" y="26" width="16" height="16" rx="2" fill="#F6D0EA" />
+                                    </svg>
+                                  );
+
+                                case '4-7-8 Breathing':
+                                  return (
+                                    <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" style={{ border: `1px solid ${isDarkMode ? '#666' : '#999'}`, borderRadius: '50%' }}>
+                                      <defs>
+                                        <radialGradient id="gradient-478">
+                                          <stop offset="0%" stopColor="rgba(116, 105, 187, 1)" />
+                                          <stop offset="50%" stopColor="rgba(116, 105, 187, 0.6)" />
+                                          <stop offset="100%" stopColor="rgba(116, 105, 187, 0.2)" />
+                                        </radialGradient>
+                                      </defs>
+                                      <circle cx="24" cy="24" r="20" fill="url(#gradient-478)" />
+                                    </svg>
+                                  );
+
+                                case 'Coherent Breathing':
+                                  return (
+                                    <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" style={{ border: `1px solid ${isDarkMode ? '#666' : '#999'}`, borderRadius: '50%' }}>
+                                      <defs>
+                                        <radialGradient id="gradient-coherent">
+                                          <stop offset="0%" stopColor="rgba(255, 230, 230, 0.8)" />
+                                          <stop offset="100%" stopColor="rgba(246, 208, 234, 1)" />
+                                        </radialGradient>
+                                      </defs>
+                                      <circle cx="24" cy="24" r="20" fill="url(#gradient-coherent)" />
+                                    </svg>
+                                  );
+
+                                case 'Physiological Sigh':
+                                  return (
+                                    <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" style={{ border: `1px solid ${isDarkMode ? '#666' : '#999'}`, borderRadius: '50%' }}>
+                                      <defs>
+                                        <radialGradient id="gradient-physio-outer">
+                                          <stop offset="0%" stopColor="rgba(255, 230, 230, 0.6)" />
+                                          <stop offset="100%" stopColor="rgba(246, 208, 234, 0.8)" />
+                                        </radialGradient>
+                                        <radialGradient id="gradient-physio-inner">
+                                          <stop offset="0%" stopColor="rgba(173, 136, 198, 1)" />
+                                          <stop offset="100%" stopColor="rgba(116, 105, 182, 0.9)" />
+                                        </radialGradient>
+                                      </defs>
+                                      <circle cx="24" cy="24" r="20" fill="url(#gradient-physio-outer)" />
+                                      <circle cx="24" cy="24" r="14" fill="url(#gradient-physio-inner)" />
+                                    </svg>
+                                  );
+
+                                case 'Alternate Nostril':
+                                  return (
+                                    <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" style={{ border: `1px solid ${isDarkMode ? '#666' : '#999'}`, borderRadius: '4px' }}>
+                                      <defs>
+                                        <linearGradient id="gradient-nostril" x1="0%" y1="100%" x2="0%" y2="0%">
+                                          <stop offset="0%" stopColor="#7469B6" />
+                                          <stop offset="50%" stopColor="#AD88C6" />
+                                          <stop offset="100%" stopColor="#FFE6E6" />
+                                        </linearGradient>
+                                      </defs>
+                                      <rect x="6" y="8" width="16" height="32" rx="2" fill="url(#gradient-nostril)" stroke="#4B5563" strokeWidth="1" />
+                                      <rect x="26" y="8" width="16" height="32" rx="2" fill="none" stroke="#4B5563" strokeWidth="1" />
+                                    </svg>
+                                  );
+
+                                case 'Humming Bee':
+                                  return (
+                                    <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" style={{ border: `1px solid ${isDarkMode ? '#666' : '#999'}`, borderRadius: '50%' }}>
+                                      <defs>
+                                        <radialGradient id="gradient-humming">
+                                          <stop offset="0%" stopColor="rgba(225, 175, 209, 1)" />
+                                          <stop offset="100%" stopColor="rgba(225, 175, 209, 0.3)" />
+                                        </radialGradient>
+                                      </defs>
+                                      <circle cx="24" cy="24" r="20" fill="url(#gradient-humming)" />
+                                      {/* Vibration lines - 3 parallel vertical lines, middle longest */}
+                                      <line x1="20" y1="20" x2="20" y2="28" stroke="#7469B6" strokeWidth="2.5" opacity="1" strokeLinecap="round" />
+                                      <line x1="24" y1="17" x2="24" y2="31" stroke="#7469B6" strokeWidth="2.5" opacity="1" strokeLinecap="round" />
+                                      <line x1="28" y1="20" x2="28" y2="28" stroke="#7469B6" strokeWidth="2.5" opacity="1" strokeLinecap="round" />
+                                    </svg>
+                                  );
+
+                                default:
+                                  return null;
+                              }
+                            };
+
+                            return (
+                              <button
+                                key={track.id}
+                                onClick={() => {
+                                  setSelectedExercise(track);
+                                  setShowingInfo(true);
+                                }}
+                                className="flex flex-row items-center justify-between p-4 transition-all hover:brightness-110 active:brightness-90"
+                                style={{
+                                  borderRadius: '13px',
+                                  background: isDarkMode ? '#333' : '#F3F4F6'
+                                }}
+                              >
+                                {/* Left Content */}
+                                <div className="flex flex-col items-start gap-2 flex-1">
+                                  {/* Exercise Name */}
+                                  <span className="text-base font-bold text-left leading-tight" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>
+                                    {track.name}
+                                  </span>
+
+                                  {/* Difficulty Indicator */}
+                                  <DifficultyIndicator level={getDifficultyLevel(track.name)} />
+
+                                  {/* Best For */}
+                                  <p className="text-sm text-left" style={{ color: isDarkMode ? '#D1D5DB' : '#6B7280' }}>
+                                    {metadata.bestFor}
+                                  </p>
+                                </div>
+
+                                {/* Right: Preview Icon */}
+                                <div className="ml-4 flex-shrink-0">
+                                  {renderExerciseIcon(track.name)}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ) : (
+                      /* Original List View for Focus/Calm */
+                      <div className="overflow-y-auto flex-1 min-h-0 hide-scrollbar">
+                        {currentTracks.map((track, index) => (
+                        <div
+                          key={track.id}
+                          className="w-full flex items-start py-4 border-b border-gray-600 hover:bg-gray-700 hover:opacity-70 transition-all group relative"
+                      >
+                        <button
+                          onClick={() => {
+                            if (selectedOption === 'breathe') {
+                              // Show info screen for breathing exercises
+                              setSelectedExercise(track);
+                              setShowingInfo(true);
+                            }
+                          }}
+                          className="text-left flex-1 flex items-start"
+                        >
+                          <div className="flex-1">
+                            <p className="text-base font-semibold text-white">{track.name}</p>
+                          </div>
+
+                          {/* Right Side - Duration or Chevron */}
+                          <span className="text-sm text-gray-500">{track.duration}</span>
+                        </button>
+                      </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
                     {/* Customization Bottom Sheet - Universal for all exercises */}
                     {showCustomizationSheet && selectedExercise && (
                       <div
@@ -1640,7 +3288,7 @@ export default function Home() {
                       >
                         <div
                           className="rounded-t-3xl w-full max-h-[70vh] overflow-y-auto animate-slide-up"
-                          style={{ background: '#36393B' }}
+                          style={{ background: isDarkMode ? '#333' : '#FFFFFF' }}
                           onClick={(e) => e.stopPropagation()}
                         >
                           <div className="p-6">
@@ -1648,20 +3296,71 @@ export default function Home() {
                             <div className="w-12 h-1 rounded-full mx-auto mb-6" style={{ background: '#4B5563' }}></div>
 
                             {/* Section Title */}
-                            <h2 className="text-2xl font-bold mb-6 text-white">Personalize</h2>
+                            <h2 className="text-2xl font-bold mb-6" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>Personalize</h2>
 
                             {/* Cycles Slider */}
                             <div className="mb-8">
-                              <label className="text-base font-semibold text-white mb-4 block">Cycles</label>
-                              <div className="flex flex-col items-center gap-4">
+                              {/* Time Display */}
+                              <div className="text-base font-medium mb-8" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>
+                                <span style={{ color: isDarkMode ? '#9CA3AF' : '#6B7280' }}>Exercise Time: </span>
+                                {(() => {
+                                  let cycleDuration = 0;
+                                  let currentCycles = 0;
+
+                                  switch(selectedExercise.name) {
+                                    case 'Box Breathing':
+                                      cycleDuration = 16; // 4+4+4+4 seconds
+                                      currentCycles = selectedCycles;
+                                      break;
+                                    case '4-7-8 Breathing':
+                                      cycleDuration = 19; // 4+7+8 seconds
+                                      currentCycles = selectedCycles;
+                                      break;
+                                    case 'Coherent Breathing':
+                                      cycleDuration = coherentBreathTime * 2; // inhale + exhale
+                                      currentCycles = coherentCycles;
+                                      break;
+                                    case 'Physiological Sigh':
+                                      cycleDuration = 9; // 4s inhale + 5s exhale
+                                      currentCycles = selectedCycles;
+                                      break;
+                                    case 'Alternate Nostril':
+                                      cycleDuration = alternateNostrilBreathTime * 4; // 4 breaths per cycle
+                                      currentCycles = alternateNostrilCycles;
+                                      break;
+                                    case 'Humming Bee':
+                                      cycleDuration = 14; // 4s inhale + 10s exhale with hum
+                                      currentCycles = selectedCycles;
+                                      break;
+                                    default:
+                                      cycleDuration = 16;
+                                      currentCycles = selectedCycles;
+                                  }
+
+                                  const totalSeconds = cycleDuration * currentCycles;
+                                  const minutes = Math.floor(totalSeconds / 60);
+                                  const seconds = totalSeconds % 60;
+                                  return (
+                                    <>
+                                      <span>{minutes} min</span>
+                                      {seconds > 0 && <span> {seconds} sec</span>}
+                                    </>
+                                  );
+                                })()}
+                              </div>
+
+                              <div className="flex flex-col items-center gap-6">
                                 {/* Numeric Display */}
                                 <div
-                                  className="text-white text-3xl font-bold flex items-center justify-center rounded-full"
+                                  className="text-3xl font-bold flex items-center justify-center rounded-full"
                                   style={{
                                     width: '80px',
                                     height: '80px',
-                                    background: '#36393B',
-                                    boxShadow: '6px 6px 15px 0 #000 inset, -6px -6px 12px 0 rgba(255, 255, 255, 0.15) inset'
+                                    color: isDarkMode ? '#FFFFFF' : '#000000',
+                                    background: isDarkMode ? '#333' : '#E8E8E8',
+                                    boxShadow: isDarkMode
+                                      ? '6px 6px 15px 0 #1E1E1E inset, -6px -6px 12px 0 rgba(77, 77, 77, 0.25) inset'
+                                      : '-4px -4px 8px 0 rgba(255, 255, 255, 0.5) inset, 4px 4px 8px 0 rgba(0, 0, 0, 0.15) inset'
                                   }}
                                 >
                                   {(() => {
@@ -1671,57 +3370,17 @@ export default function Home() {
                                   })()}
                                 </div>
 
-                                {/* Time Display */}
-                                <div className="text-white text-base font-medium">
-                                  <span className="text-gray-400">Exercise Time: </span>
-                                  {(() => {
-                                    let cycleDuration = 0;
-                                    let currentCycles = 0;
-
-                                    switch(selectedExercise.name) {
-                                      case 'Box Breathing (4-4-4-4)':
-                                        cycleDuration = 16; // 4+4+4+4 seconds
-                                        currentCycles = selectedCycles;
-                                        break;
-                                      case '4-7-8 Breathing':
-                                        cycleDuration = 19; // 4+7+8 seconds
-                                        currentCycles = selectedCycles;
-                                        break;
-                                      case 'Coherent Breathing':
-                                        cycleDuration = coherentBreathTime * 2; // inhale + exhale
-                                        currentCycles = coherentCycles;
-                                        break;
-                                      case 'Physiological Sigh':
-                                        cycleDuration = 9; // 4s inhale + 5s exhale
-                                        currentCycles = selectedCycles;
-                                        break;
-                                      case 'Alternate Nostril':
-                                        cycleDuration = alternateNostrilBreathTime * 4; // 4 breaths per cycle
-                                        currentCycles = alternateNostrilCycles;
-                                        break;
-                                      case 'Humming Bee':
-                                        cycleDuration = 14; // 4s inhale + 10s exhale with hum
-                                        currentCycles = selectedCycles;
-                                        break;
-                                      default:
-                                        cycleDuration = 16;
-                                        currentCycles = selectedCycles;
-                                    }
-
-                                    const totalSeconds = cycleDuration * currentCycles;
-                                    const minutes = Math.floor(totalSeconds / 60);
-                                    const seconds = totalSeconds % 60;
-                                    return `${minutes}:${seconds.toString().padStart(2, '0')} min`;
-                                  })()}
-                                </div>
+                                <label className="text-base font-semibold" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>Cycles</label>
 
                                 {/* Slider Track */}
                                 <div className="w-full px-4">
                                   <div
                                     className="relative h-3 rounded-full mb-10"
                                     style={{
-                                      background: '#36393B',
-                                      boxShadow: '4px 4px 10px 0 #000 inset, -4px -4px 8px 0 rgba(255, 255, 255, 0.15) inset'
+                                      background: isDarkMode ? '#333' : '#E8E8E8',
+                                      boxShadow: isDarkMode
+                                        ? '4px 4px 10px 0 #1E1E1E inset, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset'
+                                        : '-4px -4px 8px 0 rgba(255, 255, 255, 0.5) inset, 4px 4px 8px 0 rgba(0, 0, 0, 0.15) inset'
                                     }}
                                   >
                                     {/* Slider Input */}
@@ -1731,7 +3390,7 @@ export default function Home() {
                                       max={(() => {
                                         let cycleDuration = 0;
                                         switch(selectedExercise.name) {
-                                          case 'Box Breathing (4-4-4-4)':
+                                          case 'Box Breathing':
                                             cycleDuration = 16;
                                             break;
                                           case '4-7-8 Breathing':
@@ -1800,7 +3459,7 @@ export default function Home() {
                                           } else {
                                             currentValue = selectedCycles;
                                             switch(selectedExercise.name) {
-                                              case 'Box Breathing (4-4-4-4)':
+                                              case 'Box Breathing':
                                                 cycleDuration = 16;
                                                 break;
                                               case '4-7-8 Breathing':
@@ -1821,7 +3480,7 @@ export default function Home() {
                                           return ((currentValue - minValue) / (maxValue - minValue)) * 100;
                                         })()}% - 19px)`,
                                         transform: 'translateY(-50%)',
-                                        background: '#7469B6',
+                                        background: '#AD88C6',
                                         boxShadow: '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
                                       }}
                                     />
@@ -1831,7 +3490,7 @@ export default function Home() {
                                     {(() => {
                                       let cycleDuration = 0;
                                       switch(selectedExercise.name) {
-                                        case 'Box Breathing (4-4-4-4)':
+                                        case 'Box Breathing':
                                           cycleDuration = 16;
                                           break;
                                         case '4-7-8 Breathing':
@@ -1867,1454 +3526,31 @@ export default function Home() {
                               </div>
                             </div>
 
-                            {/* Inhale-Exhale Timer Slider - Only for Coherent Breathing and Alternate Nostril */}
-                            {(selectedExercise.name === 'Coherent Breathing' || selectedExercise.name === 'Alternate Nostril') && (
-                              <div style={{ marginBottom: '50px' }}>
-                                <label className="text-base font-semibold text-white mb-4 block">Inhale-Exhale Timer</label>
-                                <div className="flex flex-col items-center gap-4">
-                                  {/* Numeric Display */}
-                                  <div
-                                    className="text-white text-3xl font-bold flex items-center justify-center rounded-full"
-                                    style={{
-                                      width: '80px',
-                                      height: '80px',
-                                      background: '#36393B',
-                                      boxShadow: '6px 6px 15px 0 #000 inset, -6px -6px 12px 0 rgba(255, 255, 255, 0.15) inset'
-                                    }}
-                                  >
-                                    {selectedExercise.name === 'Coherent Breathing' ? coherentBreathTime : alternateNostrilBreathTime}s
-                                  </div>
-                                  {/* Slider Track */}
-                                  <div className="w-full px-4">
-                                    <div
-                                      className="relative h-3 rounded-full mb-3"
-                                      style={{
-                                        background: '#36393B',
-                                        boxShadow: '4px 4px 10px 0 #000 inset, -4px -4px 8px 0 rgba(255, 255, 255, 0.15) inset'
-                                      }}
-                                    >
-                                      {/* Slider Input */}
-                                      <input
-                                        type="range"
-                                        min="4"
-                                        max="6"
-                                        step="1"
-                                        value={selectedExercise.name === 'Coherent Breathing' ? coherentBreathTime : alternateNostrilBreathTime}
-                                        onChange={(e) => {
-                                          const newValue = parseInt(e.target.value);
-                                          if (selectedExercise.name === 'Coherent Breathing') {
-                                            setCoherentBreathTime(newValue);
-                                          } else {
-                                            setAlternateNostrilBreathTime(newValue);
-                                          }
-                                        }}
-                                        className="absolute w-full h-full opacity-0 cursor-pointer"
-                                        style={{ top: 0, left: 0, zIndex: 10 }}
-                                      />
-                                      {/* Slider Thumb */}
-                                      <div
-                                        className="absolute rounded-full pointer-events-none transition-all duration-200 ease-out"
-                                        style={{
-                                          width: '38px',
-                                          height: '38px',
-                                          top: '50%',
-                                          left: `calc(${((selectedExercise.name === 'Coherent Breathing' ? coherentBreathTime : alternateNostrilBreathTime) - 4) / (6 - 4) * 100}% - 19px)`,
-                                          transform: 'translateY(-50%)',
-                                          background: '#36393B',
-                                          boxShadow: '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
-                                        }}
-                                      />
-                                    </div>
-                                    {/* Tick Marks with Labels */}
-                                    <div className="flex justify-between px-1">
-                                      {[4, 5, 6].map((value) => (
-                                        <div key={value} className="flex flex-col items-center" style={{ width: '1px' }}>
-                                          <span className="text-xs font-medium" style={{
-                                            color: (selectedExercise.name === 'Coherent Breathing' ? coherentBreathTime : alternateNostrilBreathTime) === value ? '#FFFFFF' : '#6B7280'
-                                          }}>
-                                            {value}s
-                                          </span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-
                             {/* Close Button */}
-                            <button
-                              onClick={() => setShowCustomizationSheet(false)}
-                              className="w-full text-base font-bold transition-all hover:brightness-110 active:brightness-90"
-                              style={{
-                                display: 'flex',
-                                height: '59px',
-                                padding: '12px 32px 11px 32px',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: '27px',
-                                background: '#333',
-                                boxShadow: '-12px -12px 24px 0 #3E3E3E, 12px 12px 24px 0 #1E1E1E',
-                                color: '#fff'
-                              }}
-                            >
-                              Done
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Music Selection Bottom Sheet */}
-                    {showMusicSheet && (
-                      <div
-                        className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-end"
-                        onClick={() => setShowMusicSheet(false)}
-                      >
-                        <div
-                          className="bg-white rounded-t-3xl w-full max-h-[70vh] overflow-y-auto animate-slide-up"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <div className="p-6">
-                            {/* Sheet Handle */}
-                            <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6"></div>
-
-                            {/* Title */}
-                            <h2 className="text-2xl font-bold mb-4 text-black">
-                              Select Music
-                            </h2>
-
-                            {/* Music Options */}
-                            <div className="space-y-3 mb-6">
-                              {/* No Music Option */}
+                            <div className="flex justify-center">
                               <button
-                                onClick={() => {
-                                  setSelectedMusic(null);
-                                  setShowMusicSheet(false);
-                                }}
-                                className={`w-full p-4 rounded-xl text-left transition-all ${
-                                  selectedMusic === null
-                                    ? 'bg-gray-800 text-white'
-                                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                                }`}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="font-semibold">No Music</p>
-                                    <p className="text-sm opacity-70">Exercise in silence</p>
-                                  </div>
-                                  {selectedMusic === null && (
-                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                                    </svg>
-                                  )}
-                                </div>
-                              </button>
-
-                              {/* Nature Sounds */}
-                              <button
-                                onClick={() => {
-                                  setSelectedMusic('nature');
-                                  setShowMusicSheet(false);
-                                }}
-                                className={`w-full p-4 rounded-xl text-left transition-all ${
-                                  selectedMusic === 'nature'
-                                    ? 'bg-gray-800 text-white'
-                                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                                }`}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="font-semibold">Nature Sounds</p>
-                                    <p className="text-sm opacity-70">Calm forest ambience</p>
-                                  </div>
-                                  {selectedMusic === 'nature' && (
-                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                                    </svg>
-                                  )}
-                                </div>
-                              </button>
-
-                              {/* Ambient Music */}
-                              <button
-                                onClick={() => {
-                                  setSelectedMusic('ambient');
-                                  setShowMusicSheet(false);
-                                }}
-                                className={`w-full p-4 rounded-xl text-left transition-all ${
-                                  selectedMusic === 'ambient'
-                                    ? 'bg-gray-800 text-white'
-                                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                                }`}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="font-semibold">Ambient Music</p>
-                                    <p className="text-sm opacity-70">Peaceful meditation tones</p>
-                                  </div>
-                                  {selectedMusic === 'ambient' && (
-                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                                    </svg>
-                                  )}
-                                </div>
-                              </button>
-
-                              {/* Binaural Beats */}
-                              <button
-                                onClick={() => {
-                                  setSelectedMusic('binaural');
-                                  setShowMusicSheet(false);
-                                }}
-                                className={`w-full p-4 rounded-xl text-left transition-all ${
-                                  selectedMusic === 'binaural'
-                                    ? 'bg-gray-800 text-white'
-                                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                                }`}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="font-semibold">Binaural Beats</p>
-                                    <p className="text-sm opacity-70">Focus and relaxation</p>
-                                  </div>
-                                  {selectedMusic === 'binaural' && (
-                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                                    </svg>
-                                  )}
-                                </div>
-                              </button>
-
-                              {/* Ocean Waves */}
-                              <button
-                                onClick={() => {
-                                  setSelectedMusic('ocean');
-                                  setShowMusicSheet(false);
-                                }}
-                                className={`w-full p-4 rounded-xl text-left transition-all ${
-                                  selectedMusic === 'ocean'
-                                    ? 'bg-gray-800 text-white'
-                                    : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                                }`}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="font-semibold">Ocean Waves</p>
-                                    <p className="text-sm opacity-70">Rhythmic wave sounds</p>
-                                  </div>
-                                  {selectedMusic === 'ocean' && (
-                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                                    </svg>
-                                  )}
-                                </div>
-                              </button>
-                            </div>
-
-                            {/* Close Button */}
-                            <button
-                              onClick={() => setShowMusicSheet(false)}
-                              className="w-full text-base font-bold transition-all hover:brightness-110 active:brightness-90"
-                              style={{
-                                display: 'flex',
-                                height: '59px',
-                                padding: '12px 32px 11px 32px',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: '27px',
-                                background: 'rgba(255, 255, 255, 0.7)',
-                                color: '#333'
-                              }}
-                            >
-                              Close
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ) : selectedOption === 'breathe' && selectedExercise ? (
-                  /* Breathing Exercise Detail View */
-                  <div
-                    className="flex flex-col h-full w-full justify-between"
-                    style={{ background: '#36393B' }}
-                  >
-                    {/* Header - 15% */}
-                    <div className="flex-[0.15] flex items-center justify-center px-2">
-                      <div className="flex items-center justify-between w-full max-w-md">
-                      <button
-                        onClick={() => {
-                          // Go back to exercise info screen
-                          setShowingInfo(true);
-                          // Reset exercise state
-                          setIsExercising(false);
-                          setCountdown(null);
-                          setIsPaused(false);
-                          setBreathingPhase('inhale');
-                          setTimer(0);
-                          setCurrentCycle(0);
-                          setExerciseCompleted(false);
-                          // Reset Coherent breathing customization to defaults
-                          setCoherentCycles(6);
-                          setCoherentBreathTime(5);
-                          // Reset Alternate Nostril customization to defaults
-                          setAlternateNostrilCycles(3);
-                          setAlternateNostrilBreathTime(5);
-                        }}
-                        className="flex items-center gap-2 text-sm transition-colors"
-                        style={{ color: '#FFFFFF' }}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
-                        </svg>
-                        <span>Back</span>
-                      </button>
-
-                      <h3
-                        className="text-base font-semibold text-center flex-1 px-4"
-                        style={{ color: '#FFFFFF' }}
-                      >
-                        {selectedExercise.name}
-                      </h3>
-
-                      {/* Spacer to balance layout */}
-                      <div className="w-14"></div>
-                      </div>
-                    </div>
-
-                    {/* Timer Section - 15% */}
-                    <div className="flex-[0.15] flex items-center justify-center" style={{ minHeight: '0' }}>
-                      {/* Timer Display - Show during all phases for Box Breathing, INHALE and EXHALE for others */}
-                      {!exerciseCompleted && isExercising && countdown === null ? (
-                        selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
-                          /* Box Breathing: Show timer for ALL phases including HOLD */
-                          <div className="text-center">
-                            <div
-                              className="font-bold"
-                              style={{
-                                fontSize: '4.32rem',
-                                color: '#FFFFFF'
-                              }}
-                            >
-                              {timer}
-                            </div>
-                          </div>
-                        ) : (breathingPhase === 'inhale' || breathingPhase === 'exhale') ? (
-                          /* Other exercises: Show timer only during INHALE and EXHALE */
-                          <div className="text-center">
-                            <div
-                              className="font-bold"
-                              style={{
-                                fontSize: '4.32rem',
-                                color: '#FFFFFF'
-                              }}
-                            >
-                              {selectedExercise?.name === 'Coherent Breathing'
-                                ? (breathingPhase === 'inhale'
-                                    ? `${Math.ceil(timer / 10)}s`  // INHALE: 0s to coherentBreathTime (e.g., 0s-5s)
-                                    : `${Math.ceil(timer / 10)}s`)  // EXHALE: coherentBreathTime to 0s (e.g., 5s-0s)
-                                : selectedExercise?.name === 'Alternate Nostril'
-                                  ? (breathingPhase === 'inhale'
-                                      ? `${Math.floor(timer / 10)}s`  // INHALE: 0s to alternateNostrilBreathTime (e.g., 0s-4s)
-                                      : `${Math.ceil(timer / 10)}s`)  // EXHALE: alternateNostrilBreathTime to 0s (e.g., 4s-0s)
-                                  : selectedExercise?.name === 'Physiological Sigh'
-                                    ? (breathingPhase === 'inhale'
-                                        ? `${Math.round(timer / 10)}s`  // INHALE: 0-39 → 0s-4s
-                                        : `${Math.ceil(timer / 10)}s`)  // EXHALE: 79-0 → 8s-0s
-                                    : selectedExercise?.name === '4-7-8 Breathing'
-                                      ? (breathingPhase === 'inhale'
-                                          ? `${Math.floor(timer / 10)}s`  // INHALE: 0-40 → 0s-4s
-                                          : `${Math.ceil(timer / 10)}s`)  // EXHALE: 80-0 → 8s-0s
-                                      : selectedExercise?.name === 'Humming Bee'
-                                        ? (breathingPhase === 'inhale'
-                                            ? `${Math.floor(timer / 10)}s`  // INHALE: 0-40 → 0s-4s
-                                            : `${Math.ceil(timer / 10)}s`)  // EXHALE: 80-0 → 8s-0s
-                                        : `${timer}s`
-                              }
-                            </div>
-                          </div>
-                        ) : null
-                      ) : null}
-                    </div>
-
-                    {/* Breathing Circles Area - 40% */}
-                    <div className="flex-[0.4] rounded-lg flex flex-col items-center justify-center p-4">
-                      {/* Show completion screen when exercise is completed */}
-                      {exerciseCompleted ? (
-                        <div className="flex flex-col items-center justify-center text-center gap-6">
-                          <h2
-                            className="font-bold mb-6"
-                            style={{
-                              fontSize: '1.59rem',
-                              color: '#FFFFFF'
-                            }}
-                          >
-                            Completed
-                          </h2>
-                          <div className="flex flex-col gap-3 w-full max-w-xs">
-                            <button
-                              onClick={() => {
-                                setExerciseCompleted(false);
-                                setIsExercising(false);
-                                setSelectedExercise(null);
-                                setTimer(0);
-                                setCurrentCycle(0);
-                                setBreathingPhase('inhale');
-                                // Reset Coherent breathing customization to defaults
-                                setCoherentCycles(6);
-                                setCoherentBreathTime(5);
-                                // Reset Alternate Nostril customization to defaults
-                                setAlternateNostrilCycles(3);
-                                setAlternateNostrilBreathTime(5);
-                              }}
-                              className={(selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Box Breathing (4-4-4-4)')
-                                ? "text-white font-semibold transition-all hover:brightness-110 active:brightness-90 flex items-center justify-center"
-                                : "bg-black text-white py-3 px-6 rounded-lg font-semibold hover:opacity-90 transition-opacity"}
-                              style={(selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Box Breathing (4-4-4-4)')
-                                ? {
-                                    width: '100%',
-                                    height: '56px',
-                                    padding: '0 24px',
-                                    borderRadius: '28px',
-                                    background: '#36393B',
-                                    boxShadow: '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
-                                  }
-                                : {}}
-                            >
-                              Return to Main Menu
-                            </button>
-                            <button
-                              onClick={() => {
-                                setExerciseCompleted(false);
-                                setCurrentCycle(0);
-                                // Box Breathing starts at timer 1, all other exercises start at 0
-                                setTimer(selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? 1 : 0);
-                                setBreathingPhase('inhale');
-                                setIsExercising(true);
-                              }}
-                              className={(selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Box Breathing (4-4-4-4)')
-                                ? "text-white font-semibold transition-all hover:brightness-110 active:brightness-90 flex items-center justify-center"
-                                : "bg-white border-2 border-black text-black py-3 px-6 rounded-lg font-semibold hover:bg-gray-50 transition-colors"}
-                              style={(selectedExercise?.name === 'Coherent Breathing' || selectedExercise?.name === 'Box Breathing (4-4-4-4)')
-                                ? {
-                                    width: '100%',
-                                    height: '56px',
-                                    padding: '0 24px',
-                                    borderRadius: '28px',
-                                    background: '#36393B',
-                                    boxShadow: '6px 6px 15px 0 #000 inset, -6px -6px 12px 0 rgba(255, 255, 255, 0.15) inset'
-                                  }
-                                : {}}
-                            >
-                              Restart
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                      {/* Conditional Animation based on exercise */}
-                      {selectedExercise?.name === 'Box Breathing (4-4-4-4)' ? (
-                        <>
-                          {/* Phase Indicator - 4 Boxes in Square Pattern (Clockwise) */}
-                          <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Neumorphic Container */}
-                            <div
-                              className="flex items-center justify-center p-4"
-                              style={{
-                                borderRadius: '13px',
-                                background: '#333',
-                                boxShadow: '-5px -5px 10px 0 #3C3C3C, 5px 5px 10px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset',
-                                width: '340px',
-                                height: '340px'
-                              }}
-                            >
-                              <div className="flex flex-col items-center justify-center gap-3 w-full h-full">
-                                {/* Top Row - Breathe In and Hold 1 */}
-                                <div className="flex justify-center gap-3 w-full">
-                                  {/* Breathe In - Top Left */}
-                                  <div
-                                    className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
-                                    style={{
-                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'inhale') ? '#746996' : '#444',
-                                      width: '148px',
-                                      height: '148px'
-                                    }}
-                                  >
-                                    <div className={`text-sm font-semibold mb-1 text-center leading-tight ${(isExercising && countdown === null && breathingPhase === 'inhale') ? 'text-white' : 'text-gray-400'}`}>
-                                      Breathe In
-                                    </div>
-                                    <div className={`text-2xl text-center ${(isExercising && countdown === null && breathingPhase === 'inhale') ? 'text-white' : 'text-gray-500'}`}>
-                                      ↑
-                                    </div>
-                                  </div>
-
-                                  {/* Hold 1 - Top Right */}
-                                  <div
-                                    className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
-                                    style={{
-                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'hold1') ? '#F6D0EA' : '#444',
-                                      width: '148px',
-                                      height: '148px'
-                                    }}
-                                  >
-                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && breathingPhase === 'hold1') ? 'text-gray-800' : 'text-gray-400'}`}>
-                                      Hold Breath
-                                    </div>
-                                    <svg
-                                      className={`${(isExercising && countdown === null && breathingPhase === 'hold1') ? 'text-gray-800' : 'text-gray-500'}`}
-                                      width="24"
-                                      height="24"
-                                      viewBox="0 0 24 24"
-                                      fill="currentColor"
-                                    >
-                                      <rect x="6" y="4" width="4" height="16" rx="1"/>
-                                      <rect x="14" y="4" width="4" height="16" rx="1"/>
-                                    </svg>
-                                  </div>
-                                </div>
-
-                                {/* Bottom Row - Hold 2 and Breathe Out */}
-                                <div className="flex justify-center gap-3 w-full">
-                                  {/* Hold 2 - Bottom Left */}
-                                  <div
-                                    className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
-                                    style={{
-                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'hold2') ? '#F6D0EA' : '#444',
-                                      width: '148px',
-                                      height: '148px'
-                                    }}
-                                  >
-                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-400'}`}>
-                                      Hold Breath
-                                    </div>
-                                    <svg
-                                      className={`${(isExercising && countdown === null && breathingPhase === 'hold2') ? 'text-gray-800' : 'text-gray-500'}`}
-                                      width="24"
-                                      height="24"
-                                      viewBox="0 0 24 24"
-                                      fill="currentColor"
-                                    >
-                                      <rect x="6" y="4" width="4" height="16" rx="1"/>
-                                      <rect x="14" y="4" width="4" height="16" rx="1"/>
-                                    </svg>
-                                  </div>
-
-                                  {/* Breathe Out - Bottom Right */}
-                                  <div
-                                    className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
-                                    style={{
-                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'exhale') ? '#AD8FC6' : '#444',
-                                      width: '148px',
-                                      height: '148px'
-                                    }}
-                                  >
-                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && breathingPhase === 'exhale') ? 'text-white' : 'text-gray-400'}`}>
-                                      Breathe Out
-                                    </div>
-                                    <div className={`text-2xl text-center ${(isExercising && countdown === null && breathingPhase === 'exhale') ? 'text-white' : 'text-gray-500'}`}>
-                                      ↓
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      ) : selectedExercise?.name === '4-7-8 Breathing' ? (
-                        /* 4-7-8 Triangle Animation */
-                        <>
-                          {/* Breathing Circle Illustration - 4-7-8 */}
-                          <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Neumorphic Circular Container */}
-                            <div
-                              className="rounded-full flex items-center justify-center aspect-square"
-                              style={{
-                                background: '#36393B',
-                                boxShadow: '-6px -6px 24px 0 rgba(255, 255, 255, 0.30) inset, 12px 12px 30px 0 #000 inset',
-                                width: '100%',
-                                maxWidth: '340px',
-                                maxHeight: '340px',
-                                position: 'relative'
-                              }}
-                            >
-                              {/* Gray Background Circle - Always visible */}
-                              <svg
-                                className="absolute"
-                                width="300"
-                                height="300"
-                                style={{ transform: 'rotate(-90deg)' }}
-                              >
-                                <circle
-                                  cx="150"
-                                  cy="150"
-                                  r="145"
-                                  fill="none"
-                                  stroke="#4B5563"
-                                  strokeWidth="4"
-                                />
-                              </svg>
-
-                              {/* Blue-Violet Progress Circle - Shows during HOLD phase (7 seconds) */}
-                              {breathingPhase === 'hold1' && animationReady && (
-                                <svg
-                                  className="absolute"
-                                  width="300"
-                                  height="300"
-                                  style={{ transform: 'rotate(-90deg)' }}
-                                >
-                                  <circle
-                                    cx="150"
-                                    cy="150"
-                                    r="145"
-                                    fill="none"
-                                    stroke="#7469BB"
-                                    strokeWidth="4"
-                                    strokeDasharray="911"
-                                    strokeDashoffset={911 - (911 * (timer / 10) / 7)}
-                                    style={{ transition: 'stroke-dashoffset 100ms linear' }}
-                                    strokeLinecap="round"
-                                  />
-                                </svg>
-                              )}
-
-                              {/* Single Expanding/Compressing Circle with Radial Gradient */}
-                              {animationReady && !(breathingPhase === 'inhale' && timer === 0) && !(breathingPhase === 'exhale' && timer === 0) && (
-                                <div
-                                  className="rounded-full absolute"
-                                  style={{
-                                    width: `${get478CircleSize() * 0.824}px`,
-                                    height: `${get478CircleSize() * 0.824}px`,
-                                    background: 'radial-gradient(circle, rgba(116, 105, 187, 1) 0%, rgba(116, 105, 187, 0.6) 50%, rgba(116, 105, 187, 0.2) 100%)',
-                                    boxShadow: '0 0 30px rgba(116, 105, 187, 0.5)',
-                                    transition: 'all 100ms linear'
-                                  }}
-                                />
-                              )}
-
-                              {/* Phase Text - At Center of Circles */}
-                              <div className="absolute text-center">
-                                <div
-                                  className={`text-lg font-semibold uppercase tracking-wider ${
-                                    breathingPhase === 'hold1' && animationReady ? 'pulse-hold' : ''
-                                  }`}
-                                  style={{ color: '#FFFFFF' }}
-                                >
-                                  {breathingPhase === 'inhale' && animationReady && 'Breathe In'}
-                                  {breathingPhase === 'hold1' && animationReady && 'HOLD'}
-                                  {breathingPhase === 'exhale' && animationReady && 'Breathe Out'}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      ) : selectedExercise?.name === 'Coherent Breathing' ? (
-                        /* Coherent Breathing Animation */
-                        <>
-                          {/* Breathing Circle Illustration - Coherent */}
-                          <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Neumorphic Circular Container */}
-                            <div
-                              className="rounded-full flex items-center justify-center aspect-square"
-                              style={{
-                                background: '#36393B',
-                                boxShadow: '-6px -6px 24px 0 rgba(255, 255, 255, 0.30) inset, 12px 12px 30px 0 #000 inset',
-                                width: '100%',
-                                maxWidth: '340px',
-                                maxHeight: '340px',
-                                position: 'relative'
-                              }}
-                            >
-                              {/* Gray Background Circle - Blinks purple at transitions */}
-                              <svg
-                                className="absolute"
-                                width="300"
-                                height="300"
-                                style={{ transform: 'rotate(-90deg)' }}
-                              >
-                                <circle
-                                  cx="150"
-                                  cy="150"
-                                  r="145"
-                                  fill="none"
-                                  stroke="#4B5563"
-                                  strokeWidth="4"
-                                  className={timer === (coherentBreathTime * 10) || (timer === 0 && currentCycle > 0) ? 'blink-purple' : ''}
-                                />
-                              </svg>
-
-                              {/* Single Expanding/Compressing Circle with Radial Gradient */}
-                              <div
-                                className="rounded-full absolute"
+                                onClick={() => setShowCustomizationSheet(false)}
+                                className="text-base font-bold transition-all hover:brightness-110 active:brightness-90"
                                 style={{
-                                  width: `${getCoherentCircleSize()}px`,
-                                  height: `${getCoherentCircleSize()}px`,
-                                background: (() => {
-                                  const size = getCoherentCircleSize();
-                                  const intensity = size / 280; // 0 to 1, from empty to full (updated for smaller container)
-
-                                  // 5-color gradient sequence using all app colors: deep purple → medium purple → light purple → pale orchid → pale pink
-                                  const colors = [
-                                    { r: 116, g: 105, b: 182 },   // Deep Purple/Blue-Violet (empty)
-                                    { r: 173, g: 136, b: 198 },   // Medium Purple/African Violet (25%)
-                                    { r: 225, g: 175, b: 209 },   // Light Purple/Light Orchid (50%)
-                                    { r: 246, g: 208, b: 234 },   // Pale Orchid (75%)
-                                    { r: 255, g: 230, b: 230 }    // Pale Pink/Misty Rose (full)
-                                  ];
-
-                                  // Calculate which color segment we're in and interpolate
-                                  let r, g, b;
-                                  if (intensity <= 0.25) {
-                                    // Interpolate between deep purple and medium purple
-                                    const t = intensity / 0.25;
-                                    r = Math.round(colors[0].r + (colors[1].r - colors[0].r) * t);
-                                    g = Math.round(colors[0].g + (colors[1].g - colors[0].g) * t);
-                                    b = Math.round(colors[0].b + (colors[1].b - colors[0].b) * t);
-                                  } else if (intensity <= 0.5) {
-                                    // Interpolate between medium purple and light purple
-                                    const t = (intensity - 0.25) / 0.25;
-                                    r = Math.round(colors[1].r + (colors[2].r - colors[1].r) * t);
-                                    g = Math.round(colors[1].g + (colors[2].g - colors[1].g) * t);
-                                    b = Math.round(colors[1].b + (colors[2].b - colors[1].b) * t);
-                                  } else if (intensity <= 0.75) {
-                                    // Interpolate between light purple and pale orchid
-                                    const t = (intensity - 0.5) / 0.25;
-                                    r = Math.round(colors[2].r + (colors[3].r - colors[2].r) * t);
-                                    g = Math.round(colors[2].g + (colors[3].g - colors[2].g) * t);
-                                    b = Math.round(colors[2].b + (colors[3].b - colors[2].b) * t);
-                                  } else {
-                                    // Interpolate between pale orchid and pale pink
-                                    const t = (intensity - 0.75) / 0.25;
-                                    r = Math.round(colors[3].r + (colors[4].r - colors[3].r) * t);
-                                    g = Math.round(colors[3].g + (colors[4].g - colors[3].g) * t);
-                                    b = Math.round(colors[3].b + (colors[4].b - colors[3].b) * t);
-                                  }
-
-                                  return `radial-gradient(circle, rgba(${r}, ${g}, ${b}, 1) 0%, rgba(${r}, ${g}, ${b}, 0.6) 50%, rgba(${r}, ${g}, ${b}, 0.2) 100%)`;
-                                })(),
-                                boxShadow: (() => {
-                                  const size = getCoherentCircleSize();
-                                  const intensity = size / 340;
-
-                                  // Use same 5-color gradient for box shadow
-                                  const colors = [
-                                    { r: 116, g: 105, b: 182 },   // Deep Purple/Blue-Violet
-                                    { r: 173, g: 136, b: 198 },   // Medium Purple/African Violet
-                                    { r: 225, g: 175, b: 209 },   // Light Purple/Light Orchid
-                                    { r: 247, g: 214, b: 236 },   // Pale Orchid
-                                    { r: 255, g: 230, b: 230 }    // Pale Pink/Rose
-                                  ];
-
-                                  let r, g, b;
-                                  if (intensity <= 0.25) {
-                                    const t = intensity / 0.25;
-                                    r = Math.round(colors[0].r + (colors[1].r - colors[0].r) * t);
-                                    g = Math.round(colors[0].g + (colors[1].g - colors[0].g) * t);
-                                    b = Math.round(colors[0].b + (colors[1].b - colors[0].b) * t);
-                                  } else if (intensity <= 0.5) {
-                                    const t = (intensity - 0.25) / 0.25;
-                                    r = Math.round(colors[1].r + (colors[2].r - colors[1].r) * t);
-                                    g = Math.round(colors[1].g + (colors[2].g - colors[1].g) * t);
-                                    b = Math.round(colors[1].b + (colors[2].b - colors[1].b) * t);
-                                  } else if (intensity <= 0.75) {
-                                    const t = (intensity - 0.5) / 0.25;
-                                    r = Math.round(colors[2].r + (colors[3].r - colors[2].r) * t);
-                                    g = Math.round(colors[2].g + (colors[3].g - colors[2].g) * t);
-                                    b = Math.round(colors[2].b + (colors[3].b - colors[2].b) * t);
-                                  } else {
-                                    const t = (intensity - 0.75) / 0.25;
-                                    r = Math.round(colors[3].r + (colors[4].r - colors[3].r) * t);
-                                    g = Math.round(colors[3].g + (colors[4].g - colors[3].g) * t);
-                                    b = Math.round(colors[3].b + (colors[4].b - colors[3].b) * t);
-                                  }
-
-                                  return `0 0 30px rgba(${r}, ${g}, ${b}, 0.5)`;
-                                })(),
-                                transition: 'all 100ms linear'
-                              }}
-                            />
-
-                              {/* Phase Text - At Center of Circle */}
-                              <div className="absolute text-center">
-                                <div
-                                  className={`text-lg font-semibold uppercase tracking-wider`}
-                                  style={{ color: '#FFFFFF' }}
-                                >
-                                  {breathingPhase === 'inhale' && animationReady && 'Breathe In'}
-                                  {breathingPhase === 'exhale' && animationReady && 'Breathe Out'}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      ) : selectedExercise?.name === 'Physiological Sigh' ? (
-                        /* Physiological Sigh Animation - Two-circle expanding effect */
-                        <>
-                          {/* Breathing Circle Illustration - Physiological Sigh */}
-                          <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Neumorphic Circular Container */}
-                            <div
-                              className="rounded-full flex items-center justify-center relative aspect-square"
-                              style={{
-                                width: '100%',
-                                maxWidth: '340px',
-                                maxHeight: '340px',
-                                background: '#36393B',
-                                boxShadow: '-6px -6px 24px 0 rgba(255, 255, 255, 0.30) inset, 12px 12px 30px 0 #000 inset'
-                              }}
-                            >
-                              {/* Gray Background Circle */}
-                              <svg
-                                className="absolute"
-                                width="300"
-                                height="300"
-                                style={{ transform: 'rotate(-90deg)' }}
-                              >
-                                <circle
-                                  cx="150"
-                                  cy="150"
-                                  r="145"
-                                  fill="none"
-                                  stroke="#4B5563"
-                                  strokeWidth="4"
-                                />
-                              </svg>
-
-                              {(() => {
-                                const { circle1Size, circle2Size } = getPhysiologicalSighCircleSizes();
-
-                                return (
-                                  <>
-                                    {/* Circle 2 - Lighter gradient (behind, larger) - Misty Rose to Pale Pink */}
-                                    {circle2Size > 0 && (
-                                      <div
-                                        className="rounded-full absolute"
-                                        style={{
-                                          width: `${circle2Size}px`,
-                                          height: `${circle2Size}px`,
-                                          background: 'linear-gradient(135deg, #FFE6E6 0%, #F6D0EA 100%)',
-                                          boxShadow: '0 0 30px rgba(246, 208, 234, 0.5)',
-                                          transition: 'all 100ms linear',
-                                          zIndex: 1
-                                        }}
-                                      />
-                                    )}
-
-                                    {/* Circle 1 - Darker gradient (front, smaller) - African Violet to Blue Violet */}
-                                    {circle1Size > 0 && (
-                                      <div
-                                        className="rounded-full absolute"
-                                        style={{
-                                          width: `${circle1Size}px`,
-                                          height: `${circle1Size}px`,
-                                          background: 'linear-gradient(135deg, #AD88C6 0%, #7469B6 100%)',
-                                          boxShadow: '0 0 30px rgba(116, 105, 182, 0.5)',
-                                          transition: 'all 100ms linear',
-                                          zIndex: 2
-                                        }}
-                                      />
-                                    )}
-                                  </>
-                                );
-                              })()}
-
-                              {/* Phase Text - At Center of Circle */}
-                              <div className="absolute text-center" style={{ zIndex: 3 }}>
-                                <div
-                                  className={`text-lg font-semibold uppercase tracking-wider`}
-                                  style={{ color: '#FFFFFF' }}
-                                >
-                                  {breathingPhase === 'inhale' && animationReady && 'Breathe In'}
-                                  {breathingPhase === 'exhale' && animationReady && 'Breathe Out'}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      ) : selectedExercise?.name === 'Alternate Nostril' ? (
-                        /* Alternate Nostril Animation */
-                        <>
-                          {/* Breathing Container Illustration - Alternate Nostril */}
-                          <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Neumorphic Square Container */}
-                            <div
-                              className="flex items-center justify-center p-4"
-                              style={{
-                                borderRadius: '13px',
-                                background: '#333',
-                                boxShadow: '-5px -5px 10px 0 #3C3C3C, 5px 5px 10px 0 #1E1E1E, -4px -4px 8px 0 rgba(77, 77, 77, 0.25) inset, 4px 4px 8px 0 #1E1E1E inset',
-                                width: '340px',
-                                height: '340px'
-                              }}
-                            >
-                              {/* Split square markers (50:50 left/right) with 4px gap */}
-                              <div className="relative flex" style={{ gap: '4px' }}>
-                                {/* Left Container */}
-                                <div className="relative" style={{ width: '154px', height: '308px' }}>
-                                  {/* Gray outline */}
-                                  <svg width="154" height="308">
-                                    <rect x="4" y="4" width="146" height="300" rx="13"
-                                      fill="none" stroke="#4B5563" strokeWidth="4" />
-                                  </svg>
-
-                                  {/* App color spectrum fill - Left Nostril (even cycles: 0, 2, 4...) */}
-                                  {currentCycle % 2 === 0 && (() => {
-                                    let heightPercent;
-                                    if (breathingPhase === 'inhale') {
-                                      heightPercent = timer / (alternateNostrilBreathTime * 10);
-                                    } else if (breathingPhase === 'exhale') {
-                                      heightPercent = timer / (alternateNostrilBreathTime * 10);
-                                    } else {
-                                      // hold2 or other phases: empty
-                                      heightPercent = 0;
-                                    }
-                                    const heightPx = heightPercent * 300;
-                                    const isFull = heightPercent >= 0.98; // Consider full at 98%+
-                                    return (
-                                      <div className="absolute" style={{
-                                        bottom: '4px',
-                                        left: '4px',
-                                        width: '146px',
-                                        height: `${heightPx}px`,
-                                        background: 'linear-gradient(to top, #7469B6 0%, #AD88C6 25%, #E1AFD1 50%, #F6D0EA 75%, #FFE6E6 100%)',
-                                        borderRadius: isFull ? '13px' : '0 0 13px 13px',
-                                        transition: 'height 100ms linear'
-                                      }} />
-                                    );
-                                  })()}
-
-                                  {/* Phase Text - Left Nostril */}
-                                  {currentCycle % 2 === 0 && (
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                      <div className="text-lg font-semibold uppercase tracking-wider" style={{ color: '#FFFFFF' }}>
-                                        {breathingPhase === 'inhale' && 'Breathe In'}
-                                        {breathingPhase === 'exhale' && 'Breathe Out'}
-                                      </div>
-                                      <div className="text-sm mt-1" style={{ color: '#D1D5DB' }}>
-                                        Left Nostril
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-
-                                {/* Right Container */}
-                                <div className="relative" style={{ width: '154px', height: '308px' }}>
-                                  {/* Gray outline */}
-                                  <svg width="154" height="308">
-                                    <rect x="4" y="4" width="146" height="300" rx="13"
-                                      fill="none" stroke="#4B5563" strokeWidth="4" />
-                                  </svg>
-
-                                  {/* App color spectrum fill - Right Nostril (odd cycles: 1, 3, 5...) */}
-                                  {currentCycle % 2 === 1 && (() => {
-                                    let heightPercent;
-                                    if (breathingPhase === 'inhale') {
-                                      heightPercent = timer / (alternateNostrilBreathTime * 10);
-                                    } else if (breathingPhase === 'exhale') {
-                                      heightPercent = timer / (alternateNostrilBreathTime * 10);
-                                    } else {
-                                      // hold2 or other phases: empty
-                                      heightPercent = 0;
-                                    }
-                                    const heightPx = heightPercent * 300;
-                                    const isFull = heightPercent >= 0.98; // Consider full at 98%+
-                                    return (
-                                      <div className="absolute" style={{
-                                        bottom: '4px',
-                                        left: '4px',
-                                        width: '146px',
-                                        height: `${heightPx}px`,
-                                        background: 'linear-gradient(to top, #7469B6 0%, #AD88C6 25%, #E1AFD1 50%, #F6D0EA 75%, #FFE6E6 100%)',
-                                        borderRadius: isFull ? '13px' : '0 0 13px 13px',
-                                        transition: 'height 100ms linear'
-                                      }} />
-                                    );
-                                  })()}
-
-                                  {/* Phase Text - Right Nostril */}
-                                  {currentCycle % 2 === 1 && (
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                      <div className="text-lg font-semibold uppercase tracking-wider" style={{ color: '#FFFFFF' }}>
-                                        {breathingPhase === 'inhale' && 'Breathe In'}
-                                        {breathingPhase === 'exhale' && 'Breathe Out'}
-                                      </div>
-                                      <div className="text-sm mt-1" style={{ color: '#D1D5DB' }}>
-                                        Right Nostril
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      ) : selectedExercise?.name === 'Humming Bee' ? (
-                        /* Humming Bee Animation - Similar to Coherent Breathing */
-                        <>
-                          {/* Breathing Circle Illustration - Humming Bee */}
-                          <div className="flex-1 flex items-center justify-center w-full relative">
-                            {/* Neumorphic Circular Container */}
-                            <div
-                              className="rounded-full flex items-center justify-center relative aspect-square"
-                              style={{
-                                width: '100%',
-                                maxWidth: '340px',
-                                maxHeight: '340px',
-                                background: '#36393B',
-                                boxShadow: '-6px -6px 24px 0 rgba(255, 255, 255, 0.30) inset, 12px 12px 30px 0 #000 inset'
-                              }}
-                            >
-                              {/* Gray Background Circle */}
-                              <svg
-                                className="absolute"
-                                width="300"
-                                height="300"
-                                style={{ transform: 'rotate(-90deg)' }}
-                              >
-                                <circle
-                                  cx="150"
-                                  cy="150"
-                                  r="145"
-                                  fill="none"
-                                  stroke="#4B5563"
-                                  strokeWidth="4"
-                                />
-                              </svg>
-
-                              {/* Single Expanding/Compressing Circle - Only show after countdown */}
-                              {animationReady && getHummingBeeCircleSize() > 0 && (
-                                <div
-                                  className="rounded-full absolute"
-                                  style={{
-                                    width: `${getHummingBeeCircleSize()}px`,
-                                    height: `${getHummingBeeCircleSize()}px`,
-                                    background: breathingPhase === 'inhale'
-                                      ? '#E1AFD1'  // Light Orchid on inhale
-                                      : '#AD88C6',  // African Violet on exhale
-                                    boxShadow: breathingPhase === 'inhale'
-                                      ? '0 0 30px rgba(225, 175, 209, 0.5)'
-                                      : '0 0 30px rgba(173, 136, 198, 0.5)',
-                                    transition: 'all 100ms linear'
-                                  }}
-                                />
-                              )}
-
-                              {/* Phase Text - At Center of Circle - Only show after countdown */}
-                              <div className="absolute text-center">
-                                {animationReady && (
-                                  breathingPhase === 'inhale' ? (
-                                    <div className="text-lg font-semibold uppercase tracking-wider" style={{ color: '#FFFFFF' }}>
-                                      Breathe In
-                                    </div>
-                                  ) : (
-                                    <div>
-                                      <div className="text-lg font-semibold uppercase tracking-wider" style={{ color: '#FFFFFF' }}>
-                                        Breathe Out
-                                      </div>
-                                      <div className="text-sm mt-1" style={{ color: '#FFFFFF' }}>
-                                        With Hum
-                                      </div>
-                                      {/* Sound Wave Vibration */}
-                                      <div className="mt-3 flex items-center justify-center gap-1">
-                                        <style>{`
-                                          @keyframes softVibrate {
-                                            0% { transform: scaleY(1); }
-                                            25% { transform: scaleY(1.15); }
-                                            50% { transform: scaleY(0.95); }
-                                            75% { transform: scaleY(1.08); }
-                                            100% { transform: scaleY(1); }
-                                          }
-                                        `}</style>
-                                        {[...Array(30)].map((_, i) => {
-                                          const position = i / 29; // 0 to 1
-                                          const distanceFromCenter = Math.abs(position - 0.5) * 2; // 0 at center, 1 at edges
-
-                                          // Bell curve: use Gaussian distribution for smooth falloff
-                                          const bellCurve = Math.exp(-Math.pow(distanceFromCenter * 2.5, 2));
-
-                                          // Height follows bell curve - tall in center, short at edges
-                                          const minHeight = 3;
-                                          const maxHeight = 24;
-                                          const baseHeight = minHeight + (maxHeight - minHeight) * bellCurve;
-
-                                          // Vibration intensity also follows bell curve
-                                          const centerIntensity = bellCurve;
-
-                                          // Fast, subtle vibration
-                                          const duration = 0.15 + (Math.random() * 0.05); // Random duration between 0.15-0.2s
-                                          const delay = i * 0.01; // Stagger each line slightly
-
-                                          return (
-                                            <div
-                                              key={i}
-                                              style={{
-                                                width: '2px',
-                                                height: `${baseHeight}px`,
-                                                backgroundColor: '#FFFFFF',
-                                                opacity: 0.8 + (centerIntensity * 0.2),
-                                                animation: isPaused ? 'none' : `softVibrate ${duration}s ease-in-out ${delay}s infinite`,
-                                                transformOrigin: 'center'
-                                              }}
-                                            />
-                                          );
-                                        })}
-                                      </div>
-                                    </div>
-                                  )
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        /* Placeholder for other breathing exercises */
-                        <div className="flex-1 flex items-center justify-center w-full">
-                          <div className="text-center">
-                            <p className="text-gray-400 text-lg">Animation for</p>
-                            <p className="text-gray-600 text-xl font-semibold mt-2">{selectedExercise?.name}</p>
-                            <p className="text-gray-400 text-sm mt-4">Coming soon</p>
-                          </div>
-                        </div>
-                      )}
-                        </>
-                      )}
-                    </div>
-
-                    {/* Exercise Starting Section - 15% */}
-                    <div className="flex-[0.15] flex items-center justify-center" style={{ minHeight: '0' }}>
-                      {/* Countdown Progress Bar - Show during countdown (only on first start, not after completion) */}
-                      {countdown !== null && countdown > 0 && !exerciseCompleted ? (
-                        <div className="w-full max-w-xs px-4">
-                          <span
-                            className="text-sm font-medium mb-2 block text-center"
-                            style={{
-                              color: '#FFFFFF'
-                            }}
-                          >
-                            Exercise starting...
-                          </span>
-                          {/* Progress Bar Container */}
-                          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                            {/* Segmented Progress */}
-                            <div className="h-full flex gap-1">
-                              {/* Show segments based on countdown value - decrements from left to right */}
-                              {Array.from({ length: 3 }).map((_, index) => (
-                                <div
-                                  key={index}
-                                  className={`flex-1 transition-all duration-300 ${
-                                    index >= (3 - countdown) ? 'bg-[#9370DB]' : 'bg-transparent'
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        /* Empty div to maintain spacing when countdown is not shown */
-                        <div></div>
-                      )}
-
-                      {/* Legend for Physiological Sigh - Show after countdown completes with 150ms delay */}
-                      {selectedExercise?.name === 'Physiological Sigh' && showLegend && (
-                        <div className="flex items-center justify-center gap-6">
-                          {/* Circle 2 Legend - Lighter gradient (Misty Rose to Pale Pink) */}
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full" style={{ background: 'linear-gradient(135deg, #FFE6E6 0%, #F6D0EA 100%)' }}></div>
-                            <span className="text-sm text-gray-700 font-medium">Long breath (0-3s)</span>
-                          </div>
-                          {/* Circle 1 Legend - Darker gradient (African Violet to Blue Violet) */}
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 rounded-full" style={{ background: 'linear-gradient(135deg, #AD88C6 0%, #7469B6 100%)' }}></div>
-                            <span className="text-sm text-gray-700 font-medium">Quick short breath (1s)</span>
-                          </div>
-                        </div>
-                      )}
-
-                    </div>
-
-                    {/* Navigation Section - 15% (hide when completed) */}
-                    {!exerciseCompleted && (
-                    <div className="flex-[0.15] flex flex-col items-center justify-end pb-6">
-                      <div className="flex items-center justify-center w-full max-w-md px-4" style={{ gap: '34px' }}>
-                      {/* Customization Button - Left */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // TODO: Add customization functionality
-                          console.log('Customization clicked');
-                        }}
-                        className="rounded-full font-medium text-sm flex items-center justify-center transition-all hover:brightness-110 active:brightness-90"
-                        style={{
-                          width: '56px',
-                          height: '56px',
-                          background: '#36393B',
-                          color: '#FFFFFF',
-                          boxShadow: '6px 6px 15px 0 #000'
-                        }}
-                      >
-                        <svg width="24" height="24" viewBox="0 0 118 118" fill="none">
-                          <path d="M19.6667 24.5845L49.1667 24.5833" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                          <path d="M63.9167 24.5833H98.3334" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                          <path d="M78.6667 44.25V73.75" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                          <path d="M49.1667 9.83333V39.3333" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                          <path d="M59 78.6667V108.167" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                          <path d="M78.6667 59L98.3334 59.001" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                          <path d="M19.6667 59.001L63.9167 59" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                          <path d="M59 93.4167H98.3333" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                          <path d="M19.6667 93.4176L44.2501 93.4167" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
-                        </svg>
-                      </button>
-
-                      {/* Start/Pause Button - Center */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (exerciseCompleted) {
-                            // Restart exercise from beginning with countdown
-                            setExerciseCompleted(false);
-                            setCountdown(3);
-                            setIsPaused(false);
-                            setCurrentCycle(0);
-                            setBreathingPhase('inhale');
-                            setTimer(selectedExercise?.name === 'Physiological Sigh' ? 0 : 0);
-                            phaseHoldRef.current = false; // Reset phase hold flag
-                          } else if (isPaused) {
-                            // Resume from pause
-                            setIsPaused(false);
-                          } else if (countdown !== null && countdown > 0) {
-                            // Pause during countdown
-                            setIsPaused(true);
-                          } else if (isExercising) {
-                            // Pause during exercise
-                            setIsPaused(true);
-                          }
-                        }}
-                        className="rounded-full font-medium text-sm flex items-center justify-center transition-all hover:brightness-110 active:brightness-90"
-                        style={{
-                          width: '80px',
-                          height: '80px',
-                          background: '#36393B',
-                          color: '#FFFFFF',
-                          boxShadow: (isPaused || exerciseCompleted)
-                            ? '-6px -6px 12px 0 rgba(255, 255, 255, 0.15), 6px 6px 15px 0 #000'
-                            : '6px 6px 15px 0 #000 inset, -6px -6px 12px 0 rgba(255, 255, 255, 0.15) inset'
-                        }}
-                      >
-                        {exerciseCompleted || isPaused ? 'Start' : 'Pause'}
-                      </button>
-
-                      {/* Sound Button - Right */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShowMusicSheet(true);
-                        }}
-                        className="rounded-full font-medium text-sm flex items-center justify-center transition-all hover:brightness-110 active:brightness-90"
-                        style={{
-                          width: '56px',
-                          height: '56px',
-                          background: selectedMusic ? '#746996' : '#36393B',
-                          color: '#FFFFFF',
-                          boxShadow: '6px 6px 15px 0 #000'
-                        }}
-                      >
-                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                          <path d="M17.1884 9.09605C17.1884 8.98559 17.1884 8.87994 17.1836 8.76948C17.1355 7.29029 16.7513 5.89755 16.1078 4.67769C14.6382 1.88741 11.8287 0 8.59658 0C5.36446 0 2.55016 1.88741 1.08058 4.67769C0.437033 5.90235 0.0528329 7.29029 0.00480725 8.76948C4.69011e-06 8.87994 0 8.98559 0 9.09605V13.6201C0 15.6035 1.39754 17.2556 3.26574 17.6542C3.46744 17.8607 3.77482 18 4.12061 18C4.46639 18 4.77375 17.8655 4.97546 17.6542L4.98987 17.6398V9.60032H4.98506C4.78816 9.3842 4.47119 9.24013 4.1158 9.24013C3.76041 9.24013 3.44344 9.3842 3.24654 9.60032H3.24173C2.59819 9.73479 2.01228 10.0277 1.52242 10.4264C1.484 10.46 1.17182 10.7385 1.07577 10.8538V9.01441C1.07577 8.88474 1.18143 8.77428 1.3159 8.77428H1.32551H1.42155C1.58004 4.73052 4.73053 1.5032 8.58698 1.5032C12.4434 1.5032 15.5891 4.73052 15.7476 8.77428H15.8581C15.9925 8.77428 16.0982 8.88474 16.0982 9.01441V10.8538C16.0021 10.7385 15.8917 10.6281 15.7764 10.5368C15.7764 10.5368 15.69 10.46 15.6515 10.4264C15.1617 10.0277 14.5758 9.73959 13.9322 9.60032C13.7305 9.3842 13.4136 9.24013 13.0582 9.24013C12.7028 9.24013 12.3954 9.3746 12.1889 9.59552V17.6494C12.1889 17.6494 12.1937 17.6542 12.1985 17.6542C12.4002 17.8607 12.7124 18 13.0534 18C13.3943 18 13.7065 17.8655 13.9082 17.6542C15.7764 17.2556 17.174 15.6035 17.174 13.6201C17.174 13.3031 17.1355 12.9909 17.0683 12.6932C17.1355 12.9909 17.174 13.2983 17.174 13.6201V9.09605H17.1884Z" fill="currentColor"/>
-                        </svg>
-                      </button>
-                      </div>
-                    </div>
-                    )}
-                  </div>
-                ) : selectedOption === 'focus' || selectedOption === 'calm' ? (
-                  /* Development Message for Focus and Calm */
-                  <div className="flex items-center justify-center py-12 text-center">
-                    <p className="text-gray-400 text-sm">Feature is still in development</p>
-                  </div>
-                ) : (
-                  /* Track List */
-                  <div className="flex flex-col flex-1 min-h-0">
-                    {selectedOption === 'breathe' && (
-                      <div className="mb-6 flex-shrink-0">
-                        <h3 className="font-medium text-2xl text-white">
-                          Select a breathing technique
-                        </h3>
-                      </div>
-                    )}
-                    {selectedOption === 'breathe' ? (
-                      /* Single Column List Layout for Breathing Exercises */
-                      <div className="overflow-y-auto flex-1 min-h-0 hide-scrollbar px-4">
-                        <div className="flex flex-col gap-3">
-                          {currentTracks.map((track, index) => {
-                            const metadata = getExerciseMetadata(track.name);
-
-                            // Function to render exercise preview icon
-                            const renderExerciseIcon = (exerciseName) => {
-                              const iconSize = 56;
-
-                              switch(exerciseName) {
-                                case 'Box Breathing (4-4-4-4)':
-                                  return (
-                                    <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" style={{ border: '1px solid #666', borderRadius: '6px' }}>
-                                      <rect x="6" y="6" width="16" height="16" rx="2" fill="#746996" />
-                                      <rect x="26" y="6" width="16" height="16" rx="2" fill="#444" />
-                                      <rect x="6" y="26" width="16" height="16" rx="2" fill="#444" />
-                                      <rect x="26" y="26" width="16" height="16" rx="2" fill="#444" />
-                                    </svg>
-                                  );
-
-                                case '4-7-8 Breathing':
-                                  return (
-                                    <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" style={{ border: '1px solid #666', borderRadius: '50%' }}>
-                                      <defs>
-                                        <radialGradient id="gradient-478">
-                                          <stop offset="0%" stopColor="rgba(116, 105, 187, 1)" />
-                                          <stop offset="50%" stopColor="rgba(116, 105, 187, 0.6)" />
-                                          <stop offset="100%" stopColor="rgba(116, 105, 187, 0.2)" />
-                                        </radialGradient>
-                                      </defs>
-                                      <circle cx="24" cy="24" r="20" fill="url(#gradient-478)" />
-                                    </svg>
-                                  );
-
-                                case 'Coherent Breathing':
-                                  return (
-                                    <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" style={{ border: '1px solid #666', borderRadius: '50%' }}>
-                                      <defs>
-                                        <radialGradient id="gradient-coherent">
-                                          <stop offset="0%" stopColor="rgba(255, 230, 230, 0.8)" />
-                                          <stop offset="100%" stopColor="rgba(246, 208, 234, 1)" />
-                                        </radialGradient>
-                                      </defs>
-                                      <circle cx="24" cy="24" r="20" fill="url(#gradient-coherent)" />
-                                    </svg>
-                                  );
-
-                                case 'Physiological Sigh':
-                                  return (
-                                    <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" style={{ border: '1px solid #666', borderRadius: '50%' }}>
-                                      <defs>
-                                        <radialGradient id="gradient-physio-outer">
-                                          <stop offset="0%" stopColor="rgba(255, 230, 230, 0.6)" />
-                                          <stop offset="100%" stopColor="rgba(246, 208, 234, 0.8)" />
-                                        </radialGradient>
-                                        <radialGradient id="gradient-physio-inner">
-                                          <stop offset="0%" stopColor="rgba(173, 136, 198, 1)" />
-                                          <stop offset="100%" stopColor="rgba(116, 105, 182, 0.9)" />
-                                        </radialGradient>
-                                      </defs>
-                                      <circle cx="24" cy="24" r="20" fill="url(#gradient-physio-outer)" />
-                                      <circle cx="24" cy="24" r="14" fill="url(#gradient-physio-inner)" />
-                                    </svg>
-                                  );
-
-                                case 'Alternate Nostril':
-                                  return (
-                                    <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" style={{ border: '1px solid #666', borderRadius: '4px' }}>
-                                      <defs>
-                                        <linearGradient id="gradient-nostril" x1="0%" y1="100%" x2="0%" y2="0%">
-                                          <stop offset="0%" stopColor="#7469B6" />
-                                          <stop offset="50%" stopColor="#AD88C6" />
-                                          <stop offset="100%" stopColor="#FFE6E6" />
-                                        </linearGradient>
-                                      </defs>
-                                      <rect x="9" y="8" width="13" height="32" rx="2" fill="url(#gradient-nostril)" stroke="#4B5563" strokeWidth="1" />
-                                      <rect x="26" y="8" width="13" height="32" rx="2" fill="none" stroke="#4B5563" strokeWidth="1" />
-                                    </svg>
-                                  );
-
-                                case 'Humming Bee':
-                                  return (
-                                    <svg width={iconSize} height={iconSize} viewBox="0 0 48 48" style={{ border: '1px solid #666', borderRadius: '50%' }}>
-                                      <defs>
-                                        <radialGradient id="gradient-humming">
-                                          <stop offset="0%" stopColor="rgba(225, 175, 209, 1)" />
-                                          <stop offset="100%" stopColor="rgba(225, 175, 209, 0.3)" />
-                                        </radialGradient>
-                                      </defs>
-                                      <circle cx="24" cy="24" r="20" fill="url(#gradient-humming)" />
-                                      {/* Vibration lines - 3 parallel vertical lines, middle longest */}
-                                      <line x1="20" y1="20" x2="20" y2="28" stroke="#7469B6" strokeWidth="2.5" opacity="1" strokeLinecap="round" />
-                                      <line x1="24" y1="17" x2="24" y2="31" stroke="#7469B6" strokeWidth="2.5" opacity="1" strokeLinecap="round" />
-                                      <line x1="28" y1="20" x2="28" y2="28" stroke="#7469B6" strokeWidth="2.5" opacity="1" strokeLinecap="round" />
-                                    </svg>
-                                  );
-
-                                default:
-                                  return null;
-                              }
-                            };
-
-                            return (
-                              <button
-                                key={track.id}
-                                onClick={() => {
-                                  setSelectedExercise(track);
-                                  setShowingInfo(true);
-                                }}
-                                className="flex flex-row items-center justify-between p-4 transition-all hover:brightness-110 active:brightness-90"
-                                style={{
-                                  borderRadius: '13px',
-                                  background: '#333',
-                                  boxShadow: '-6px -6px 16px 0 rgba(60, 60, 60, 0.5), 6px 6px 16px 0 rgba(0, 0, 0, 0.8)'
+                                  display: 'flex',
+                                  width: '200px',
+                                  height: '59px',
+                                  padding: '12px 32px 11px 32px',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  borderRadius: '27px',
+                                  background: '#7469B6',
+                                  boxShadow: 'none',
+                                  color: '#FFFFFF'
                                 }}
                               >
-                                {/* Left Content */}
-                                <div className="flex flex-col items-start gap-2 flex-1">
-                                  {/* Exercise Name */}
-                                  <span className="text-base font-bold text-white text-left leading-tight">
-                                    {track.name}
-                                  </span>
-
-                                  {/* Difficulty Indicator */}
-                                  <DifficultyIndicator level={getDifficultyLevel(track.name)} />
-
-                                  {/* Best For */}
-                                  <p className="text-sm text-gray-300 text-left">
-                                    {metadata.bestFor}
-                                  </p>
-                                </div>
-
-                                {/* Right: Preview Icon */}
-                                <div className="ml-4 flex-shrink-0">
-                                  {renderExerciseIcon(track.name)}
-                                </div>
+                                Done
                               </button>
-                            );
-                          })}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    ) : (
-                      /* Original List View for Focus/Calm */
-                      <div className="overflow-y-auto flex-1 min-h-0 hide-scrollbar">
-                        {currentTracks.map((track, index) => (
-                        <div
-                          key={track.id}
-                          className="w-full flex items-start py-4 border-b border-gray-600 hover:bg-gray-700 hover:opacity-70 transition-all group relative"
-                      >
-                        <button
-                          onClick={() => {
-                            if (selectedOption === 'breathe') {
-                              // Show info screen for breathing exercises
-                              setSelectedExercise(track);
-                              setShowingInfo(true);
-                            }
-                          }}
-                          className="text-left flex-1 flex items-start"
-                        >
-                          <div className="flex-1">
-                            <p className="text-base font-semibold text-white">{track.name}</p>
-                          </div>
-
-                          {/* Right Side - Duration or Chevron */}
-                          <span className="text-sm text-gray-500">{track.duration}</span>
-                        </button>
-                      </div>
-                        ))}
-                      </div>
                     )}
-                  </div>
-                )}
               </div>
 
               {/* Player Controls */}
