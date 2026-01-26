@@ -90,7 +90,7 @@ export default function Home() {
   const [showMusicSheet, setShowMusicSheet] = useState(false); // Track music selection bottom sheet visibility
   const [selectedMusic, setSelectedMusic] = useState(null); // Track selected music track (null = no music)
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false); // Track if description is expanded
-  const [isDarkMode, setIsDarkMode] = useState(true); // Track light/dark mode (default: dark)
+  const [isDarkMode, setIsDarkMode] = useState(false); // Track light/dark mode (default: light)
   const [selectedTab, setSelectedTab] = useState(null); // Track selected tab in info screen: 'customize', 'start', 'sound'
 
   // Track exercise completion (only once per completion)
@@ -606,7 +606,7 @@ export default function Home() {
       const userId = currentUser?.uid;
       await trackSession('end', userId);
       await logout();
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       console.error('Failed to log out:', error);
     }
@@ -1403,13 +1403,13 @@ export default function Home() {
                           <div
                             className="flex items-center w-full"
                             style={{
-                                height: '80px',
-                                padding: '0 10px',
-                                borderRadius: '10px',
-                                background: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                                boxShadow: '0 4px 12px 0 rgba(13, 10, 44, 0.06)'
-                              }}
-                            >
+                              height: '80px',
+                              padding: '0 10px',
+                              borderRadius: '10px',
+                              background: isDarkMode ? '#2B2B2B' : '#FFFFFF',
+                              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)'
+                            }}
+                          >
                             {/* Customization Button */}
                             <button
                               onClick={() => {
@@ -1441,7 +1441,7 @@ export default function Home() {
                                 <path d="M59 93.4167H98.3333" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
                                 <path d="M19.6667 93.4176L44.2501 93.4167" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
                               </svg>
-                              <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Customize</span>
+                              <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Personalize</span>
                             </button>
 
                             {/* Divider */}
@@ -1802,12 +1802,12 @@ export default function Home() {
                                 color: isDarkMode ? '#FFFFFF' : '#000000'
                               }}
                             >
-                              Select Music
+                              Select sound type
                             </h2>
 
                             {/* Music Options */}
                             <div className="space-y-3 mb-6">
-                              {/* No Music Option */}
+                              {/* No Sound Option */}
                               <button
                                 onClick={() => {
                                   setSelectedMusic(null);
@@ -1835,7 +1835,7 @@ export default function Home() {
                               >
                                 <div className="flex items-center justify-between">
                                   <div>
-                                    <p className="font-semibold">No Music</p>
+                                    <p className="font-semibold">No Sound</p>
                                     <p className="text-sm opacity-70">Exercise in silence</p>
                                   </div>
                                   {selectedMusic === null && (
@@ -2966,7 +2966,7 @@ export default function Home() {
                             padding: '0 10px',
                             borderRadius: '10px',
                             background: isDarkMode ? '#2B2B2B' : '#FFFFFF',
-                            boxShadow: '0 4px 12px 0 rgba(13, 10, 44, 0.06)'
+                            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)'
                           }}
                         >
                           {/* Customization Button */}
@@ -3005,7 +3005,7 @@ export default function Home() {
                               <path d="M59 93.4167H98.3333" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
                               <path d="M19.6667 93.4176L44.2501 93.4167" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
                             </svg>
-                            <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Customize</span>
+                            <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Personalize</span>
                           </button>
 
                           {/* Divider */}
@@ -3146,12 +3146,12 @@ export default function Home() {
                                 color: isDarkMode ? '#FFFFFF' : '#000000'
                               }}
                             >
-                              Select Music
+                              Select sound type
                             </h2>
 
                             {/* Music Options */}
                             <div className="space-y-3 mb-6">
-                              {/* No Music Option */}
+                              {/* No Sound Option */}
                               <button
                                 onClick={() => {
                                   setSelectedMusic(null);
@@ -3179,7 +3179,7 @@ export default function Home() {
                               >
                                 <div className="flex items-center justify-between">
                                   <div>
-                                    <p className="font-semibold">No Music</p>
+                                    <p className="font-semibold">No Sound</p>
                                     <p className="text-sm opacity-70">Exercise in silence</p>
                                   </div>
                                   {selectedMusic === null && (
@@ -3577,7 +3577,7 @@ export default function Home() {
                             <div className="w-12 h-1 rounded-full mx-auto mb-6" style={{ background: '#4B5563' }}></div>
 
                             {/* Section Title */}
-                            <h2 className="text-2xl font-bold mb-6" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>Personalize</h2>
+                            <h2 className="text-2xl font-bold mb-6" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>Personalize your experience</h2>
 
                             {/* Cycles Slider */}
                             <div className="mb-8">

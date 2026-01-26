@@ -395,10 +395,10 @@ export default function Marketing() {
 
                     {/* Sound Options */}
                     <div className="space-y-2">
-                      {/* No Music - Selected */}
+                      {/* No Sound - Selected */}
                       <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-xl border-2 border-purple-400">
                         <div className="flex-1">
-                          <div className="text-sm font-semibold text-gray-900">No Music</div>
+                          <div className="text-sm font-semibold text-gray-900">No Sound</div>
                           <div className="text-xs text-gray-600">Silent practice</div>
                         </div>
                         <div className="w-5 h-5 rounded-full bg-purple-600 flex items-center justify-center">
@@ -593,7 +593,7 @@ export default function Marketing() {
                     <div className="p-6 space-y-2">
                       <div className="flex items-center gap-4 p-5 bg-purple-50 rounded-2xl border-2 border-purple-400">
                         <div className="flex-1">
-                          <div className="font-semibold text-gray-900">No Music</div>
+                          <div className="font-semibold text-gray-900">No Sound</div>
                           <div className="text-sm text-gray-600">Silent practice</div>
                         </div>
                         <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0">
