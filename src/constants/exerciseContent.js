@@ -1,6 +1,6 @@
 export const exerciseContent = {
-  'Box Breathing (4-4-4-4)': {
-    description: 'Box breathing (4-4-4-4) is a simple, effective relaxation technique where you inhale for 4 counts, hold for 4, exhale for 4, and hold again for 4, creating a pattern to calm the nervous system, reduce stress, and improve focus for important moments.',
+  'Box Breathing': {
+    description: 'Box breathing is a simple, effective relaxation technique where you inhale for 4 counts, hold for 4, exhale for 4, and hold again for 4, creating a pattern to calm the nervous system, reduce stress, and improve focus for important moments.',
     sectionTitle: 'Tips',
     sectionContent: [
       { label: 'Duration:', text: 'If 4 seconds feels too long, start with a 2 or 3-second count and gradually increase it as you become more comfortable.' },

@@ -1,6 +1,6 @@
 export const getDifficultyLevel = (exerciseName) => {
   const difficultyMap = {
-    'Box Breathing (4-4-4-4)': 2,
+    'Box Breathing': 2,
     '4-7-8 Breathing': 3,
     'Coherent Breathing': 3,
     'Physiological Sigh': 2.5,

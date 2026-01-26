@@ -1,6 +1,6 @@
 export const getExerciseMetadata = (exerciseName) => {
   const metadataMap = {
-    'Box Breathing (4-4-4-4)': { bestFor: 'Stress & Focus', idealSession: '3–10 min' },
+    'Box Breathing': { bestFor: 'Stress & Focus', idealSession: '3–10 min' },
     '4-7-8 Breathing': { bestFor: 'Anxiety & Sleep', idealSession: '2–5 min' },
     'Coherent Breathing': { bestFor: 'HRV & Relaxation', idealSession: '10–20 min' },
     'Physiological Sigh': { bestFor: 'Acute Stress Relief', idealSession: '1–3 min' },

@@ -10,7 +10,7 @@ export const tracksByOption = {
     { id: 6, name: 'Gentle Waves', duration: '8:05' }
   ],
   breathe: [
-    { id: 7, name: 'Box Breathing (4-4-4-4)', duration: '5:00' },
+    { id: 7, name: 'Box Breathing', duration: '5:00' },
     { id: 8, name: '4-7-8 Breathing', duration: '4:30' },
     { id: 11, name: 'Alternate Nostril', duration: '5:30' },
     { id: 9, name: 'Coherent Breathing', duration: '6:00' },
