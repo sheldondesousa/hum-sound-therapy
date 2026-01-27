@@ -163,9 +163,9 @@ export default function Home() {
       setCountdown(null);
       setIsExercising(true);
       setIsPaused(false);
-      setBreathingPhase('inhale');
-      // Box Breathing starts at timer 1, all other exercises start at 0
-      setTimer(selectedExercise?.name === 'Box Breathing' ? 1 : 0);
+      // Box Breathing starts with initialHighlight phase, all other exercises start at inhale
+      setBreathingPhase(selectedExercise?.name === 'Box Breathing' ? 'initialHighlight' : 'inhale');
+      setTimer(0);
       setCurrentCycle(0);
       return;
     }
@@ -240,11 +240,12 @@ export default function Home() {
       else intervalDuration = 100; // 100ms for smooth transitions
     } else {
       // Box breathing: use dynamic interval for phases and transitions
+      // initialHighlight and highlight phases: 500ms to show square highlighted before counting
       // Main phases (inhale, hold1, exhale, hold2): 1000ms interval to show 1→2→3→4 (4 counts) in exactly 4 seconds
-      // Transition phases: 300ms gap between main phases
-      if (breathingPhase === 'transitionAfterInhale' || breathingPhase === 'transitionAfterHold1' ||
-          breathingPhase === 'transitionAfterExhale' || breathingPhase === 'transitionAfterHold2') {
-        intervalDuration = 300; // 300ms transition gap
+      if (breathingPhase === 'initialHighlight' || breathingPhase === 'highlightInhale' ||
+          breathingPhase === 'highlightHold1' || breathingPhase === 'highlightExhale' ||
+          breathingPhase === 'highlightHold2') {
+        intervalDuration = 500; // 500ms to highlight square before counting
       } else {
         intervalDuration = 1000; // 1000ms intervals for main phases (1→2→3→4)
       }
@@ -453,46 +454,54 @@ export default function Home() {
             }
           }
         } else {
-          // Box Breathing pattern (4-4-4-4) - each phase counts 1→2→3→4 (4 seconds at 1s intervals)
-          if (breathingPhase === 'inhale') {
+          // Box Breathing pattern (4-4-4-4) - highlight square first, then count 1→2→3→4
+          if (breathingPhase === 'initialHighlight') {
+            // 300ms pause after countdown, highlight inhale square
+            setBreathingPhase('highlightInhale');
+            return 0; // Keep at 0 during highlight
+          } else if (breathingPhase === 'highlightInhale') {
+            // 300ms highlight, then start counting
+            setBreathingPhase('inhale');
+            return 1; // Start counting at 1
+          } else if (breathingPhase === 'inhale') {
             // INHALE: 1→2→3→4 (4 seconds total, 4 counts × 1000ms)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
-              // Timer reached 4, transition to hold1 with 300ms gap
-              setBreathingPhase('transitionAfterInhale');
-              return 4; // Keep showing 4 during transition
+              // Timer reached 4, highlight hold1 square
+              setBreathingPhase('highlightHold1');
+              return 0; // Reset to 0 for highlight
             }
-          } else if (breathingPhase === 'transitionAfterInhale') {
-            // 300ms transition gap, then move to hold1
+          } else if (breathingPhase === 'highlightHold1') {
+            // 300ms highlight, then start counting
             setBreathingPhase('hold1');
-            return 1; // Start hold1 at 1
+            return 1; // Start counting at 1
           } else if (breathingPhase === 'hold1') {
             // HOLD1: 1→2→3→4 (4 seconds total, 4 counts × 1000ms)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
-              // Timer reached 4, transition to exhale with 300ms gap
-              setBreathingPhase('transitionAfterHold1');
-              return 4; // Keep showing 4 during transition
+              // Timer reached 4, highlight exhale square
+              setBreathingPhase('highlightExhale');
+              return 0; // Reset to 0 for highlight
             }
-          } else if (breathingPhase === 'transitionAfterHold1') {
-            // 300ms transition gap, then move to exhale
+          } else if (breathingPhase === 'highlightExhale') {
+            // 300ms highlight, then start counting
             setBreathingPhase('exhale');
-            return 1; // Start exhale at 1
+            return 1; // Start counting at 1
           } else if (breathingPhase === 'exhale') {
             // EXHALE: 1→2→3→4 (4 seconds total, 4 counts × 1000ms)
             if (prevTimer < 4) {
               return prevTimer + 1;
             } else {
-              // Timer reached 4, transition to hold2 with 300ms gap
-              setBreathingPhase('transitionAfterExhale');
-              return 4; // Keep showing 4 during transition
+              // Timer reached 4, highlight hold2 square
+              setBreathingPhase('highlightHold2');
+              return 0; // Reset to 0 for highlight
             }
-          } else if (breathingPhase === 'transitionAfterExhale') {
-            // 300ms transition gap, then move to hold2
+          } else if (breathingPhase === 'highlightHold2') {
+            // 300ms highlight, then start counting
             setBreathingPhase('hold2');
-            return 1; // Start hold2 at 1
+            return 1; // Start counting at 1
           } else if (breathingPhase === 'hold2') {
             // HOLD2: 1→2→3→4 (4 seconds total, 4 counts × 1000ms)
             if (prevTimer < 4) {
@@ -506,18 +515,14 @@ export default function Home() {
                 setExerciseCompleted(true);
                 setCurrentCycle(0);
                 setBreathingPhase('inhale');
-                return 1;
+                return 0;
               } else {
-                // Continue to next cycle with 300ms transition gap
-                setBreathingPhase('transitionAfterHold2');
-                return 4; // Keep showing 4 during transition
+                // Continue to next cycle, highlight inhale square
+                setCurrentCycle(nextCycle);
+                setBreathingPhase('highlightInhale');
+                return 0; // Reset to 0 for highlight
               }
             }
-          } else if (breathingPhase === 'transitionAfterHold2') {
-            // 300ms transition gap, then move to next cycle's inhale
-            setCurrentCycle(currentCycle + 1);
-            setBreathingPhase('inhale');
-            return 1; // Start next inhale at 1
           }
         }
         return prevTimer;
@@ -2080,18 +2085,24 @@ export default function Home() {
                       {/* Timer Display - Show during all phases for Box Breathing, INHALE and EXHALE for others */}
                       {!exerciseCompleted && isExercising && countdown === null ? (
                         selectedExercise?.name === 'Box Breathing' ? (
-                          /* Box Breathing: Show timer for ALL phases including HOLD */
-                          <div className="text-center">
-                            <div
-                              className="font-bold"
-                              style={{
-                                fontSize: '4.32rem',
-                                color: isDarkMode ? '#FFFFFF' : '#000000'
-                              }}
-                            >
-                              {timer}
+                          /* Box Breathing: Show timer for ALL phases including HOLD, but hide during highlight phases */
+                          (breathingPhase === 'initialHighlight' || breathingPhase === 'highlightInhale' ||
+                           breathingPhase === 'highlightHold1' || breathingPhase === 'highlightExhale' ||
+                           breathingPhase === 'highlightHold2') ? (
+                            <div className="text-center" style={{ minHeight: '4.32rem' }}></div>
+                          ) : (
+                            <div className="text-center">
+                              <div
+                                className="font-bold"
+                                style={{
+                                  fontSize: '4.32rem',
+                                  color: isDarkMode ? '#FFFFFF' : '#000000'
+                                }}
+                              >
+                                {timer}
+                              </div>
                             </div>
-                          </div>
+                          )
                         ) : (breathingPhase === 'inhale' || breathingPhase === 'exhale') ? (
                           /* Other exercises: Show timer only during INHALE and EXHALE */
                           <div className="text-center">
@@ -2206,15 +2217,15 @@ export default function Home() {
                                   <div
                                     className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
                                     style={{
-                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'inhale') ? '#746996' : (isDarkMode ? '#444' : '#D0D0D0'),
+                                      backgroundColor: (isExercising && countdown === null && (breathingPhase === 'inhale' || breathingPhase === 'highlightInhale' || breathingPhase === 'initialHighlight')) ? '#746996' : (isDarkMode ? '#444' : '#D0D0D0'),
                                       width: '148px',
                                       height: '148px'
                                     }}
                                   >
-                                    <div className={`text-sm font-semibold mb-1 text-center leading-tight ${(isExercising && countdown === null && breathingPhase === 'inhale') ? 'text-white' : (isDarkMode ? 'text-gray-400' : 'text-gray-600')}`}>
+                                    <div className={`text-sm font-semibold mb-1 text-center leading-tight ${(isExercising && countdown === null && (breathingPhase === 'inhale' || breathingPhase === 'highlightInhale' || breathingPhase === 'initialHighlight')) ? 'text-white' : (isDarkMode ? 'text-gray-400' : 'text-gray-600')}`}>
                                       Breathe In
                                     </div>
-                                    <div className={`text-2xl text-center ${(isExercising && countdown === null && breathingPhase === 'inhale') ? 'text-white' : (isDarkMode ? 'text-gray-500' : 'text-gray-700')}`}>
+                                    <div className={`text-2xl text-center ${(isExercising && countdown === null && (breathingPhase === 'inhale' || breathingPhase === 'highlightInhale' || breathingPhase === 'initialHighlight')) ? 'text-white' : (isDarkMode ? 'text-gray-500' : 'text-gray-700')}`}>
                                       ↑
                                     </div>
                                   </div>
@@ -2223,16 +2234,16 @@ export default function Home() {
                                   <div
                                     className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
                                     style={{
-                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'hold1') ? '#F6D0EA' : (isDarkMode ? '#444' : '#D0D0D0'),
+                                      backgroundColor: (isExercising && countdown === null && (breathingPhase === 'hold1' || breathingPhase === 'highlightHold1')) ? '#F6D0EA' : (isDarkMode ? '#444' : '#D0D0D0'),
                                       width: '148px',
                                       height: '148px'
                                     }}
                                   >
-                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && breathingPhase === 'hold1') ? 'text-gray-800' : (isDarkMode ? 'text-gray-400' : 'text-gray-600')}`}>
+                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && (breathingPhase === 'hold1' || breathingPhase === 'highlightHold1')) ? 'text-gray-800' : (isDarkMode ? 'text-gray-400' : 'text-gray-600')}`}>
                                       Hold Breath
                                     </div>
                                     <svg
-                                      className={`${(isExercising && countdown === null && breathingPhase === 'hold1') ? 'text-gray-800' : (isDarkMode ? 'text-gray-500' : 'text-gray-700')}`}
+                                      className={`${(isExercising && countdown === null && (breathingPhase === 'hold1' || breathingPhase === 'highlightHold1')) ? 'text-gray-800' : (isDarkMode ? 'text-gray-500' : 'text-gray-700')}`}
                                       width="24"
                                       height="24"
                                       viewBox="0 0 24 24"
@@ -2250,16 +2261,16 @@ export default function Home() {
                                   <div
                                     className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
                                     style={{
-                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'hold2') ? '#F6D0EA' : (isDarkMode ? '#444' : '#D0D0D0'),
+                                      backgroundColor: (isExercising && countdown === null && (breathingPhase === 'hold2' || breathingPhase === 'highlightHold2')) ? '#F6D0EA' : (isDarkMode ? '#444' : '#D0D0D0'),
                                       width: '148px',
                                       height: '148px'
                                     }}
                                   >
-                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && breathingPhase === 'hold2') ? 'text-gray-800' : (isDarkMode ? 'text-gray-400' : 'text-gray-600')}`}>
+                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && (breathingPhase === 'hold2' || breathingPhase === 'highlightHold2')) ? 'text-gray-800' : (isDarkMode ? 'text-gray-400' : 'text-gray-600')}`}>
                                       Hold Breath
                                     </div>
                                     <svg
-                                      className={`${(isExercising && countdown === null && breathingPhase === 'hold2') ? 'text-gray-800' : (isDarkMode ? 'text-gray-500' : 'text-gray-700')}`}
+                                      className={`${(isExercising && countdown === null && (breathingPhase === 'hold2' || breathingPhase === 'highlightHold2')) ? 'text-gray-800' : (isDarkMode ? 'text-gray-500' : 'text-gray-700')}`}
                                       width="24"
                                       height="24"
                                       viewBox="0 0 24 24"
@@ -2274,15 +2285,15 @@ export default function Home() {
                                   <div
                                     className="flex flex-col items-center justify-center rounded-xl transition-all duration-300"
                                     style={{
-                                      backgroundColor: (isExercising && countdown === null && breathingPhase === 'exhale') ? '#AD8FC6' : (isDarkMode ? '#444' : '#D0D0D0'),
+                                      backgroundColor: (isExercising && countdown === null && (breathingPhase === 'exhale' || breathingPhase === 'highlightExhale')) ? '#AD8FC6' : (isDarkMode ? '#444' : '#D0D0D0'),
                                       width: '148px',
                                       height: '148px'
                                     }}
                                   >
-                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && breathingPhase === 'exhale') ? 'text-white' : (isDarkMode ? 'text-gray-400' : 'text-gray-600')}`}>
+                                    <div className={`text-sm font-semibold mb-1 text-center ${(isExercising && countdown === null && (breathingPhase === 'exhale' || breathingPhase === 'highlightExhale')) ? 'text-white' : (isDarkMode ? 'text-gray-400' : 'text-gray-600')}`}>
                                       Breathe Out
                                     </div>
-                                    <div className={`text-2xl text-center ${(isExercising && countdown === null && breathingPhase === 'exhale') ? 'text-white' : (isDarkMode ? 'text-gray-500' : 'text-gray-700')}`}>
+                                    <div className={`text-2xl text-center ${(isExercising && countdown === null && (breathingPhase === 'exhale' || breathingPhase === 'highlightExhale')) ? 'text-white' : (isDarkMode ? 'text-gray-500' : 'text-gray-700')}`}>
                                       ↓
                                     </div>
                                   </div>
