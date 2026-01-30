@@ -11,6 +11,8 @@ import { getExerciseMetadata } from '../utils/exerciseMetadata';
 import { generateWavePath478, getDotPosition478 } from '../utils/wavePathGenerator';
 import { useCarousel } from '../hooks/useCarousel';
 import { useBreathingAnimation } from '../hooks/useBreathingAnimation';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
 export default function Home() {
   const { logout, currentUser } = useAuth();
@@ -89,9 +91,92 @@ export default function Home() {
   const [alternateNostrilBreathTime, setAlternateNostrilBreathTime] = useState(5); // Breath time for Alternate Nostril (default 5s)
   const [showMusicSheet, setShowMusicSheet] = useState(false); // Track music selection bottom sheet visibility
   const [selectedMusic, setSelectedMusic] = useState(null); // Track selected music track (null = no music)
+  const [tempSelectedMusic, setTempSelectedMusic] = useState(null); // Temporary selection before Done is clicked
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false); // Track if description is expanded
   const [isDarkMode, setIsDarkMode] = useState(false); // Track light/dark mode (default: light)
   const [selectedTab, setSelectedTab] = useState(null); // Track selected tab in info screen: 'customize', 'start', 'sound'
+  const [showProfile, setShowProfile] = useState(false); // Track profile page visibility
+  const [audioGuidance, setAudioGuidance] = useState(false); // Track audio guidance toggle
+  const [exerciseStats, setExerciseStats] = useState({}); // Exercise-specific analytics
+  const [exerciseStatsLoading, setExerciseStatsLoading] = useState(false); // Loading state for exercise stats
+
+  // Exercise list for profile analytics
+  const exerciseList = [
+    'Box Breathing',
+    '4-7-8 Breathing',
+    'Coherent Breathing',
+    'Physiological Sigh',
+    'Alternate Nostril',
+    'Humming Bee'
+  ];
+
+  // Fetch exercise stats when profile is opened
+  useEffect(() => {
+    if (!showProfile || !currentUser?.uid) return;
+
+    const fetchExerciseStats = async () => {
+      setExerciseStatsLoading(true);
+      try {
+        const eventsRef = collection(db, 'analytics_events');
+        const q = query(eventsRef, where('userId', '==', currentUser.uid));
+        const querySnapshot = await getDocs(q);
+
+        const events = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          events.push({
+            ...data,
+            timestamp: data.timestamp?.toDate() || new Date()
+          });
+        });
+
+        // Process exercise stats
+        const stats = {};
+        exerciseList.forEach(exercise => {
+          const exerciseEvents = events.filter(
+            e => e.eventType === 'breathing_exercise' &&
+                 (e.exerciseName === exercise || e.exercise === exercise)
+          );
+
+          const startedCount = exerciseEvents.filter(e => e.action === 'start' || e.action === 'view_info').length;
+          const completedCount = exerciseEvents.filter(e => e.action === 'complete').length;
+
+          // Calculate total cycles completed
+          const completedEvents = exerciseEvents.filter(e => e.action === 'complete');
+          const totalCycles = completedEvents.reduce((sum, e) => sum + (e.completedCycles || e.totalCycles || 0), 0);
+
+          // Calculate unique days attempted
+          const uniqueDays = new Set();
+          exerciseEvents.forEach(e => {
+            const dateStr = e.timestamp.toISOString().split('T')[0];
+            uniqueDays.add(dateStr);
+          });
+
+          // Calculate last attempted date
+          let lastAttempted = null;
+          if (exerciseEvents.length > 0) {
+            const sortedEvents = exerciseEvents.sort((a, b) => b.timestamp - a.timestamp);
+            lastAttempted = sortedEvents[0].timestamp;
+          }
+
+          stats[exercise] = {
+            started: startedCount,
+            completed: completedCount,
+            totalCycles,
+            lastAttempted
+          };
+        });
+
+        setExerciseStats(stats);
+        setExerciseStatsLoading(false);
+      } catch (error) {
+        console.error('Error fetching exercise stats:', error);
+        setExerciseStatsLoading(false);
+      }
+    };
+
+    fetchExerciseStats();
+  }, [showProfile, currentUser]);
 
   // Track exercise completion (only once per completion)
   useEffect(() => {
@@ -844,7 +929,7 @@ export default function Home() {
               onClick={() => setCurrentView('about')}
               className={`block w-full text-left text-base text-black hover:opacity-70 transition-opacity py-6 border-b border-gray-300 ${currentView === 'about' ? 'font-bold' : ''}`}
             >
-              About Hum
+              About Hush
             </button>
             <button
               onClick={() => setCurrentView('support')}
@@ -941,7 +1026,7 @@ export default function Home() {
                   }}
                   className={`block w-full text-left text-base text-black hover:opacity-70 transition-opacity py-6 border-b border-gray-300 ${currentView === 'about' ? 'font-bold' : ''}`}
                 >
-                  About Hum
+                  About Hush
                 </button>
                 <button
                   onClick={() => {
@@ -1017,7 +1102,7 @@ export default function Home() {
           {/* Centered Container - Music Player */}
           <div className="flex items-center justify-center max-w-7xl">
             {currentView === 'about' ? (
-              /* About Hum Page */
+              /* About Hush Page */
               <div className="music-player-desktop music-player-frame bg-white border-2 border-white rounded-3xl p-8 flex flex-col w-full lg:flex-shrink-0 relative overflow-y-auto" style={{ maxHeight: '90vh' }}>
                 {/* Header with Back Button */}
                 <div className="flex items-center mb-6 pb-4 border-b border-gray-300">
@@ -1030,7 +1115,9 @@ export default function Home() {
                     </svg>
                     <span>Back</span>
                   </button>
-                  <h2 className="flex-1 text-center text-xl font-semibold text-black pr-12">About Hum</h2>
+                  <h2 className="flex-1 text-center text-xl font-semibold text-black pr-12 flex items-center justify-center">
+                    <img src="/Hush-Logo.png" alt="Hush Logo" className="inline-block" style={{ height: '1.25rem', width: 'auto' }} />
+                  </h2>
                 </div>
 
                 {/* Content */}
@@ -1113,12 +1200,20 @@ export default function Home() {
                   backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E")`
                 }}
               >
-              {/* Profile & Metrics Section - Show when on breathing exercises listing */}
-              {!(selectedOption === 'breathe' && selectedExercise) && selectedOption === 'breathe' && (
+              {/* Profile & Metrics Section - Show when on breathing exercises listing (not when profile view is open) */}
+              {!(selectedOption === 'breathe' && selectedExercise) && selectedOption === 'breathe' && !showProfile && (
                 <div className="mb-6 flex-shrink-0">
-                  {/* Profile Section */}
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
+                  {/* Profile Section - Hello text left, profile icon top right */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1 min-w-0">
+                      <h2 className="text-lg font-semibold truncate text-left" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>
+                        Hello {currentUser?.displayName?.split(' ')[0] || 'User'}!
+                      </h2>
+                    </div>
+                    <button
+                      onClick={() => setShowProfile(true)}
+                      className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0 cursor-pointer hover:ring-2 hover:ring-purple-400 transition-all"
+                    >
                       {currentUser?.photoURL && !profileImageError ? (
                         <img
                           key={currentUser.photoURL}
@@ -1134,12 +1229,7 @@ export default function Home() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                       )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h2 className="text-lg font-semibold truncate" style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}>
-                        Hello {currentUser?.displayName?.split(' ')[0] || 'User'}!
-                      </h2>
-                    </div>
+                    </button>
                   </div>
 
                   {/* Motivational Text */}
@@ -1241,9 +1331,128 @@ export default function Home() {
                 </div>
               )}
 
-              {/* Track List or Exercise Detail View */}
+              {/* Track List or Exercise Detail View or Profile View */}
               <div className={`flex-1 overflow-auto min-h-0 ${selectedOption === 'breathe' && selectedExercise ? 'flex' : 'flex flex-col'}`}>
-                {selectedOption === 'breathe' && selectedExercise && showingInfo ? (
+                {showProfile ? (
+                  /* Profile & Analytics View */
+                  <div className="flex flex-col h-full w-full">
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-2" style={{ marginBottom: '40px' }}>
+                      <button
+                        onClick={() => setShowProfile(false)}
+                        className="flex items-center gap-2 text-sm transition-colors"
+                        style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        <span>Back</span>
+                      </button>
+                      <div className="w-14"></div>
+                    </div>
+
+                    {/* Scrollable Content */}
+                    <div className="flex-1 overflow-y-auto px-2">
+                      {/* User Name */}
+                      <h1
+                        className="text-2xl font-bold mb-2"
+                        style={{ color: isDarkMode ? '#FFFFFF' : '#000000' }}
+                      >
+                        {currentUser?.displayName || 'User'}
+                      </h1>
+
+                      {/* Separator */}
+                      <div
+                        className="w-full h-0.5 mb-6 rounded-full"
+                        style={{
+                          background: 'linear-gradient(to right, #7469B6, #AD88C6, #E1AFD1, #F6D0EA, #FFE6E6)'
+                        }}
+                      />
+
+                      {/* Demographic Data */}
+                      <div className="mb-6">
+                        <div className="space-y-1 text-left">
+                          <div style={{ color: isDarkMode ? '#FFFFFF' : '#111827' }}>
+                            <span style={{ color: isDarkMode ? '#9CA3AF' : '#6B7280' }}>Age : </span>
+                            <span className="font-medium">32</span>
+                          </div>
+                          <div style={{ color: isDarkMode ? '#FFFFFF' : '#111827' }}>
+                            <span style={{ color: isDarkMode ? '#9CA3AF' : '#6B7280' }}>Gender : </span>
+                            <span className="font-medium">Male</span>
+                          </div>
+                          <div style={{ color: isDarkMode ? '#FFFFFF' : '#111827' }}>
+                            <span style={{ color: isDarkMode ? '#9CA3AF' : '#6B7280' }}>Location : </span>
+                            <span className="font-medium">India</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Exercise Analysis Sub-header */}
+                      <h2
+                        className="text-lg font-semibold mb-4"
+                        style={{ color: '#B57EDC' }}
+                      >
+                        Your Exercise Analysis
+                      </h2>
+
+                      {/* Exercise Stats */}
+                      {exerciseStatsLoading ? (
+                        <div className="text-center py-4" style={{ color: isDarkMode ? '#9CA3AF' : '#6B7280' }}>
+                          Loading analytics...
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {exerciseList.map((exercise, index) => {
+                            const stats = exerciseStats[exercise] || {
+                              started: 0,
+                              completed: 0,
+                              totalCycles: 0,
+                              daysAttempted: 0,
+                              longestStreak: 0
+                            };
+
+                            return (
+                              <div key={exercise}>
+                                <div
+                                  className="rounded-xl p-4"
+                                  style={{ backgroundColor: isDarkMode ? '#2B2B2B' : '#F3F4F6' }}
+                                >
+                                  <h3
+                                    className="font-semibold mb-3"
+                                    style={{ color: isDarkMode ? '#FFFFFF' : '#111827' }}
+                                  >
+                                    {exercise}
+                                  </h3>
+                                  <div className="space-y-1.5 text-sm">
+                                    <div className="flex justify-between">
+                                      <span style={{ color: isDarkMode ? '#9CA3AF' : '#6B7280' }}>Started / Completed</span>
+                                      <span style={{ color: isDarkMode ? '#FFFFFF' : '#111827' }}>{stats.started} / {stats.completed}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span style={{ color: isDarkMode ? '#9CA3AF' : '#6B7280' }}>Total Cycles</span>
+                                      <span style={{ color: isDarkMode ? '#FFFFFF' : '#111827' }}>{stats.totalCycles}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span style={{ color: isDarkMode ? '#9CA3AF' : '#6B7280' }}>Last Attempted</span>
+                                      <span style={{ color: isDarkMode ? '#FFFFFF' : '#111827' }}>{stats.lastAttempted ? `${String(stats.lastAttempted.getDate()).padStart(2, '0')}/${String(stats.lastAttempted.getMonth() + 1).padStart(2, '0')}/${String(stats.lastAttempted.getFullYear()).slice(-2)}` : 'DD/MM/YY'}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                {/* Small separator between exercises (except last one) */}
+                                {index < exerciseList.length - 1 && (
+                                  <div
+                                    className="h-px my-3"
+                                    style={{ backgroundColor: isDarkMode ? '#525252' : '#E5E7EB' }}
+                                  />
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : selectedOption === 'breathe' && selectedExercise && showingInfo ? (
                   /* Breathing Exercise Info Screen */
                   <div className="flex flex-col h-full w-full">
                     {/* Header */}
@@ -1496,6 +1705,7 @@ export default function Home() {
                             {/* Sound Button */}
                             <button
                               onClick={() => {
+                                setTempSelectedMusic(selectedMusic); // Initialize temp with current selection
                                 setShowMusicSheet(true);
                               }}
                               className="flex-1 flex flex-col items-center justify-end transition-all"
@@ -1516,7 +1726,7 @@ export default function Home() {
                               <svg width="24" height="24" viewBox="-2 -2 22 22" fill="none" style={{ flexShrink: 0 }}>
                                 <path d="M17.1884 9.09605C17.1884 8.98559 17.1884 8.87994 17.1836 8.76948C17.1355 7.29029 16.7513 5.89755 16.1078 4.67769C14.6382 1.88741 11.8287 0 8.59658 0C5.36446 0 2.55016 1.88741 1.08058 4.67769C0.437033 5.90235 0.0528329 7.29029 0.00480725 8.76948C4.69011e-06 8.87994 0 8.98559 0 9.09605V13.6201C0 15.6035 1.39754 17.2556 3.26574 17.6542C3.46744 17.8607 3.77482 18 4.12061 18C4.46639 18 4.77375 17.8655 4.97546 17.6542L4.98987 17.6398V9.60032H4.98506C4.78816 9.3842 4.47119 9.24013 4.1158 9.24013C3.76041 9.24013 3.44344 9.3842 3.24654 9.60032H3.24173C2.59819 9.73479 2.01228 10.0277 1.52242 10.4264C1.484 10.46 1.17182 10.7385 1.07577 10.8538V9.01441C1.07577 8.88474 1.18143 8.77428 1.3159 8.77428H1.32551H1.42155C1.58004 4.73052 4.73053 1.5032 8.58698 1.5032C12.4434 1.5032 15.5891 4.73052 15.7476 8.77428H15.8581C15.9925 8.77428 16.0982 8.88474 16.0982 9.01441V10.8538C16.0021 10.7385 15.8917 10.6281 15.7764 10.5368C15.7764 10.5368 15.69 10.46 15.6515 10.4264C15.1617 10.0277 14.5758 9.73959 13.9322 9.60032C13.7305 9.3842 13.4136 9.24013 13.0582 9.24013C12.7028 9.24013 12.3954 9.3746 12.1889 9.59552V17.6494C12.1889 17.6494 12.1937 17.6542 12.1985 17.6542C12.4002 17.8607 12.7124 18 13.0534 18C13.3943 18 13.7065 17.8655 13.9082 17.6542C15.7764 17.2556 17.174 15.6035 17.174 13.6201C17.174 13.3031 17.1355 12.9909 17.0683 12.6932C17.1355 12.9909 17.174 13.2983 17.174 13.6201V9.09605H17.1884Z" fill="currentColor"/>
                               </svg>
-                              <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Sound</span>
+                              <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Audio</span>
                             </button>
                           </div>
                         </div>
@@ -1556,15 +1766,13 @@ export default function Home() {
 
                                 return (
                                   <div key={index} className={`flex gap-3 ${index > 0 ? 'mt-4' : ''}`}>
-                                    {/* Checkbox with tick mark for Box Breathing */}
-                                    {selectedExercise?.name === 'Box Breathing' && (
-                                      <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
-                                        {/* African Violet circle */}
-                                        <circle cx="12" cy="12" r="9" stroke="#AD88C6" strokeWidth="2" fill="none" />
-                                        {/* Black checkmark */}
-                                        <path d="M9 12l2 2 4-4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                                      </svg>
-                                    )}
+                                    {/* Checkbox with tick mark for all exercises */}
+                                    <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
+                                      {/* African Violet circle */}
+                                      <circle cx="12" cy="12" r="9" stroke="#AD88C6" strokeWidth="2" fill="none" />
+                                      {/* Black checkmark */}
+                                      <path d="M9 12l2 2 4-4" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
                                     <p>
                                       {item.label && <strong>{item.label}</strong>}{' '}
                                       {selectedExercise?.name === 'Box Breathing' ? formatText(item.text) : item.text}
@@ -1575,22 +1783,23 @@ export default function Home() {
                             </div>
 
                             {/* Close Button */}
-                            <button
-                              onClick={() => setShowTipsSheet(false)}
-                              className="w-full text-base font-bold transition-all hover:brightness-110 active:brightness-90"
-                              style={{
-                                display: 'flex',
-                                height: '59px',
-                                padding: '12px 32px 11px 32px',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: '27px',
-                                background: 'rgba(255, 255, 255, 0.7)',
-                                color: '#333'
-                              }}
-                            >
-                              Close
-                            </button>
+                            <div className="flex justify-center">
+                              <button
+                                onClick={() => setShowTipsSheet(false)}
+                                className="text-sm font-semibold transition-all hover:brightness-110 active:brightness-90"
+                                style={{
+                                  display: 'flex',
+                                  padding: '8px 24px',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  borderRadius: '20px',
+                                  background: 'rgba(255, 255, 255, 0.7)',
+                                  color: '#333'
+                                }}
+                              >
+                                Close
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1634,22 +1843,23 @@ export default function Home() {
                             </div>
 
                             {/* Close Button */}
-                            <button
-                              onClick={() => setShowPreparationSheet(false)}
-                              className="w-full text-base font-bold transition-all hover:brightness-110 active:brightness-90"
-                              style={{
-                                display: 'flex',
-                                height: '59px',
-                                padding: '12px 32px 11px 32px',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: '27px',
-                                background: 'rgba(255, 255, 255, 0.7)',
-                                color: '#333'
-                              }}
-                            >
-                              Close
-                            </button>
+                            <div className="flex justify-center">
+                              <button
+                                onClick={() => setShowPreparationSheet(false)}
+                                className="text-sm font-semibold transition-all hover:brightness-110 active:brightness-90"
+                                style={{
+                                  display: 'flex',
+                                  padding: '8px 24px',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  borderRadius: '20px',
+                                  background: 'rgba(255, 255, 255, 0.7)',
+                                  color: '#333'
+                                }}
+                              >
+                                Close
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1693,22 +1903,23 @@ export default function Home() {
                             </div>
 
                             {/* Close Button */}
-                            <button
-                              onClick={() => setShowWhenToUseSheet(false)}
-                              className="w-full text-base font-bold transition-all hover:brightness-110 active:brightness-90"
-                              style={{
-                                display: 'flex',
-                                height: '59px',
-                                padding: '12px 32px 11px 32px',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: '27px',
-                                background: 'rgba(255, 255, 255, 0.7)',
-                                color: '#333'
-                              }}
-                            >
-                              Close
-                            </button>
+                            <div className="flex justify-center">
+                              <button
+                                onClick={() => setShowWhenToUseSheet(false)}
+                                className="text-sm font-semibold transition-all hover:brightness-110 active:brightness-90"
+                                style={{
+                                  display: 'flex',
+                                  padding: '8px 24px',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  borderRadius: '20px',
+                                  background: 'rgba(255, 255, 255, 0.7)',
+                                  color: '#333'
+                                }}
+                              >
+                                Close
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1756,22 +1967,23 @@ export default function Home() {
                             </div>
 
                             {/* Close Button */}
-                            <button
-                              onClick={() => setShowSafetySheet(false)}
-                              className="w-full text-base font-bold transition-all hover:brightness-110 active:brightness-90"
-                              style={{
-                                display: 'flex',
-                                height: '59px',
-                                padding: '12px 32px 11px 32px',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: '27px',
-                                background: 'rgba(255, 255, 255, 0.7)',
-                                color: '#333'
-                              }}
-                            >
-                              Close
-                            </button>
+                            <div className="flex justify-center">
+                              <button
+                                onClick={() => setShowSafetySheet(false)}
+                                className="text-sm font-semibold transition-all hover:brightness-110 active:brightness-90"
+                                style={{
+                                  display: 'flex',
+                                  padding: '8px 24px',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  borderRadius: '20px',
+                                  background: 'rgba(255, 255, 255, 0.7)',
+                                  color: '#333'
+                                }}
+                              >
+                                Close
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1794,56 +2006,74 @@ export default function Home() {
                           <div className="p-6">
                             {/* Sheet Handle */}
                             <div
-                              className="w-12 h-1 rounded-full mx-auto mb-6"
+                              className="w-12 h-1 rounded-full mx-auto mb-4"
                               style={{
                                 backgroundColor: isDarkMode ? '#555' : '#D1D5DB'
                               }}
                             ></div>
 
-                            {/* Title */}
-                            <h2
-                              className="text-2xl font-bold mb-4"
-                              style={{
-                                color: isDarkMode ? '#FFFFFF' : '#000000'
-                              }}
-                            >
-                              Select sound type
-                            </h2>
+                            {/* Title + Done Button */}
+                            <div className="flex items-center justify-between mb-6">
+                              <h2
+                                className="text-2xl font-bold"
+                                style={{
+                                  color: isDarkMode ? '#FFFFFF' : '#000000'
+                                }}
+                              >
+                                Select Audio
+                              </h2>
+                              <button
+                                onClick={() => {
+                                  setSelectedMusic(tempSelectedMusic);
+                                  setShowMusicSheet(false);
+                                }}
+                                className="text-sm font-semibold transition-all hover:brightness-110 active:brightness-90"
+                                style={{
+                                  display: 'flex',
+                                  padding: '8px 24px',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  borderRadius: '20px',
+                                  background: '#7469B6',
+                                  boxShadow: 'none',
+                                  color: '#FFFFFF'
+                                }}
+                              >
+                                Done
+                              </button>
+                            </div>
 
                             {/* Music Options */}
                             <div className="space-y-3 mb-6">
                               {/* No Sound Option */}
                               <button
-                                onClick={() => {
-                                  setSelectedMusic(null);
-                                  setShowMusicSheet(false);
-                                }}
+                                onClick={() => setTempSelectedMusic(null)}
                                 className="w-full p-4 rounded-xl text-left transition-all"
                                 style={{
-                                  backgroundColor: selectedMusic === null
+                                  backgroundColor: tempSelectedMusic === null
                                     ? '#AD88C6'
                                     : isDarkMode ? '#333' : '#F3F4F6',
-                                  color: selectedMusic === null
+                                  color: tempSelectedMusic === null
                                     ? '#FFFFFF'
                                     : isDarkMode ? '#FFFFFF' : '#1F2937'
                                 }}
                                 onMouseEnter={(e) => {
-                                  if (selectedMusic !== null) {
+                                  if (tempSelectedMusic !== null) {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
                                   }
                                 }}
                                 onMouseLeave={(e) => {
-                                  if (selectedMusic !== null) {
+                                  if (tempSelectedMusic !== null) {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
                                   }
                                 }}
                               >
                                 <div className="flex items-center justify-between">
                                   <div>
-                                    <p className="font-semibold">No Sound</p>
-                                    <p className="text-sm opacity-70">Exercise in silence</p>
+                                    <p className="font-semibold">Gentle Rainfall</p>
+                                    <p className="text-sm opacity-70">Rain in the city</p>
                                   </div>
-                                  {selectedMusic === null && (
+                                  {tempSelectedMusic === null && (
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                                     </svg>
@@ -1853,36 +2083,33 @@ export default function Home() {
 
                               {/* Nature Sounds */}
                               <button
-                                onClick={() => {
-                                  setSelectedMusic('nature');
-                                  setShowMusicSheet(false);
-                                }}
+                                onClick={() => setTempSelectedMusic('nature')}
                                 className="w-full p-4 rounded-xl text-left transition-all"
                                 style={{
-                                  backgroundColor: selectedMusic === 'nature'
+                                  backgroundColor: tempSelectedMusic === 'nature'
                                     ? '#AD88C6'
                                     : isDarkMode ? '#333' : '#F3F4F6',
-                                  color: selectedMusic === 'nature'
+                                  color: tempSelectedMusic === 'nature'
                                     ? '#FFFFFF'
                                     : isDarkMode ? '#FFFFFF' : '#1F2937'
                                 }}
                                 onMouseEnter={(e) => {
-                                  if (selectedMusic !== 'nature') {
+                                  if (tempSelectedMusic !== 'nature') {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
                                   }
                                 }}
                                 onMouseLeave={(e) => {
-                                  if (selectedMusic !== 'nature') {
+                                  if (tempSelectedMusic !== 'nature') {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
                                   }
                                 }}
                               >
                                 <div className="flex items-center justify-between">
                                   <div>
-                                    <p className="font-semibold">Nature Sounds</p>
-                                    <p className="text-sm opacity-70">Calm forest ambience</p>
+                                    <p className="font-semibold">Mystical Forest</p>
+                                    <p className="text-sm opacity-70">Calm tropical stillness</p>
                                   </div>
-                                  {selectedMusic === 'nature' && (
+                                  {tempSelectedMusic === 'nature' && (
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                                     </svg>
@@ -1892,26 +2119,23 @@ export default function Home() {
 
                               {/* Ambient Music */}
                               <button
-                                onClick={() => {
-                                  setSelectedMusic('ambient');
-                                  setShowMusicSheet(false);
-                                }}
+                                onClick={() => setTempSelectedMusic('ambient')}
                                 className="w-full p-4 rounded-xl text-left transition-all"
                                 style={{
-                                  backgroundColor: selectedMusic === 'ambient'
+                                  backgroundColor: tempSelectedMusic === 'ambient'
                                     ? '#AD88C6'
                                     : isDarkMode ? '#333' : '#F3F4F6',
-                                  color: selectedMusic === 'ambient'
+                                  color: tempSelectedMusic === 'ambient'
                                     ? '#FFFFFF'
                                     : isDarkMode ? '#FFFFFF' : '#1F2937'
                                 }}
                                 onMouseEnter={(e) => {
-                                  if (selectedMusic !== 'ambient') {
+                                  if (tempSelectedMusic !== 'ambient') {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
                                   }
                                 }}
                                 onMouseLeave={(e) => {
-                                  if (selectedMusic !== 'ambient') {
+                                  if (tempSelectedMusic !== 'ambient') {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
                                   }
                                 }}
@@ -1921,46 +2145,7 @@ export default function Home() {
                                     <p className="font-semibold">Ambient Music</p>
                                     <p className="text-sm opacity-70">Peaceful meditation tones</p>
                                   </div>
-                                  {selectedMusic === 'ambient' && (
-                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                                    </svg>
-                                  )}
-                                </div>
-                              </button>
-
-                              {/* Binaural Beats */}
-                              <button
-                                onClick={() => {
-                                  setSelectedMusic('binaural');
-                                  setShowMusicSheet(false);
-                                }}
-                                className="w-full p-4 rounded-xl text-left transition-all"
-                                style={{
-                                  backgroundColor: selectedMusic === 'binaural'
-                                    ? '#AD88C6'
-                                    : isDarkMode ? '#333' : '#F3F4F6',
-                                  color: selectedMusic === 'binaural'
-                                    ? '#FFFFFF'
-                                    : isDarkMode ? '#FFFFFF' : '#1F2937'
-                                }}
-                                onMouseEnter={(e) => {
-                                  if (selectedMusic !== 'binaural') {
-                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
-                                  }
-                                }}
-                                onMouseLeave={(e) => {
-                                  if (selectedMusic !== 'binaural') {
-                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
-                                  }
-                                }}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="font-semibold">Binaural Beats</p>
-                                    <p className="text-sm opacity-70">Focus and relaxation</p>
-                                  </div>
-                                  {selectedMusic === 'binaural' && (
+                                  {tempSelectedMusic === 'ambient' && (
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                                     </svg>
@@ -1970,26 +2155,23 @@ export default function Home() {
 
                               {/* Ocean Waves */}
                               <button
-                                onClick={() => {
-                                  setSelectedMusic('ocean');
-                                  setShowMusicSheet(false);
-                                }}
+                                onClick={() => setTempSelectedMusic('ocean')}
                                 className="w-full p-4 rounded-xl text-left transition-all"
                                 style={{
-                                  backgroundColor: selectedMusic === 'ocean'
+                                  backgroundColor: tempSelectedMusic === 'ocean'
                                     ? '#AD88C6'
                                     : isDarkMode ? '#333' : '#F3F4F6',
-                                  color: selectedMusic === 'ocean'
+                                  color: tempSelectedMusic === 'ocean'
                                     ? '#FFFFFF'
                                     : isDarkMode ? '#FFFFFF' : '#1F2937'
                                 }}
                                 onMouseEnter={(e) => {
-                                  if (selectedMusic !== 'ocean') {
+                                  if (tempSelectedMusic !== 'ocean') {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
                                   }
                                 }}
                                 onMouseLeave={(e) => {
-                                  if (selectedMusic !== 'ocean') {
+                                  if (tempSelectedMusic !== 'ocean') {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
                                   }
                                 }}
@@ -1997,9 +2179,9 @@ export default function Home() {
                                 <div className="flex items-center justify-between">
                                   <div>
                                     <p className="font-semibold">Ocean Waves</p>
-                                    <p className="text-sm opacity-70">Rhythmic wave sounds</p>
+                                    <p className="text-sm opacity-70">Soothing rhythmic waves</p>
                                   </div>
-                                  {selectedMusic === 'ocean' && (
+                                  {tempSelectedMusic === 'ocean' && (
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                                     </svg>
@@ -2008,25 +2190,18 @@ export default function Home() {
                               </button>
                             </div>
 
-                            {/* Done Button */}
-                            <div className="flex justify-center">
+                            {/* Audio Guidance Toggle */}
+                            <div className="flex items-center justify-center gap-2">
+                              <span className="text-sm font-medium" style={{ color: isDarkMode ? '#FFFFFF' : '#1F2937' }}>Audio Guidance</span>
                               <button
-                                onClick={() => setShowMusicSheet(false)}
-                                className="text-base font-bold transition-all hover:brightness-110 active:brightness-90"
-                                style={{
-                                  display: 'flex',
-                                  width: '200px',
-                                  height: '59px',
-                                  padding: '12px 32px 11px 32px',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  borderRadius: '27px',
-                                  background: '#7469B6',
-                                  boxShadow: 'none',
-                                  color: '#FFFFFF'
-                                }}
+                                onClick={() => setAudioGuidance(!audioGuidance)}
+                                className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                                style={{ backgroundColor: audioGuidance ? '#B57EDC' : isDarkMode ? '#4B5563' : '#D1D5DB' }}
                               >
-                                Done
+                                <span
+                                  className="inline-block h-4 w-4 rounded-full bg-white transition-transform"
+                                  style={{ transform: audioGuidance ? 'translateX(22px)' : 'translateX(4px)' }}
+                                />
                               </button>
                             </div>
                           </div>
@@ -2099,7 +2274,7 @@ export default function Home() {
                                   color: isDarkMode ? '#FFFFFF' : '#000000'
                                 }}
                               >
-                                {timer}
+                                {timer}s
                               </div>
                             </div>
                           )
@@ -3062,6 +3237,7 @@ export default function Home() {
                               if (isExercising && !isPaused) {
                                 setIsPaused(true);
                               }
+                              setTempSelectedMusic(selectedMusic); // Initialize temp with current selection
                               setShowMusicSheet(true);
                             }}
                             className="flex-1 flex flex-col items-center justify-end transition-all"
@@ -3082,7 +3258,7 @@ export default function Home() {
                             <svg width="24" height="24" viewBox="-2 -2 22 22" fill="none" style={{ flexShrink: 0 }}>
                               <path d="M17.1884 9.09605C17.1884 8.98559 17.1884 8.87994 17.1836 8.76948C17.1355 7.29029 16.7513 5.89755 16.1078 4.67769C14.6382 1.88741 11.8287 0 8.59658 0C5.36446 0 2.55016 1.88741 1.08058 4.67769C0.437033 5.90235 0.0528329 7.29029 0.00480725 8.76948C4.69011e-06 8.87994 0 8.98559 0 9.09605V13.6201C0 15.6035 1.39754 17.2556 3.26574 17.6542C3.46744 17.8607 3.77482 18 4.12061 18C4.46639 18 4.77375 17.8655 4.97546 17.6542L4.98987 17.6398V9.60032H4.98506C4.78816 9.3842 4.47119 9.24013 4.1158 9.24013C3.76041 9.24013 3.44344 9.3842 3.24654 9.60032H3.24173C2.59819 9.73479 2.01228 10.0277 1.52242 10.4264C1.484 10.46 1.17182 10.7385 1.07577 10.8538V9.01441C1.07577 8.88474 1.18143 8.77428 1.3159 8.77428H1.32551H1.42155C1.58004 4.73052 4.73053 1.5032 8.58698 1.5032C12.4434 1.5032 15.5891 4.73052 15.7476 8.77428H15.8581C15.9925 8.77428 16.0982 8.88474 16.0982 9.01441V10.8538C16.0021 10.7385 15.8917 10.6281 15.7764 10.5368C15.7764 10.5368 15.69 10.46 15.6515 10.4264C15.1617 10.0277 14.5758 9.73959 13.9322 9.60032C13.7305 9.3842 13.4136 9.24013 13.0582 9.24013C12.7028 9.24013 12.3954 9.3746 12.1889 9.59552V17.6494C12.1889 17.6494 12.1937 17.6542 12.1985 17.6542C12.4002 17.8607 12.7124 18 13.0534 18C13.3943 18 13.7065 17.8655 13.9082 17.6542C15.7764 17.2556 17.174 15.6035 17.174 13.6201C17.174 13.3031 17.1355 12.9909 17.0683 12.6932C17.1355 12.9909 17.174 13.2983 17.174 13.6201V9.09605H17.1884Z" fill="currentColor"/>
                             </svg>
-                            <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Sound</span>
+                            <span className="text-xs font-medium" style={{ flexShrink: 0 }}>Audio</span>
                           </button>
                         </div>
                       </div>
@@ -3172,56 +3348,74 @@ export default function Home() {
                           <div className="p-6">
                             {/* Sheet Handle */}
                             <div
-                              className="w-12 h-1 rounded-full mx-auto mb-6"
+                              className="w-12 h-1 rounded-full mx-auto mb-4"
                               style={{
                                 backgroundColor: isDarkMode ? '#555' : '#D1D5DB'
                               }}
                             ></div>
 
-                            {/* Title */}
-                            <h2
-                              className="text-2xl font-bold mb-4"
-                              style={{
-                                color: isDarkMode ? '#FFFFFF' : '#000000'
-                              }}
-                            >
-                              Select sound type
-                            </h2>
+                            {/* Title + Done Button */}
+                            <div className="flex items-center justify-between mb-6">
+                              <h2
+                                className="text-2xl font-bold"
+                                style={{
+                                  color: isDarkMode ? '#FFFFFF' : '#000000'
+                                }}
+                              >
+                                Select Audio
+                              </h2>
+                              <button
+                                onClick={() => {
+                                  setSelectedMusic(tempSelectedMusic);
+                                  setShowMusicSheet(false);
+                                }}
+                                className="text-sm font-semibold transition-all hover:brightness-110 active:brightness-90"
+                                style={{
+                                  display: 'flex',
+                                  padding: '8px 24px',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  borderRadius: '20px',
+                                  background: '#7469B6',
+                                  boxShadow: 'none',
+                                  color: '#FFFFFF'
+                                }}
+                              >
+                                Done
+                              </button>
+                            </div>
 
                             {/* Music Options */}
                             <div className="space-y-3 mb-6">
                               {/* No Sound Option */}
                               <button
-                                onClick={() => {
-                                  setSelectedMusic(null);
-                                  setShowMusicSheet(false);
-                                }}
+                                onClick={() => setTempSelectedMusic(null)}
                                 className="w-full p-4 rounded-xl text-left transition-all"
                                 style={{
-                                  backgroundColor: selectedMusic === null
+                                  backgroundColor: tempSelectedMusic === null
                                     ? '#AD88C6'
                                     : isDarkMode ? '#333' : '#F3F4F6',
-                                  color: selectedMusic === null
+                                  color: tempSelectedMusic === null
                                     ? '#FFFFFF'
                                     : isDarkMode ? '#FFFFFF' : '#1F2937'
                                 }}
                                 onMouseEnter={(e) => {
-                                  if (selectedMusic !== null) {
+                                  if (tempSelectedMusic !== null) {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
                                   }
                                 }}
                                 onMouseLeave={(e) => {
-                                  if (selectedMusic !== null) {
+                                  if (tempSelectedMusic !== null) {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
                                   }
                                 }}
                               >
                                 <div className="flex items-center justify-between">
                                   <div>
-                                    <p className="font-semibold">No Sound</p>
-                                    <p className="text-sm opacity-70">Exercise in silence</p>
+                                    <p className="font-semibold">Gentle Rainfall</p>
+                                    <p className="text-sm opacity-70">Rain in the city</p>
                                   </div>
-                                  {selectedMusic === null && (
+                                  {tempSelectedMusic === null && (
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                                     </svg>
@@ -3231,36 +3425,33 @@ export default function Home() {
 
                               {/* Nature Sounds */}
                               <button
-                                onClick={() => {
-                                  setSelectedMusic('nature');
-                                  setShowMusicSheet(false);
-                                }}
+                                onClick={() => setTempSelectedMusic('nature')}
                                 className="w-full p-4 rounded-xl text-left transition-all"
                                 style={{
-                                  backgroundColor: selectedMusic === 'nature'
+                                  backgroundColor: tempSelectedMusic === 'nature'
                                     ? '#AD88C6'
                                     : isDarkMode ? '#333' : '#F3F4F6',
-                                  color: selectedMusic === 'nature'
+                                  color: tempSelectedMusic === 'nature'
                                     ? '#FFFFFF'
                                     : isDarkMode ? '#FFFFFF' : '#1F2937'
                                 }}
                                 onMouseEnter={(e) => {
-                                  if (selectedMusic !== 'nature') {
+                                  if (tempSelectedMusic !== 'nature') {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
                                   }
                                 }}
                                 onMouseLeave={(e) => {
-                                  if (selectedMusic !== 'nature') {
+                                  if (tempSelectedMusic !== 'nature') {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
                                   }
                                 }}
                               >
                                 <div className="flex items-center justify-between">
                                   <div>
-                                    <p className="font-semibold">Nature Sounds</p>
-                                    <p className="text-sm opacity-70">Calm forest ambience</p>
+                                    <p className="font-semibold">Mystical Forest</p>
+                                    <p className="text-sm opacity-70">Calm tropical stillness</p>
                                   </div>
-                                  {selectedMusic === 'nature' && (
+                                  {tempSelectedMusic === 'nature' && (
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                                     </svg>
@@ -3270,26 +3461,23 @@ export default function Home() {
 
                               {/* Ambient Music */}
                               <button
-                                onClick={() => {
-                                  setSelectedMusic('ambient');
-                                  setShowMusicSheet(false);
-                                }}
+                                onClick={() => setTempSelectedMusic('ambient')}
                                 className="w-full p-4 rounded-xl text-left transition-all"
                                 style={{
-                                  backgroundColor: selectedMusic === 'ambient'
+                                  backgroundColor: tempSelectedMusic === 'ambient'
                                     ? '#AD88C6'
                                     : isDarkMode ? '#333' : '#F3F4F6',
-                                  color: selectedMusic === 'ambient'
+                                  color: tempSelectedMusic === 'ambient'
                                     ? '#FFFFFF'
                                     : isDarkMode ? '#FFFFFF' : '#1F2937'
                                 }}
                                 onMouseEnter={(e) => {
-                                  if (selectedMusic !== 'ambient') {
+                                  if (tempSelectedMusic !== 'ambient') {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
                                   }
                                 }}
                                 onMouseLeave={(e) => {
-                                  if (selectedMusic !== 'ambient') {
+                                  if (tempSelectedMusic !== 'ambient') {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
                                   }
                                 }}
@@ -3299,46 +3487,7 @@ export default function Home() {
                                     <p className="font-semibold">Ambient Music</p>
                                     <p className="text-sm opacity-70">Peaceful meditation tones</p>
                                   </div>
-                                  {selectedMusic === 'ambient' && (
-                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                                    </svg>
-                                  )}
-                                </div>
-                              </button>
-
-                              {/* Binaural Beats */}
-                              <button
-                                onClick={() => {
-                                  setSelectedMusic('binaural');
-                                  setShowMusicSheet(false);
-                                }}
-                                className="w-full p-4 rounded-xl text-left transition-all"
-                                style={{
-                                  backgroundColor: selectedMusic === 'binaural'
-                                    ? '#AD88C6'
-                                    : isDarkMode ? '#333' : '#F3F4F6',
-                                  color: selectedMusic === 'binaural'
-                                    ? '#FFFFFF'
-                                    : isDarkMode ? '#FFFFFF' : '#1F2937'
-                                }}
-                                onMouseEnter={(e) => {
-                                  if (selectedMusic !== 'binaural') {
-                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
-                                  }
-                                }}
-                                onMouseLeave={(e) => {
-                                  if (selectedMusic !== 'binaural') {
-                                    e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
-                                  }
-                                }}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="font-semibold">Binaural Beats</p>
-                                    <p className="text-sm opacity-70">Focus and relaxation</p>
-                                  </div>
-                                  {selectedMusic === 'binaural' && (
+                                  {tempSelectedMusic === 'ambient' && (
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                                     </svg>
@@ -3348,26 +3497,23 @@ export default function Home() {
 
                               {/* Ocean Waves */}
                               <button
-                                onClick={() => {
-                                  setSelectedMusic('ocean');
-                                  setShowMusicSheet(false);
-                                }}
+                                onClick={() => setTempSelectedMusic('ocean')}
                                 className="w-full p-4 rounded-xl text-left transition-all"
                                 style={{
-                                  backgroundColor: selectedMusic === 'ocean'
+                                  backgroundColor: tempSelectedMusic === 'ocean'
                                     ? '#AD88C6'
                                     : isDarkMode ? '#333' : '#F3F4F6',
-                                  color: selectedMusic === 'ocean'
+                                  color: tempSelectedMusic === 'ocean'
                                     ? '#FFFFFF'
                                     : isDarkMode ? '#FFFFFF' : '#1F2937'
                                 }}
                                 onMouseEnter={(e) => {
-                                  if (selectedMusic !== 'ocean') {
+                                  if (tempSelectedMusic !== 'ocean') {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#444' : '#E5E7EB';
                                   }
                                 }}
                                 onMouseLeave={(e) => {
-                                  if (selectedMusic !== 'ocean') {
+                                  if (tempSelectedMusic !== 'ocean') {
                                     e.currentTarget.style.backgroundColor = isDarkMode ? '#333' : '#F3F4F6';
                                   }
                                 }}
@@ -3375,9 +3521,9 @@ export default function Home() {
                                 <div className="flex items-center justify-between">
                                   <div>
                                     <p className="font-semibold">Ocean Waves</p>
-                                    <p className="text-sm opacity-70">Rhythmic wave sounds</p>
+                                    <p className="text-sm opacity-70">Soothing rhythmic waves</p>
                                   </div>
-                                  {selectedMusic === 'ocean' && (
+                                  {tempSelectedMusic === 'ocean' && (
                                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                                     </svg>
@@ -3386,25 +3532,18 @@ export default function Home() {
                               </button>
                             </div>
 
-                            {/* Done Button */}
-                            <div className="flex justify-center">
+                            {/* Audio Guidance Toggle */}
+                            <div className="flex items-center justify-center gap-2">
+                              <span className="text-sm font-medium" style={{ color: isDarkMode ? '#FFFFFF' : '#1F2937' }}>Audio Guidance</span>
                               <button
-                                onClick={() => setShowMusicSheet(false)}
-                                className="text-base font-bold transition-all hover:brightness-110 active:brightness-90"
-                                style={{
-                                  display: 'flex',
-                                  width: '200px',
-                                  height: '59px',
-                                  padding: '12px 32px 11px 32px',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  borderRadius: '27px',
-                                  background: '#7469B6',
-                                  boxShadow: 'none',
-                                  color: '#FFFFFF'
-                                }}
+                                onClick={() => setAudioGuidance(!audioGuidance)}
+                                className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                                style={{ backgroundColor: audioGuidance ? '#B57EDC' : isDarkMode ? '#4B5563' : '#D1D5DB' }}
                               >
-                                Done
+                                <span
+                                  className="inline-block h-4 w-4 rounded-full bg-white transition-transform"
+                                  style={{ transform: audioGuidance ? 'translateX(22px)' : 'translateX(4px)' }}
+                                />
                               </button>
                             </div>
                           </div>
@@ -3551,13 +3690,13 @@ export default function Home() {
                                     {track.name}
                                   </span>
 
-                                  {/* Difficulty Indicator */}
-                                  <DifficultyIndicator level={getDifficultyLevel(track.name)} />
-
                                   {/* Best For */}
                                   <p className="text-sm text-left" style={{ color: isDarkMode ? '#D1D5DB' : '#6B7280' }}>
                                     {metadata.bestFor}
                                   </p>
+
+                                  {/* Difficulty Indicator */}
+                                  <DifficultyIndicator level={getDifficultyLevel(track.name)} />
                                 </div>
 
                                 {/* Right: Preview Icon */}
@@ -3850,15 +3989,13 @@ export default function Home() {
                             <div className="flex justify-center">
                               <button
                                 onClick={() => setShowCustomizationSheet(false)}
-                                className="text-base font-bold transition-all hover:brightness-110 active:brightness-90"
+                                className="text-sm font-semibold transition-all hover:brightness-110 active:brightness-90"
                                 style={{
                                   display: 'flex',
-                                  width: '200px',
-                                  height: '59px',
-                                  padding: '12px 32px 11px 32px',
+                                  padding: '8px 24px',
                                   justifyContent: 'center',
                                   alignItems: 'center',
-                                  borderRadius: '27px',
+                                  borderRadius: '20px',
                                   background: '#7469B6',
                                   boxShadow: 'none',
                                   color: '#FFFFFF'

@@ -488,8 +488,13 @@ export default function Marketing() {
                             <path d="M63.9167 24.5833H98.3334" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
                             <path d="M78.6667 44.25V73.75" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
                             <path d="M49.1667 9.83333V39.3333" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                            <path d="M59 78.6667V108.167" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                            <path d="M78.6667 59L98.3334 59.001" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                            <path d="M19.6667 59.001L63.9167 59" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                            <path d="M59 93.4167H98.3333" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
+                            <path d="M19.6667 93.4176L44.2501 93.4167" stroke="currentColor" strokeWidth="8.5" strokeLinecap="round"/>
                           </svg>
-                          <span className="text-black text-xs font-medium">Customize</span>
+                          <span className="text-black text-xs font-medium">Personalize</span>
                         </div>
                         <div className="h-16 w-px bg-gray-200"></div>
                         <div className="flex flex-col items-center justify-end p-3 gap-1 min-w-[80px]">
@@ -671,7 +676,7 @@ export default function Marketing() {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-center gap-3 mb-16">
             <h2 className="text-4xl font-bold text-center text-gray-900">
-              Why choose
+              Why
             </h2>
             <img src="/Hush-Logo.png" alt="Hush" style={{ height: '43px' }} />
           </div>
